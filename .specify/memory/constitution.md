@@ -1,50 +1,53 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+# HueyAPPan - Constitution File
+## Reglamento Interno de Desarrollo y Estructura del Proyecto
 
-## Core Principles
+### 1. Introducción y Propósito
+El presente documento establece las normas constitutivas, lineamientos de diseño de software y políticas de gobernanza de código para el desarrollo de **HueyAPPan**. Esta aplicación está diseñada de forma exclusiva para optimizar la comunicación, gestión y convivencia de los vecinos de la privada *Convento Hueyapan*.
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+El cumplimiento de estas reglas es estrictamente obligatorio para cualquier desarrollador que colabore en el proyecto, garantizando un código mantenible, escalable, robusto y altamente profesional bajo estándares modernos de la industria.
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+### 2. Idioma Oficial del Proyecto
+> **Regla Fundamental:** Todo el código fuente, nombres de variables, funciones, clases, bases de datos, documentación técnica, mensajes de commit y comentarios dentro del código deberán ser escritos **estrictamente en inglés**.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+El uso del inglés asegura la estandarización técnica universal y la compatibilidad con herramientas automáticas de análisis de código. Las interacciones con los usuarios finales (interfaz de usuario) se manejarán de forma independiente mediante el sistema de internacionalización.
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+### 3. Arquitectura del Software (Clean Architecture by Features)
+El proyecto se estructurará siguiendo los principios de **Clean Architecture** organizados por características funcionales (*by Features*). Cada funcionalidad independiente (ej. `auth`, `vistas`, `noticias`, `pagos`) debe actuar como un módulo aislado y contener de forma estricta las siguientes tres capas:
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+| Capa | Responsabilidad Primaria | Componentes Permitidos |
+| :--- | :--- | :--- |
+| **Data** | Implementación de la infraestructura, peticiones a Firebase, mapeo de datos remotos y locales a modelos de la aplicación. | DataSources, Repositories Impl, Models, DTOs. |
+| **Domain** | Contiene la lógica de negocio pura y las entidades abstractas. Es totalmente independiente de librerías externas o frameworks de UI. | Entities, Use Cases, Repositories Interfaces. |
+| **Presentation** | Manejo de la interfaz de usuario, renderizado de pantallas y gestión de estados locales a través de controladores visuales. | Widgets, Screens, State Notifiers / Providers. |
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+### 4. Gestión de Estado e Inyección de Dependencias
+* **Prohibición de State Local Anidado:** Se prohíbe explícitamente el uso de `setState` en los widgets de la aplicación para lógicas de estado compartido o de negocio. Todo el estado de la aplicación debe ser explícito, reactivo y centralizado.
+* **Estandarización con Riverpod:** Se usará exclusivamente **Riverpod** tanto para la gestión de estados globales y locales como para la inyección de dependencias (DI).
+* **Restricción de Singletons:** Queda estrictamente prohibido el uso de patrones Singleton globales clásicos (ej. instanciación estática directa o localizadores de servicios aislados). Toda dependencia de servicios (como Firebase) debe proveerse, inyectarse y gestionarse a través de un `Provider` de Riverpod para asegurar la testabilidad.
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+### 5. Restricciones de Tamaño y Métricas de Código
+Con el fin de mitigar la complejidad ciclomática y asegurar el cumplimiento del Principio de Responsabilidad Única (SRP), se imponen los siguientes límites estructurales estrictos:
+* **Funciones y Métodos de Lógica de Negocio:** No deberán exceder las **20 líneas de código** por función. Lógicas complejas deberán ser refactorizadas en subfunciones privadas o utilidades abstractas.
+* **Métodos `build` de Widgets:** No deberán exceder las **100 líneas de código**. Si un árbol de widgets supera este límite, los componentes internos deberán ser extraídos obligatoriamente en subwidgets independientes (`ConsumerWidget` o `StatelessWidget`).
+* **Archivos de Código (`.dart`):** Ningún archivo fuente podrá exceder las **300 líneas de código** en su totalidad.
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+### 6. Estrategia de Control de Versiones (Git Branching)
+El desarrollo se realizará mediante un esquema ordenado de ramificaciones basado en características. Queda estrictamente prohibido realizar commits directos a la rama principal (`main` o `master`). La nomenclatura de las ramas se define según el caso de uso:
+* Para el desarrollo de nuevas pantallas, servicios o funcionalidades: `feature/nombre-del-feature`
+* Para la resolución de errores, fallos técnicos o regresiones detectadas: `bugfix/nombre-del-bug`
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+Todo el código deberá integrarse mediante Pull Requests (PR) que requieran revisión de código y validación automatizada.
 
-## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
+### 7. Política de Calidad y Pruebas (Testing Policy)
+La estabilidad del software es prioritaria dada su naturaleza comunitaria. Por lo tanto:
+1. **Cobertura por Feature:** Cada funcionalidad nueva o modificada debe incluir obligatoriamente sus respectivas pruebas unitarias (**Unit Testing**) para la lógica de negocio/casos de uso, y pruebas de componentes (**Widget Testing**) para la capa de presentación.
+2. **Análisis Estático (Linting):** Se implementará de forma obligatoria el paquete `flutter_lints` con reglas estrictas activadas en el archivo `analysis_options.yaml`. No se permitirá la fusión de código que presente advertencias (warnings) o errores de estilo.
+3. **Automatización CI/CD:** Se integrará **GitHub Actions** para ejecutar automáticamente el análisis estático y toda la suite de pruebas en cada Pull Request creado hacia las ramas de integración.
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
-
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+### 8. Internacionalización (i18n)
+A pesar de ser una aplicación local, la arquitectura debe estar preparada globalmente. La aplicación contará con soporte nativo mediante `flutter_localizations` para cinco idiomas base, gestionados a través de archivos de recursos tipados (ARB):
+* English (en)
+* Español (es)
+* Portugués (pt)
+* Français (fr)
+* Italiano (it)
