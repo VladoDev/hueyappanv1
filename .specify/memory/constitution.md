@@ -20,6 +20,10 @@ El proyecto se estructurará siguiendo los principios de **Clean Architecture** 
 | **Domain** | Contiene la lógica de negocio pura y las entidades abstractas. Es totalmente independiente de librerías externas o frameworks de UI. | Entities, Use Cases, Repositories Interfaces. |
 | **Presentation** | Manejo de la interfaz de usuario, renderizado de pantallas y gestión de estados locales a través de controladores visuales. | Widgets, Screens, State Notifiers / Providers. |
 
+Adicionalmente, se imponen las siguientes reglas obligatorias para cada feature:
+* **Consistencia Visual (Tematización):** Cada feature debe adoptar y seguir de forma obligatoria el sistema de temas preestablecido en la aplicación (`vecinalLightTheme()` y `vecinalDarkTheme()`). Queda estrictamente prohibido utilizar colores estáticos personalizados u otros estilos que rompan con la coherencia visual.
+* **Telemetría e Instrumentación (Firebase Analytics):** En cada feature desarrollado, es obligatorio integrar eventos de medición mediante **Firebase Analytics** para rastrear vistas de pantalla y las interacciones principales del usuario.
+
 ### 4. Gestión de Estado e Inyección de Dependencias
 * **Prohibición de State Local Anidado:** Se prohíbe explícitamente el uso de `setState` en los widgets de la aplicación para lógicas de estado compartido o de negocio. Todo el estado de la aplicación debe ser explícito, reactivo y centralizado.
 * **Estandarización con Riverpod:** Se usará exclusivamente **Riverpod** tanto para la gestión de estados globales y locales como para la inyección de dependencias (DI).
@@ -51,3 +55,5 @@ A pesar de ser una aplicación local, la arquitectura debe estar preparada globa
 * Portugués (pt)
 * Français (fr)
 * Italiano (it)
+
+> **Regla de Localización Obligatoria:** Cada texto visible para el usuario final en la interfaz gráfica (UI) deberá pasar obligatoriamente por el sistema de localización e internacionalización (`intl` o archivos ARB). Queda estrictamente prohibido incluir cadenas de texto estáticas (hardcoded) en los widgets.

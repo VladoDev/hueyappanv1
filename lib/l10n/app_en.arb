@@ -1,0 +1,113 @@
+{
+  "@@locale": "en",
+  "appName": "HueyAPPan",
+  "loginPortalSubtitle": "Convento Hueyapan Resident Portal",
+  "emailLabel": "Email Address",
+  "emailRequired": "Email is required",
+  "emailInvalid": "Please enter a valid email",
+  "passwordLabel": "Password",
+  "passwordRequired": "Password is required",
+  "passwordTooShort": "Password must be at least 6 characters",
+  "loginButton": "Access Portal",
+  "registerLink": "Don't have an account? Register here",
+
+  "registerHeaderTitle": "Resident Registration",
+  "firstNameLabel": "First Name",
+  "requiredField": "Required",
+  "lastNameLabel": "Last Name",
+  "lotLabel": "Lot",
+  "houseLabel": "House",
+  "residentTypeLabel": "Resident Type",
+  "propietarioLabel": "Owner",
+  "inquilinoLabel": "Tenant",
+  "phoneLabel": "Mobile Phone",
+  "phoneRequired": "Phone is required",
+  "phoneLengthInvalid": "Must be exactly 10 digits",
+  "emailRequiredRegister": "Email is required",
+  "emailInvalidRegister": "Please enter a valid email",
+  "passwordRequiredRegister": "Password is required",
+  "passwordTooShortRegister": "Minimum 6 characters",
+  "registerButton": "Register",
+
+  "navHome": "Home",
+  "navNews": "News",
+  "navPayments": "Payments",
+  "navProfile": "Profile",
+
+  "emergencyAlertTitle": "Emergency Alert",
+  "emergencyAlertConfirm": "Are you sure you want to trigger the emergency alert?\n\nThis will send a high-priority push notification with sound to all community residents.",
+  "cancel": "Cancel",
+  "activateAlarm": "Activate Alarm",
+  "alarmActivatedSuccess": "Emergency alert activated successfully!",
+  "alarmActivatedError": "Error activating alarm: {error}",
+  "@alarmActivatedError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+
+  "emergencyOverlayTitle": "EMERGENCY ALERT!",
+  "emergencyOverlayBody": "Resident {senderName} has triggered an emergency alert in the community.",
+  "@emergencyOverlayBody": {
+    "placeholders": {
+      "senderName": {
+        "type": "String"
+      }
+    }
+  },
+  "silenceAlarm": "Silence Alarm",
+
+  "welcomeBack": "Welcome back,",
+  "recentActivity": "Recent Activity",
+  "activityMaintenance": "Emergency system maintenance scheduled for next Saturday.",
+  "activityMaintenanceTime": "1h ago",
+  "activityAssembly": "Monthly resident assembly meeting minutes are uploaded.",
+  "activityAssemblyTime": "1d ago",
+  "homeFeatureTitle": "Neighborhood Overview",
+  "homeFeatureSubtitle": "Convento Hueyapan Safe Community",
+  "homeFeatureBody": "All systems operational. Security is monitoring access 24/7.",
+
+  "myProfile": "My Profile",
+  "accountInformation": "Account Information",
+  "housingUnitLabel": "Housing Unit",
+  "housingUnitValue": "Unit {unit}",
+  "@housingUnitValue": {
+    "placeholders": {
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "residentStatusLabel": "Resident Status",
+  "signOut": "Sign Out",
+
+  "maintenanceFees": "Maintenance Fees",
+  "paymentHistory": "Payment History",
+  "amountPaid": "Amount Paid",
+  "amountPaidValue": "${amount} USD",
+  "@amountPaidValue": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "paidStatus": "PAID",
+  "mayDues": "May 2026 Dues",
+  "aprilFee": "April 2026 Maintenance Fee",
+  "aprilFeeDate": "Paid on Apr 04, 2026",
+  "marchFee": "March 2026 Maintenance Fee",
+  "marchFeeDate": "Paid on Mar 02, 2026",
+
+  "communityNews": "Community News",
+  "news1Title": "New Access Control Guidelines",
+  "news1Body": "Please ensure your guest register codes are generated via the portal 24 hours prior to their arrival. RFID tags are required for vehicle access.",
+  "news1Date": "May 28, 2026",
+  "news1Author": "Security Committee",
+  "news2Title": "Annual Swimming Pool Opening",
+  "news2Body": "The neighborhood swimming pool will open for the season starting this Friday. Pool hours are 8:00 AM - 10:00 PM daily. Please review the safety rules posted at the entry.",
+  "news2Date": "May 24, 2026",
+  "news2Author": "Administration"
+}
