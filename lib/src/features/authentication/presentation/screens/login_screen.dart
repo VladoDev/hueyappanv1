@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hueyappanv1/src/core/theme/vecinal_theme.dart';
 import '../providers/auth_provider.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
@@ -29,7 +30,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             _emailController.text,
             _passwordController.text,
           );
-      // GoRouter redirect automatically moves user to /home on successful auth
     }
   }
 
@@ -37,6 +37,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Widget build(BuildContext context) {
     final authState = ref.watch(authControllerProvider);
     final isLoading = authState.isLoading;
+    final vc = context.vecinalColors;
 
     ref.listen<AsyncValue>(authControllerProvider, (previous, next) {
       if (next is AsyncError) {
@@ -44,9 +45,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(errorMsg),
-            backgroundColor: Colors.red[800],
+            backgroundColor: vc.destructive,
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(VecinalRadius.md)),
           ),
         );
       }
@@ -60,20 +61,20 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           // Glassmorphic Login Card
           Center(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.all(24.0),
+              padding: const EdgeInsets.all(VecinalSpacing.xl),
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(24),
+                borderRadius: BorderRadius.circular(VecinalRadius.xl),
                 child: BackdropFilter(
                   filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                   child: Container(
-                    padding: const EdgeInsets.all(32.0),
+                    padding: const EdgeInsets.all(VecinalSpacing.xxl),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.85),
-                      borderRadius: BorderRadius.circular(24),
-                      border: Border.all(color: Colors.white.withOpacity(0.4), width: 1.5),
+                      color: vc.surfaceCard.withValues(alpha: 0.85),
+                      borderRadius: BorderRadius.circular(VecinalRadius.xl),
+                      border: Border.all(color: vc.surfaceCard.withValues(alpha: 0.4), width: 1.5),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
+                          color: Colors.black.withValues(alpha: 0.1),
                           blurRadius: 30,
                           offset: const Offset(0, 10),
                         ),
@@ -86,20 +87,20 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         children: [
                           const _HeaderSection(),
                           const SizedBox(height: 32),
-                          _buildEmailField(isLoading),
+                          _buildEmailField(isLoading, vc),
                           const SizedBox(height: 16),
-                          _buildPasswordField(isLoading),
+                          _buildPasswordField(isLoading, vc),
                           const SizedBox(height: 32),
-                          _buildSubmitButton(isLoading),
+                          _buildSubmitButton(isLoading, vc),
                           const SizedBox(height: 16),
                           TextButton(
                             onPressed: isLoading
                                 ? null
                                 : () => context.push('/register'),
-                            child: const Text(
+                            child: Text(
                               '¿No tienes cuenta? Regístrate aquí',
                               style: TextStyle(
-                                color: Color(0xFF1B5E20),
+                                color: vc.primaryDefault,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -117,19 +118,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     );
   }
 
-  Widget _buildEmailField(bool isLoading) {
+  Widget _buildEmailField(bool isLoading, VecinalSemanticColors vc) {
     return TextFormField(
       controller: _emailController,
       enabled: !isLoading,
       keyboardType: TextInputType.emailAddress,
       decoration: InputDecoration(
         labelText: 'Email Address',
-        prefixIcon: const Icon(Icons.email_outlined, color: Color(0xFF2E7D32)),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Color(0xFF2E7D32), width: 2),
-        ),
+        prefixIcon: Icon(Icons.email_outlined, color: vc.primaryDefault),
       ),
       validator: (value) {
         if (value == null || value.trim().isEmpty) return 'Email is required';
@@ -139,19 +135,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     );
   }
 
-  Widget _buildPasswordField(bool isLoading) {
+  Widget _buildPasswordField(bool isLoading, VecinalSemanticColors vc) {
     return TextFormField(
       controller: _passwordController,
       enabled: !isLoading,
       obscureText: true,
       decoration: InputDecoration(
         labelText: 'Password',
-        prefixIcon: const Icon(Icons.lock_outlined, color: Color(0xFF2E7D32)),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Color(0xFF2E7D32), width: 2),
-        ),
+        prefixIcon: Icon(Icons.lock_outlined, color: vc.primaryDefault),
       ),
       validator: (value) {
         if (value == null || value.isEmpty) return 'Password is required';
@@ -161,23 +152,23 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     );
   }
 
-  Widget _buildSubmitButton(bool isLoading) {
+  Widget _buildSubmitButton(bool isLoading, VecinalSemanticColors vc) {
     return SizedBox(
       width: double.infinity,
       height: 54,
       child: ElevatedButton(
         onPressed: isLoading ? null : _submitForm,
         style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFF1B5E20),
-          foregroundColor: Colors.white,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          backgroundColor: vc.primaryDefault,
+          foregroundColor: vc.textOnPrimary,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(VecinalRadius.md)),
           elevation: 0,
         ),
         child: isLoading
-            ? const SizedBox(
+            ? SizedBox(
                 width: 24,
                 height: 24,
-                child: CircularProgressIndicator(strokeWidth: 2.5, color: Colors.white),
+                child: CircularProgressIndicator(strokeWidth: 2.5, color: vc.textOnPrimary),
               )
             : const Text(
                 'Access Portal',
@@ -193,10 +184,11 @@ class _BackgroundLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final vc = context.vecinalColors;
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [Color(0xFFE8F5E9), Color(0xFFC8E6C9), Color(0xFF81C784)],
+          colors: [vc.primaryContainer, vc.surfaceSecondary, vc.primaryLight],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -208,7 +200,7 @@ class _BackgroundLayout extends StatelessWidget {
             left: -50,
             child: CircleAvatar(
               radius: 150,
-              backgroundColor: const Color(0xFF2E7D32).withOpacity(0.25),
+              backgroundColor: vc.primaryDark.withValues(alpha: 0.25),
             ),
           ),
           Positioned(
@@ -216,7 +208,7 @@ class _BackgroundLayout extends StatelessWidget {
             right: -50,
             child: CircleAvatar(
               radius: 180,
-              backgroundColor: const Color(0xFF1B5E20).withOpacity(0.2),
+              backgroundColor: vc.primaryDefault.withValues(alpha: 0.2),
             ),
           ),
         ],
@@ -230,29 +222,27 @@ class _HeaderSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final vc = context.vecinalColors;
     return Column(
       children: [
-        const CircleAvatar(
+        CircleAvatar(
           radius: 36,
-          backgroundColor: Color(0xFF1B5E20),
-          child: Icon(Icons.shield, size: 40, color: Colors.white),
+          backgroundColor: vc.primaryDefault,
+          child: Icon(Icons.shield, size: 40, color: vc.textOnPrimary),
         ),
         const SizedBox(height: 16),
-        const Text(
+        Text(
           'HueyAPPan',
-          style: TextStyle(
+          style: VecinalTextStyles.displayLarge.copyWith(
+            color: vc.primaryDefault,
             fontSize: 28,
-            fontWeight: FontWeight.bold,
-            color: Color(0xFF1B5E20),
-            letterSpacing: 0.5,
           ),
         ),
         const SizedBox(height: 6),
         Text(
           'Convento Hueyapan Resident Portal',
-          style: TextStyle(
-            fontSize: 14,
-            color: Colors.grey[600],
+          style: VecinalTextStyles.bodyMedium.copyWith(
+            color: vc.textSecondary,
             fontWeight: FontWeight.w500,
           ),
           textAlign: TextAlign.center,

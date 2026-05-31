@@ -40,10 +40,14 @@ class AuthController extends Notifier<AsyncValue<ResidentEntity?>> {
     try {
       final loginUsecase = ref.read(loginWithEmailUsecaseProvider);
       final user = await loginUsecase.execute(email, password);
-      state = AsyncValue.data(user);
+      if (ref.mounted) {
+        state = AsyncValue.data(user);
+      }
       return true;
     } catch (e, stack) {
-      state = AsyncValue.error(e, stack);
+      if (ref.mounted) {
+        state = AsyncValue.error(e, stack);
+      }
       return false;
     }
   }
@@ -71,10 +75,14 @@ class AuthController extends Notifier<AsyncValue<ResidentEntity?>> {
         residentType: residentType,
         phone: phone,
       );
-      state = AsyncValue.data(user);
+      if (ref.mounted) {
+        state = AsyncValue.data(user);
+      }
       return true;
     } catch (e, stack) {
-      state = AsyncValue.error(e, stack);
+      if (ref.mounted) {
+        state = AsyncValue.error(e, stack);
+      }
       return false;
     }
   }
@@ -84,9 +92,13 @@ class AuthController extends Notifier<AsyncValue<ResidentEntity?>> {
     try {
       final repository = ref.read(authRepositoryProvider);
       await repository.logout();
-      state = const AsyncValue.data(null);
+      if (ref.mounted) {
+        state = const AsyncValue.data(null);
+      }
     } catch (e, stack) {
-      state = AsyncValue.error(e, stack);
+      if (ref.mounted) {
+        state = AsyncValue.error(e, stack);
+      }
     }
   }
 

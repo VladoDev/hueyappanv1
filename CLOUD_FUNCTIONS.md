@@ -1,6 +1,6 @@
-# Configuración de Firebase Cloud Functions para Alertas Críticas
+# Configuración de Firebase Cloud Functions para Notificaciones Sensibles al Tiempo (Time Sensitive)
 
-Para enviar notificaciones push a todos los dispositivos móviles (incluso cuando la aplicación está cerrada y el dispositivo en modo Silencio o No Molestar), debemos usar una **Firebase Cloud Function**.
+Para enviar notificaciones push prioritarias a todos los dispositivos móviles que llamen la atención inmediata del usuario (incluso en modo de Enfoque/No Molestar si el usuario lo tiene habilitado), debemos usar una **Firebase Cloud Function**.
 
 Esta función se activará automáticamente cada vez que se agregue un nuevo documento en la colección `/emergencies` de Firestore.
 
@@ -72,11 +72,8 @@ exports.sendEmergencyNotification = functions.firestore
       apns: {
         payload: {
           aps: {
-            sound: {
-              critical: 1,      // 1 indica que es una Alerta Crítica (iOS)
-              name: "default",
-              volume: 1.0,
-            },
+            sound: "default",
+            "interruption-level": "time-sensitive", // Interrupción de prioridad para iOS
           },
         },
       },

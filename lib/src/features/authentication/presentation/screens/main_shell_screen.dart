@@ -1,22 +1,17 @@
-import 'dart:async';
 import 'dart:ui';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hueyappanv1/src/core/theme/vecinal_theme.dart';
 import '../providers/auth_provider.dart';
-import '../widgets/home_tab.dart';
-import '../widgets/announcements_tab.dart';
-import '../widgets/payments_tab.dart';
-import '../widgets/profile_tab.dart';
+import '../providers/emergency_provider.dart';
 
 class MainShellScreen extends ConsumerStatefulWidget {
-  final int initialIndex;
+  final StatefulNavigationShell navigationShell;
 
   const MainShellScreen({
     super.key,
-    required this.initialIndex,
+    required this.navigationShell,
   });
 
   @override
@@ -24,120 +19,41 @@ class MainShellScreen extends ConsumerStatefulWidget {
 }
 
 class _MainShellScreenState extends ConsumerState<MainShellScreen> {
-  late int _selectedIndex;
-  StreamSubscription<Map<String, dynamic>?>? _emergencySubscription;
-  Map<String, dynamic>? _activeEmergency;
-  final Set<String> _dismissedEmergencyIds = {};
-  bool _isPlayingAlarm = false;
-
   @override
   void initState() {
     super.initState();
-    _selectedIndex = widget.initialIndex;
-    _listenToEmergencies();
-  }
-
-  void _listenToEmergencies() {
-    final datasource = ref.read(authFirebaseDatasourceProvider);
-    _emergencySubscription = datasource.watchEmergencies().listen((emergency) {
-      if (emergency == null) return;
-      
-      final String id = emergency['id'] as String;
-      final String triggeredBy = emergency['triggeredBy'] as String;
-      final String status = emergency['status'] as String? ?? '';
-      
-      if (status != 'active') {
-        _stopAlarm();
-        if (mounted) {
-          setState(() {
-            _activeEmergency = null;
-          });
-        }
-        return;
-      }
-
-      // Check if it's recent (less than 2 minutes old)
-      final timestampField = emergency['timestamp'];
-      DateTime? triggeredAt;
-      if (timestampField is Timestamp) {
-        triggeredAt = timestampField.toDate();
-      }
-      
-      final now = DateTime.now();
-      final isRecent = triggeredAt == null || now.difference(triggeredAt).inMinutes.abs() < 2;
-
-      // Don't alert if we triggered it ourselves, or if it is already dismissed, or if it is old
-      final currentUid = ref.read(authFirebaseDatasourceProvider).currentUser?.uid;
-      
+    
+    // Request permission and register token on launch if already logged in
+    Future.microtask(() {
       if (mounted) {
-        if (triggeredBy != currentUid && !_dismissedEmergencyIds.contains(id) && isRecent) {
-          setState(() {
-            _activeEmergency = emergency;
-          });
-          _startAlarm();
-        } else {
-          setState(() {
-            _activeEmergency = emergency;
-          });
+        final user = ref.read(authStateProvider).value;
+        if (user != null) {
+          ref.read(authFirebaseDatasourceProvider).registerDeviceToken(user.uid);
         }
       }
     });
-  }
-
-  void _startAlarm() {
-    if (!_isPlayingAlarm) {
-      _isPlayingAlarm = true;
-      FlutterRingtonePlayer.playAlarm(looping: true, asAlarm: true);
-    }
-  }
-
-  void _stopAlarm() {
-    if (_isPlayingAlarm) {
-      _isPlayingAlarm = false;
-      FlutterRingtonePlayer.stop();
-    }
-  }
-
-  @override
-  void dispose() {
-    _emergencySubscription?.cancel();
-    _stopAlarm();
-    super.dispose();
-  }
-
-  @override
-  void didUpdateWidget(covariant MainShellScreen oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (widget.initialIndex != oldWidget.initialIndex) {
-      _selectedIndex = widget.initialIndex;
-    }
   }
 
   void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-    
-    switch (index) {
-      case 0:
-        context.go('/home');
-        break;
-      case 1:
-        context.go('/announcements');
-        break;
-      case 2:
-        context.go('/payments');
-        break;
-      case 3:
-        context.go('/profile');
-        break;
-    }
+    widget.navigationShell.goBranch(
+      index,
+      initialLocation: index == widget.navigationShell.currentIndex,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     final authState = ref.watch(authStateProvider);
     final user = authState.value;
+    final vc = context.vecinalColors;
+
+    // Listen to changes in authState to register device token if/when it loads
+    ref.listen(authStateProvider, (previous, next) {
+      final newUser = next.value;
+      if (newUser != null) {
+        ref.read(authFirebaseDatasourceProvider).registerDeviceToken(newUser.uid);
+      }
+    });
 
     if (user == null) {
       return const Scaffold(
@@ -147,79 +63,127 @@ class _MainShellScreenState extends ConsumerState<MainShellScreen> {
       );
     }
 
-    final List<Widget> pages = [
-      HomeTab(residentName: user.name, housingUnit: user.housingUnit),
-      const AnnouncementsTab(),
-      const PaymentsTab(),
-      ProfileTab(
-        name: user.name,
-        email: user.email,
-        housingUnit: user.housingUnit,
-        status: user.accountStatus,
+    // Watch global emergency state
+    final emergencyState = ref.watch(emergencyProvider);
+    final hasActiveAlert = emergencyState.activeEmergency != null;
+
+    final List<_FloatingTabBarItem> navItems = [
+      _FloatingTabBarItem(
+        icon: Icons.dashboard_outlined,
+        selectedIcon: Icons.dashboard,
+        label: 'Home',
+      ),
+      _FloatingTabBarItem(
+        icon: Icons.campaign_outlined,
+        selectedIcon: Icons.campaign,
+        label: 'Noticias',
+      ),
+      _FloatingTabBarItem(
+        icon: Icons.account_balance_wallet_outlined,
+        selectedIcon: Icons.account_balance_wallet,
+        label: 'Pagos',
+      ),
+      _FloatingTabBarItem(
+        icon: Icons.person_outline,
+        selectedIcon: Icons.person,
+        label: 'Perfil',
       ),
     ];
 
-    final hasActiveAlert = _activeEmergency != null &&
-        _activeEmergency!['status'] == 'active' &&
-        !_dismissedEmergencyIds.contains(_activeEmergency!['id']);
-
     return Stack(
       children: [
+        // Scaffold with navigation content and floating bottom bar
         Scaffold(
-          body: pages[_selectedIndex],
-          bottomNavigationBar: Container(
-            decoration: BoxDecoration(
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.08),
-                  blurRadius: 20,
-                  offset: const Offset(0, -5),
+          // Allow body to extend behind the navigation bar
+          extendBody: true,
+          body: widget.navigationShell,
+          // Custom floating bottom navigation bar
+          bottomNavigationBar: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 16, right: 16, bottom: 8),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(24),
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                    decoration: BoxDecoration(
+                      color: vc.surfacePrimary.withValues(alpha: 0.85),
+                      borderRadius: BorderRadius.circular(24),
+                      border: Border.all(
+                        color: vc.borderDefault.withValues(alpha: 0.25),
+                        width: 1.5,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.08),
+                          blurRadius: 20,
+                          offset: const Offset(0, 8),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: List.generate(navItems.length, (index) {
+                        final item = navItems[index];
+                        final isSelected = widget.navigationShell.currentIndex == index;
+                        return GestureDetector(
+                          onTap: () => _onItemTapped(index),
+                          behavior: HitTestBehavior.opaque,
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 250),
+                            curve: Curves.easeInOut,
+                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                            decoration: BoxDecoration(
+                              color: isSelected
+                                  ? vc.primaryDefault.withValues(alpha: 0.15)
+                                  : Colors.transparent,
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  isSelected ? item.selectedIcon : item.icon,
+                                  color: isSelected ? vc.primaryDefault : vc.navUnselected,
+                                  size: 24,
+                                ),
+                                if (isSelected) ...[
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    item.label,
+                                    style: VecinalTextStyles.labelMedium.copyWith(
+                                      color: vc.primaryDefault,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ],
+                            ),
+                          ),
+                        );
+                      }),
+                    ),
+                  ),
                 ),
-              ],
-            ),
-            child: NavigationBar(
-              selectedIndex: _selectedIndex,
-              onDestinationSelected: _onItemTapped,
-              backgroundColor: Colors.white,
-              indicatorColor: const Color(0xFFE8F5E9),
-              elevation: 0,
-              destinations: const [
-                NavigationDestination(
-                  icon: Icon(Icons.dashboard_outlined),
-                  selectedIcon: Icon(Icons.dashboard, color: Color(0xFF2E7D32)),
-                  label: 'Home',
-                ),
-                NavigationDestination(
-                  icon: Icon(Icons.campaign_outlined),
-                  selectedIcon: Icon(Icons.campaign, color: Color(0xFF2E7D32)),
-                  label: 'News',
-                ),
-                NavigationDestination(
-                  icon: Icon(Icons.account_balance_wallet_outlined),
-                  selectedIcon: Icon(Icons.account_balance_wallet, color: Color(0xFF2E7D32)),
-                  label: 'Payments',
-                ),
-                NavigationDestination(
-                  icon: Icon(Icons.person_outline),
-                  selectedIcon: Icon(Icons.person, color: Color(0xFF2E7D32)),
-                  label: 'Profile',
-                ),
-              ],
+              ),
             ),
           ),
         ),
+        
+        // Full screen emergency overlay
         if (hasActiveAlert)
-          _buildEmergencyOverlay(user.uid),
+          _buildEmergencyOverlay(user.uid, vc, emergencyState.activeEmergency),
       ],
     );
   }
 
-  Widget _buildEmergencyOverlay(String currentUid) {
-    final senderName = _activeEmergency?['triggeredByName'] ?? 'Un residente';
-    final id = _activeEmergency?['id'] ?? '';
+  Widget _buildEmergencyOverlay(String currentUid, VecinalSemanticColors vc, Map<String, dynamic>? activeEmergency) {
+    final senderName = activeEmergency?['triggeredByName'] ?? 'Un residente';
+    final id = activeEmergency?['id'] ?? '';
 
     return Scaffold(
-      backgroundColor: Colors.red[900]!.withOpacity(0.85),
+      backgroundColor: vc.emergencyBg.withValues(alpha: 0.95),
       body: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
         child: SafeArea(
@@ -231,13 +195,11 @@ class _MainShellScreenState extends ConsumerState<MainShellScreen> {
                 children: [
                   const _PulsingWarningIcon(),
                   const SizedBox(height: 32),
-                  const Text(
+                  Text(
                     '¡ALERTA DE EMERGENCIA!',
                     textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
+                    style: VecinalTextStyles.displayLarge.copyWith(
+                      color: vc.emergencyText,
                       letterSpacing: 1.2,
                     ),
                   ),
@@ -245,30 +207,25 @@ class _MainShellScreenState extends ConsumerState<MainShellScreen> {
                   Text(
                     'El residente $senderName ha activado una alerta de emergencia en la comunidad.',
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      color: Colors.white70,
-                      fontSize: 18,
-                      height: 1.5,
+                    style: VecinalTextStyles.bodyLarge.copyWith(
+                      color: vc.emergencyText.withValues(alpha: 0.8),
                     ),
                   ),
                   const SizedBox(height: 48),
                   ElevatedButton.icon(
                     onPressed: () {
-                      _stopAlarm();
-                      setState(() {
-                        _dismissedEmergencyIds.add(id);
-                      });
+                      ref.read(emergencyProvider.notifier).silenceAlarm(id);
                     },
-                    icon: const Icon(Icons.volume_off, color: Colors.red),
+                    icon: Icon(Icons.volume_off, color: vc.destructive),
                     label: const Text(
                       'Silenciar Alarma',
                       style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: Colors.red[900],
+                      backgroundColor: vc.surfacePrimary,
+                      foregroundColor: vc.destructive,
                       padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(VecinalRadius.md)),
                       elevation: 4,
                     ),
                   ),
@@ -280,6 +237,18 @@ class _MainShellScreenState extends ConsumerState<MainShellScreen> {
       ),
     );
   }
+}
+
+class _FloatingTabBarItem {
+  final IconData icon;
+  final IconData selectedIcon;
+  final String label;
+
+  _FloatingTabBarItem({
+    required this.icon,
+    required this.selectedIcon,
+    required this.label,
+  });
 }
 
 class _PulsingWarningIcon extends StatefulWidget {
@@ -310,6 +279,7 @@ class _PulsingWarningIconState extends State<_PulsingWarningIcon>
 
   @override
   Widget build(BuildContext context) {
+    final vc = context.vecinalColors;
     return ScaleTransition(
       scale: Tween<double>(begin: 0.9, end: 1.15).animate(
         CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
@@ -317,13 +287,13 @@ class _PulsingWarningIconState extends State<_PulsingWarningIcon>
       child: Container(
         padding: const EdgeInsets.all(24),
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.2),
+          color: vc.emergencyIcon.withValues(alpha: 0.2),
           shape: BoxShape.circle,
-          border: Border.all(color: Colors.white, width: 2),
+          border: Border.all(color: vc.emergencyIcon, width: 2),
         ),
-        child: const Icon(
+        child: Icon(
           Icons.warning_amber_rounded,
-          color: Colors.white,
+          color: vc.emergencyIcon,
           size: 64,
         ),
       ),

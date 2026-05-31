@@ -63,19 +63,30 @@ class AuthFirebaseDatasource {
 
   Future<void> registerDeviceToken(String uid) async {
     try {
-      // Request permission including critical alerts
-      await _messaging.requestPermission(
+      // Request permission for notifications
+      final settings = await _messaging.requestPermission(
         alert: true,
         badge: true,
         sound: true,
-        criticalAlert: true,
       );
+      debugPrint('🔔 [Notifications] Permission status: ${settings.authorizationStatus}');
+
+      // Get APNs token for iOS diagnostics
+      if (defaultTargetPlatform == TargetPlatform.iOS) {
+        final apnsToken = await _messaging.getAPNSToken();
+        debugPrint('🔔 [Notifications] iOS APNs Token: $apnsToken');
+        if (apnsToken == null) {
+          debugPrint('⚠️ [Notifications] APNs Token is null. Push notifications will NOT arrive. Check Provisioning Profiles and capabilities in Xcode.');
+        }
+      }
 
       final token = await _messaging.getToken();
+      debugPrint('🔔 [Notifications] FCM Device Token: $token');
       if (token == null) return;
 
       // Subscribe to emergencies topic
       await _messaging.subscribeToTopic('emergencies');
+      debugPrint('🔔 [Notifications] Subscribed to topic: emergencies');
 
       await _firestore
           .collection('residents')
@@ -89,7 +100,7 @@ class AuthFirebaseDatasource {
         'isActive': true,
       }, SetOptions(merge: true));
     } catch (e) {
-      debugPrint('Error registering device token: $e');
+      debugPrint('❌ [Notifications] Error registering device token: $e');
     }
   }
 
@@ -176,11 +187,8 @@ class AuthFirebaseDatasource {
       'apns': {
         'payload': {
           'aps': {
-            'sound': {
-              'critical': 1,
-              'name': 'default',
-              'volume': 1.0,
-            },
+            'sound': 'default',
+            'interruption-level': 'time-sensitive',
           },
         },
       },

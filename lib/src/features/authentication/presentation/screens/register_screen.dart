@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hueyappanv1/src/core/theme/vecinal_theme.dart';
 import '../providers/auth_provider.dart';
 
 class RegisterScreen extends ConsumerStatefulWidget {
@@ -73,6 +74,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   Widget build(BuildContext context) {
     final authState = ref.watch(authControllerProvider);
     final isLoading = authState.isLoading;
+    final vc = context.vecinalColors;
 
     ref.listen<AsyncValue>(authControllerProvider, (previous, next) {
       if (next is AsyncError) {
@@ -80,9 +82,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(errorMsg),
-            backgroundColor: Colors.red[800],
+            backgroundColor: vc.destructive,
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(VecinalRadius.md)),
           ),
         );
       }
@@ -94,7 +96,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Color(0xFF1B5E20)),
+          icon: Icon(Icons.arrow_back, color: vc.primaryDefault),
           onPressed: () async {
             if (_isPreAuthenticated) {
               await ref.read(authControllerProvider.notifier).logout();
@@ -110,20 +112,21 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       ),
       body: Stack(
         children: [
+          // Background Gradient and Blobs
           const _BackgroundLayout(),
           Center(
             child: SingleChildScrollView(
               padding: const EdgeInsets.only(top: 100, left: 24, right: 24, bottom: 24),
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(24),
+                borderRadius: BorderRadius.circular(VecinalRadius.xl),
                 child: BackdropFilter(
                   filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                   child: Container(
-                    padding: const EdgeInsets.all(24.0),
+                    padding: const EdgeInsets.all(VecinalSpacing.xl),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.85),
-                      borderRadius: BorderRadius.circular(24),
-                      border: Border.all(color: Colors.white.withOpacity(0.4), width: 1.5),
+                      color: vc.surfaceCard.withValues(alpha: 0.85),
+                      borderRadius: BorderRadius.circular(VecinalRadius.xl),
+                      border: Border.all(color: vc.surfaceCard.withValues(alpha: 0.4), width: 1.5),
                     ),
                     child: Form(
                       key: _formKey,
@@ -132,13 +135,13 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         children: [
                           const _HeaderSection(),
                           const SizedBox(height: 24),
-                          _buildNameFields(isLoading),
+                          _buildNameFields(isLoading, vc),
                           const SizedBox(height: 16),
-                          _buildDropdowns(isLoading),
+                          _buildDropdowns(isLoading, vc),
                           const SizedBox(height: 16),
-                          _buildContactFields(isLoading),
+                          _buildContactFields(isLoading, vc),
                           const SizedBox(height: 24),
-                          _buildSubmitButton(isLoading),
+                          _buildSubmitButton(isLoading, vc),
                         ],
                       ),
                     ),
@@ -152,7 +155,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     );
   }
 
-  Widget _buildNameFields(bool isLoading) {
+  Widget _buildNameFields(bool isLoading, VecinalSemanticColors vc) {
     return Row(
       children: [
         Expanded(
@@ -161,8 +164,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             enabled: !isLoading,
             decoration: InputDecoration(
               labelText: 'Nombre',
-              prefixIcon: const Icon(Icons.person_outline, color: Color(0xFF2E7D32)),
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+              prefixIcon: Icon(Icons.person_outline, color: vc.primaryDefault),
             ),
             validator: (val) => val == null || val.trim().isEmpty ? 'Requerido' : null,
           ),
@@ -172,9 +174,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           child: TextFormField(
             controller: _lastNameController,
             enabled: !isLoading,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               labelText: 'Apellidos',
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
             ),
             validator: (val) => val == null || val.trim().isEmpty ? 'Requerido' : null,
           ),
@@ -183,7 +184,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     );
   }
 
-  Widget _buildDropdowns(bool isLoading) {
+  Widget _buildDropdowns(bool isLoading, VecinalSemanticColors vc) {
     return Column(
       children: [
         Row(
@@ -193,8 +194,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 initialValue: _selectedLot,
                 decoration: InputDecoration(
                   labelText: 'Lote',
-                  prefixIcon: const Icon(Icons.home_outlined, color: Color(0xFF2E7D32)),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                  prefixIcon: Icon(Icons.home_outlined, color: vc.primaryDefault),
                 ),
                 items: _lots.map((l) => DropdownMenuItem(value: l, child: Text(l))).toList(),
                 onChanged: isLoading ? null : (val) => setState(() => _selectedLot = val),
@@ -205,9 +205,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             Expanded(
               child: DropdownButtonFormField<String>(
                 initialValue: _selectedHouse,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Casa',
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                 ),
                 items: _houses.map((h) => DropdownMenuItem(value: h, child: Text(h))).toList(),
                 onChanged: isLoading ? null : (val) => setState(() => _selectedHouse = val),
@@ -221,19 +220,17 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           initialValue: _selectedResidentType,
           decoration: InputDecoration(
             labelText: 'Tipo de Residente',
-            prefixIcon: const Icon(Icons.assignment_ind_outlined, color: Color(0xFF2E7D32)),
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+            prefixIcon: Icon(Icons.assignment_ind_outlined, color: vc.primaryDefault),
           ),
           items: _residentTypes.map((t) => DropdownMenuItem(value: t, child: Text(t))).toList(),
           onChanged: isLoading ? null : (val) => setState(() => _selectedResidentType = val),
           validator: (val) => val == null ? 'Requerido' : null,
         ),
-
       ],
     );
   }
 
-  Widget _buildContactFields(bool isLoading) {
+  Widget _buildContactFields(bool isLoading, VecinalSemanticColors vc) {
     return Column(
       children: [
         TextFormField(
@@ -242,8 +239,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           keyboardType: TextInputType.phone,
           decoration: InputDecoration(
             labelText: 'Teléfono Móvil',
-            prefixIcon: const Icon(Icons.phone_android_outlined, color: Color(0xFF2E7D32)),
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+            prefixIcon: Icon(Icons.phone_android_outlined, color: vc.primaryDefault),
           ),
           validator: (val) {
             if (val == null || val.isEmpty) return 'El teléfono es requerido';
@@ -258,8 +254,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           keyboardType: TextInputType.emailAddress,
           decoration: InputDecoration(
             labelText: 'Correo Electrónico',
-            prefixIcon: const Icon(Icons.email_outlined, color: Color(0xFF2E7D32)),
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+            prefixIcon: Icon(Icons.email_outlined, color: vc.primaryDefault),
           ),
           validator: (val) {
             if (val == null || val.trim().isEmpty) return 'El correo es requerido';
@@ -274,8 +269,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           obscureText: true,
           decoration: InputDecoration(
             labelText: 'Contraseña',
-            prefixIcon: const Icon(Icons.lock_outline, color: Color(0xFF2E7D32)),
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+            prefixIcon: Icon(Icons.lock_outline, color: vc.primaryDefault),
           ),
           validator: (val) {
             if (val == null || val.isEmpty) return 'La contraseña es requerida';
@@ -287,23 +281,23 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     );
   }
 
-  Widget _buildSubmitButton(bool isLoading) {
+  Widget _buildSubmitButton(bool isLoading, VecinalSemanticColors vc) {
     return SizedBox(
       width: double.infinity,
       height: 54,
       child: ElevatedButton(
         onPressed: isLoading ? null : _submitForm,
         style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFF1B5E20),
-          foregroundColor: Colors.white,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          backgroundColor: vc.primaryDefault,
+          foregroundColor: vc.textOnPrimary,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(VecinalRadius.md)),
           elevation: 0,
         ),
         child: isLoading
-            ? const SizedBox(
+            ? SizedBox(
                 width: 24,
                 height: 24,
-                child: CircularProgressIndicator(strokeWidth: 2.5, color: Colors.white),
+                child: CircularProgressIndicator(strokeWidth: 2.5, color: vc.textOnPrimary),
               )
             : const Text(
                 'Registrarse',
@@ -319,10 +313,11 @@ class _BackgroundLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final vc = context.vecinalColors;
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [Color(0xFFE8F5E9), Color(0xFFC8E6C9), Color(0xFF81C784)],
+          colors: [vc.primaryContainer, vc.surfaceSecondary, vc.primaryLight],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -334,7 +329,7 @@ class _BackgroundLayout extends StatelessWidget {
             left: -50,
             child: CircleAvatar(
               radius: 150,
-              backgroundColor: const Color(0xFF2E7D32).withOpacity(0.25),
+              backgroundColor: vc.primaryDark.withValues(alpha: 0.25),
             ),
           ),
           Positioned(
@@ -342,7 +337,7 @@ class _BackgroundLayout extends StatelessWidget {
             right: -50,
             child: CircleAvatar(
               radius: 180,
-              backgroundColor: const Color(0xFF1B5E20).withOpacity(0.2),
+              backgroundColor: vc.primaryDefault.withValues(alpha: 0.2),
             ),
           ),
         ],
@@ -356,20 +351,20 @@ class _HeaderSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
+    final vc = context.vecinalColors;
+    return Column(
       children: [
         CircleAvatar(
           radius: 28,
-          backgroundColor: Color(0xFF1B5E20),
-          child: Icon(Icons.shield, size: 30, color: Colors.white),
+          backgroundColor: vc.primaryDefault,
+          child: Icon(Icons.shield, size: 30, color: vc.textOnPrimary),
         ),
-        SizedBox(height: 12),
+        const SizedBox(height: 12),
         Text(
           'Registro de Residente',
-          style: TextStyle(
-            fontSize: 22,
+          style: VecinalTextStyles.headlineMedium.copyWith(
+            color: vc.primaryDefault,
             fontWeight: FontWeight.bold,
-            color: Color(0xFF1B5E20),
           ),
         ),
       ],

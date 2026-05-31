@@ -1,32 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:hueyappanv1/src/core/theme/vecinal_theme.dart';
 
 class PaymentsTab extends StatelessWidget {
   const PaymentsTab({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final vc = context.vecinalColors;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'Maintenance Fees',
-          style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF1B5E20)),
+          style: VecinalTextStyles.headlineSmall.copyWith(
+            fontWeight: FontWeight.bold,
+            color: vc.primaryDefault,
+          ),
         ),
-        backgroundColor: Colors.white,
-        elevation: 0,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(24.0),
+        padding: const EdgeInsets.all(VecinalSpacing.xl),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildBalanceCard(),
+            _buildBalanceCard(vc),
             const SizedBox(height: 24),
-            const Text(
+            Text(
               'Payment History',
-              style: TextStyle(
-                fontSize: 18,
+              style: VecinalTextStyles.headlineSmall.copyWith(
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF263238),
+                color: vc.textPrimary,
               ),
             ),
             const SizedBox(height: 12),
@@ -34,11 +37,13 @@ class PaymentsTab extends StatelessWidget {
               'April 2026 Maintenance Fee',
               '\$120.00',
               'Paid on Apr 04, 2026',
+              vc,
             ),
             _buildHistoryItem(
               'March 2026 Maintenance Fee',
               '\$120.00',
               'Paid on Mar 02, 2026',
+              vc,
             ),
           ],
         ),
@@ -46,37 +51,39 @@ class PaymentsTab extends StatelessWidget {
     );
   }
 
-  Widget _buildBalanceCard() {
+  Widget _buildBalanceCard(VecinalSemanticColors vc) {
     return Card(
       elevation: 0,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      color: const Color(0xFFE8F5E9),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(VecinalRadius.lg),
+        side: BorderSide(color: vc.paymentBorder, width: 0.5),
+      ),
+      color: vc.paymentBg,
       child: Padding(
-        padding: const EdgeInsets.all(24.0),
+        padding: const EdgeInsets.all(VecinalSpacing.xl),
         child: Column(
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
+                Text(
                   'May 2026 Dues',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: Color(0xFF1B5E20),
+                  style: VecinalTextStyles.bodyLarge.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: vc.paymentText,
                   ),
                 ),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF2E7D32),
-                    borderRadius: BorderRadius.circular(12),
+                    color: vc.paymentSuccessBg,
+                    borderRadius: BorderRadius.circular(VecinalRadius.sm),
+                    border: Border.all(color: vc.paymentSuccessText.withValues(alpha: 0.3), width: 1),
                   ),
-                  child: const Text(
+                  child: Text(
                     'PAID',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 12,
+                    style: VecinalTextStyles.labelSmall.copyWith(
+                      color: vc.paymentSuccessText,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -84,19 +91,18 @@ class PaymentsTab extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 16),
-            const Row(
+            Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   'Amount Paid',
-                  style: TextStyle(fontSize: 14, color: Color(0xFF558B2F)),
+                  style: VecinalTextStyles.bodyMedium.copyWith(color: vc.paymentText.withValues(alpha: 0.8)),
                 ),
                 Text(
                   '\$120.00 USD',
-                  style: TextStyle(
-                    fontSize: 20,
+                  style: VecinalTextStyles.headlineMedium.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFF1B5E20),
+                    color: vc.paymentText,
                   ),
                 ),
               ],
@@ -107,27 +113,29 @@ class PaymentsTab extends StatelessWidget {
     );
   }
 
-  Widget _buildHistoryItem(String title, String amount, String date) {
+  Widget _buildHistoryItem(String title, String amount, String date, VecinalSemanticColors vc) {
     return Card(
       elevation: 0,
       margin: const EdgeInsets.only(bottom: 12),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: Colors.grey[200]!),
+        borderRadius: BorderRadius.circular(VecinalRadius.md),
+        side: BorderSide(color: vc.borderDefault, width: 0.5),
       ),
       child: ListTile(
-        leading: const Icon(Icons.check_circle, color: Color(0xFF2E7D32)),
+        leading: Icon(Icons.check_circle, color: vc.paymentSuccessText),
         title: Text(
           title,
-          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+          style: VecinalTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.w600),
         ),
-        subtitle: Text(date, style: TextStyle(fontSize: 12, color: Colors.grey[500])),
+        subtitle: Text(
+          date,
+          style: VecinalTextStyles.bodySmall.copyWith(color: vc.textHint),
+        ),
         trailing: Text(
           amount,
-          style: const TextStyle(
-            fontSize: 14,
+          style: VecinalTextStyles.labelLarge.copyWith(
             fontWeight: FontWeight.bold,
-            color: Color(0xFF263238),
+            color: vc.textPrimary,
           ),
         ),
       ),

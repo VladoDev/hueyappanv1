@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hueyappanv1/src/core/theme/vecinal_theme.dart';
 import '../providers/auth_provider.dart';
 
 class ProfileTab extends ConsumerWidget {
@@ -19,74 +20,77 @@ class ProfileTab extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final controller = ref.watch(authControllerProvider);
+    final vc = context.vecinalColors;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'My Profile',
-          style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF1B5E20)),
+          style: VecinalTextStyles.headlineSmall.copyWith(
+            fontWeight: FontWeight.bold,
+            color: vc.primaryDefault,
+          ),
         ),
-        backgroundColor: Colors.white,
-        elevation: 0,
       ),
       body: ListView(
-        padding: const EdgeInsets.all(24.0),
+        padding: const EdgeInsets.all(VecinalSpacing.xl),
         children: [
-          _buildAvatarSection(),
+          _buildAvatarSection(vc),
           const SizedBox(height: 32),
-          const Text(
+          Text(
             'Account Information',
-            style: TextStyle(
-              fontSize: 16,
+            style: VecinalTextStyles.headlineSmall.copyWith(
               fontWeight: FontWeight.bold,
-              color: Color(0xFF263238),
+              color: vc.textPrimary,
             ),
           ),
           const SizedBox(height: 12),
-          _buildInfoRow('Housing Unit', 'Unit $housingUnit'),
-          _buildInfoRow('Resident Status', status),
+          _buildInfoRow('Housing Unit', 'Unit $housingUnit', vc),
+          _buildInfoRow('Resident Status', status, vc),
           const SizedBox(height: 48),
-          _buildSignOutButton(ref, controller.isLoading),
+          _buildSignOutButton(ref, controller.isLoading, vc),
         ],
       ),
     );
   }
 
-  Widget _buildAvatarSection() {
+  Widget _buildAvatarSection(VecinalSemanticColors vc) {
     return Center(
       child: Column(
         children: [
-          const CircleAvatar(
+          CircleAvatar(
             radius: 40,
-            backgroundColor: Color(0xFFC8E6C9),
-            child: Icon(Icons.person, size: 48, color: Color(0xFF2E7D32)),
+            backgroundColor: vc.primaryContainer,
+            child: Icon(Icons.person, size: 48, color: vc.primaryDefault),
           ),
           const SizedBox(height: 16),
           Text(
             name,
-            style: const TextStyle(
-              fontSize: 20,
+            style: VecinalTextStyles.headlineMedium.copyWith(
               fontWeight: FontWeight.bold,
-              color: Color(0xFF263238),
+              color: vc.textPrimary,
             ),
           ),
           const SizedBox(height: 4),
-          Text(email, style: TextStyle(fontSize: 14, color: Colors.grey[600])),
+          Text(
+            email,
+            style: VecinalTextStyles.bodyMedium.copyWith(color: vc.textSecondary),
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildSignOutButton(WidgetRef ref, bool isLoading) {
+  Widget _buildSignOutButton(WidgetRef ref, bool isLoading, VecinalSemanticColors vc) {
     return ElevatedButton.icon(
       onPressed: isLoading
           ? null
           : () => ref.read(authControllerProvider.notifier).logout(),
       icon: isLoading
-          ? const SizedBox(
+          ? SizedBox(
               width: 18,
               height: 18,
-              child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+              child: CircularProgressIndicator(strokeWidth: 2, color: vc.textOnPrimary),
             )
           : const Icon(Icons.logout),
       label: const Text(
@@ -94,22 +98,22 @@ class ProfileTab extends ConsumerWidget {
         style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
       ),
       style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.red[700],
-        foregroundColor: Colors.white,
+        backgroundColor: vc.destructive,
+        foregroundColor: vc.textOnPrimary,
         padding: const EdgeInsets.symmetric(vertical: 16),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(VecinalRadius.md)),
         elevation: 0,
       ),
     );
   }
 
-  Widget _buildInfoRow(String label, String value) {
+  Widget _buildInfoRow(String label, String value, VecinalSemanticColors vc) {
     return Card(
       elevation: 0,
       margin: const EdgeInsets.only(bottom: 12),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: Colors.grey[200]!),
+        borderRadius: BorderRadius.circular(VecinalRadius.md),
+        side: BorderSide(color: vc.borderDefault, width: 0.5),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
@@ -118,18 +122,16 @@ class ProfileTab extends ConsumerWidget {
           children: [
             Text(
               label,
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey[600],
+              style: VecinalTextStyles.bodyMedium.copyWith(
+                color: vc.textSecondary,
                 fontWeight: FontWeight.w500,
               ),
             ),
             Text(
               value,
-              style: const TextStyle(
-                fontSize: 14,
+              style: VecinalTextStyles.bodyMedium.copyWith(
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF263238),
+                color: vc.textPrimary,
               ),
             ),
           ],

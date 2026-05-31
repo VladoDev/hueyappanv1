@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hueyappanv1/src/core/theme/vecinal_theme.dart';
 import '../providers/auth_provider.dart';
 
 class HomeTab extends ConsumerWidget {
@@ -14,73 +15,77 @@ class HomeTab extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final vc = context.vecinalColors;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'HueyAPPan',
-          style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF1B5E20)),
+          style: VecinalTextStyles.headlineSmall.copyWith(
+            fontWeight: FontWeight.bold,
+            color: vc.primaryDefault,
+          ),
         ),
-        backgroundColor: Colors.white,
-        elevation: 0,
         actions: [
           Container(
             margin: const EdgeInsets.only(right: 16),
             decoration: BoxDecoration(
-              color: Colors.red[50]?.withValues(alpha: 0.8) ?? Colors.red[50],
+              color: vc.emergencyBg,
               shape: BoxShape.circle,
-              border: Border.all(color: Colors.red[200]!, width: 1.5),
+              border: Border.all(color: vc.emergencyBorder, width: 1.5),
             ),
             child: IconButton(
-              icon: const Icon(Icons.campaign, color: Colors.red, size: 24),
+              icon: Icon(Icons.campaign, color: vc.emergencyIcon, size: 24),
               tooltip: 'Activar Alerta de Emergencia',
-              onPressed: () => _showEmergencyDialog(context, ref),
+              onPressed: () => _showEmergencyDialog(context, ref, vc),
             ),
           ),
         ],
       ),
       body: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xFFF1F8E9), Color(0xFFFFFFFF)],
+            colors: [vc.primaryContainer.withValues(alpha: 0.15), vc.surfaceTertiary],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
         ),
         child: SafeArea(
           child: ListView(
-            padding: const EdgeInsets.all(24.0),
-          children: [
-            _buildWelcomeHeader(),
-            const SizedBox(height: 32),
-            _buildFeatureCard(),
-            const SizedBox(height: 24),
-            const Text(
-              'Recent Activity',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF263238),
+            padding: const EdgeInsets.all(VecinalSpacing.xl),
+            children: [
+              _buildWelcomeHeader(vc),
+              const SizedBox(height: 32),
+              _buildFeatureCard(vc),
+              const SizedBox(height: 24),
+              Text(
+                'Recent Activity',
+                style: VecinalTextStyles.headlineSmall.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: vc.textPrimary,
+                ),
               ),
-            ),
-            const SizedBox(height: 12),
-            _buildActivityItem(
-              'Emergency system maintenance scheduled for next Saturday.',
-              '1h ago',
-              Icons.build_circle,
-            ),
-            _buildActivityItem(
-              'Monthly resident assembly meeting minutes are uploaded.',
-              '1d ago',
-              Icons.description,
-            ),
-          ],
+              const SizedBox(height: 12),
+              _buildActivityItem(
+                'Emergency system maintenance scheduled for next Saturday.',
+                '1h ago',
+                Icons.build_circle,
+                vc,
+              ),
+              _buildActivityItem(
+                'Monthly resident assembly meeting minutes are uploaded.',
+                '1d ago',
+                Icons.description,
+                vc,
+              ),
+            ],
+          ),
         ),
       ),
-    ),
-  );
-}
+    );
+  }
 
-  Widget _buildWelcomeHeader() {
+  Widget _buildWelcomeHeader(VecinalSemanticColors vc) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -90,9 +95,8 @@ class HomeTab extends ConsumerWidget {
             children: [
               Text(
                 'Welcome back,',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.grey[600],
+                style: VecinalTextStyles.bodyMedium.copyWith(
+                  color: vc.textSecondary,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -101,10 +105,9 @@ class HomeTab extends ConsumerWidget {
                 residentName,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  fontSize: 24,
+                style: VecinalTextStyles.headlineLarge.copyWith(
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF1B5E20),
+                  color: vc.primaryDefault,
                 ),
               ),
             ],
@@ -114,20 +117,19 @@ class HomeTab extends ConsumerWidget {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           decoration: BoxDecoration(
-            color: const Color(0xFFE8F5E9),
-            borderRadius: BorderRadius.circular(20),
+            color: vc.primaryContainer,
+            borderRadius: BorderRadius.circular(VecinalRadius.full),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.home, size: 16, color: Color(0xFF2E7D32)),
+              Icon(Icons.home, size: 16, color: vc.onPrimaryContainer),
               const SizedBox(width: 4),
               Text(
                 'Unit $housingUnit',
-                style: const TextStyle(
-                  fontSize: 12,
+                style: VecinalTextStyles.labelSmall.copyWith(
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF2E7D32),
+                  color: vc.onPrimaryContainer,
                 ),
               ),
             ],
@@ -137,25 +139,24 @@ class HomeTab extends ConsumerWidget {
     );
   }
 
-  Widget _buildFeatureCard() {
+  Widget _buildFeatureCard(VecinalSemanticColors vc) {
     return Card(
       elevation: 0,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      color: const Color(0xFF1B5E20),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(VecinalRadius.lg)),
+      color: vc.primaryDark,
       child: Padding(
-        padding: const EdgeInsets.all(24.0),
+        padding: const EdgeInsets.all(VecinalSpacing.xl),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Row(
+            Row(
               children: [
-                Icon(Icons.shield, color: Colors.white, size: 28),
-                SizedBox(width: 12),
+                Icon(Icons.shield, color: vc.textOnPrimary, size: 28),
+                const SizedBox(width: 12),
                 Text(
                   'Neighborhood Overview',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
+                  style: VecinalTextStyles.headlineMedium.copyWith(
+                    color: vc.textOnPrimary,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -164,18 +165,16 @@ class HomeTab extends ConsumerWidget {
             const SizedBox(height: 16),
             Text(
               'Convento Hueyapan Safe Community',
-              style: TextStyle(
-                color: Colors.white.withOpacity(0.8),
-                fontSize: 14,
+              style: VecinalTextStyles.bodyMedium.copyWith(
+                color: vc.textOnPrimary.withValues(alpha: 0.8),
                 fontWeight: FontWeight.w500,
               ),
             ),
             const SizedBox(height: 8),
             Text(
               'All systems operational. Security is monitoring access 24/7.',
-              style: TextStyle(
-                color: Colors.white.withOpacity(0.9),
-                fontSize: 14,
+              style: VecinalTextStyles.bodyLarge.copyWith(
+                color: vc.textOnPrimary.withValues(alpha: 0.9),
                 height: 1.4,
               ),
             ),
@@ -185,113 +184,121 @@ class HomeTab extends ConsumerWidget {
     );
   }
 
-  Widget _buildActivityItem(String text, String time, IconData icon) {
+  Widget _buildActivityItem(String text, String time, IconData icon, VecinalSemanticColors vc) {
     return Card(
       elevation: 0,
       margin: const EdgeInsets.only(bottom: 12),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: Colors.grey[200]!),
-      ),
       child: ListTile(
         leading: CircleAvatar(
-          backgroundColor: const Color(0xFFE8F5E9),
-          child: Icon(icon, color: const Color(0xFF2E7D32)),
+          backgroundColor: vc.primaryContainer,
+          child: Icon(icon, color: vc.onPrimaryContainer),
         ),
         title: Text(
           text,
-          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+          style: VecinalTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.w500),
         ),
         subtitle: Padding(
           padding: const EdgeInsets.only(top: 4.0),
           child: Text(
             time,
-            style: TextStyle(fontSize: 12, color: Colors.grey[500]),
+            style: VecinalTextStyles.bodySmall.copyWith(color: vc.textHint),
           ),
         ),
       ),
     );
   }
 
-  void _showEmergencyDialog(BuildContext context, WidgetRef ref) {
+  void _showEmergencyDialog(BuildContext context, WidgetRef ref, VecinalSemanticColors vc) {
+    bool isDialogLoading = false;
+
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          title: const Row(
-            children: [
-              Icon(Icons.warning_amber_rounded, color: Colors.red, size: 28),
-              SizedBox(width: 8),
-              Text(
-                'Alerta de Emergencia',
-                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red),
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Row(
+                children: [
+                  Icon(Icons.warning_amber_rounded, color: vc.destructive, size: 28),
+                  const SizedBox(width: 8),
+                  Text(
+                    'Alerta de Emergencia',
+                    style: TextStyle(fontWeight: FontWeight.bold, color: vc.destructive),
+                  ),
+                ],
               ),
-            ],
-          ),
-          content: const Text(
-            '¿Estás seguro de que deseas activar la alerta de emergencia?\n\n'
-            'Esta acción enviará una notificación de alerta crítica con sonido a todos los residentes de la comunidad.',
-            style: TextStyle(fontSize: 15),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Cancelar', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w600)),
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                Navigator.of(context).pop();
-                // Show loading indicator
-                showDialog(
-                  context: context,
-                  barrierDismissible: false,
-                  builder: (context) => const Center(child: CircularProgressIndicator()),
-                );
+              content: isDialogLoading
+                  ? SizedBox(
+                      height: 100,
+                      child: Center(
+                        child: CircularProgressIndicator(color: vc.destructive),
+                      ),
+                    )
+                  : const Text(
+                      '¿Estás seguro de que deseas activar la alerta de emergencia?\n\n'
+                      'Esta acción enviará una notificación de alerta crítica con sonido a todos los residentes de la comunidad.',
+                      style: TextStyle(fontSize: 15),
+                    ),
+              actions: isDialogLoading
+                  ? null
+                  : [
+                      TextButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        child: Text('Cancelar', style: TextStyle(color: vc.textSecondary, fontWeight: FontWeight.w600)),
+                      ),
+                      ElevatedButton(
+                        onPressed: () async {
+                          setState(() {
+                            isDialogLoading = true;
+                          });
 
-                try {
-                  final datasource = ref.read(authFirebaseDatasourceProvider);
-                  final currentUser = datasource.currentUser;
-                  if (currentUser != null) {
-                    final profile = await datasource.getResidentProfile(currentUser.uid);
-                    final name = profile?.name ?? currentUser.email ?? 'Vecino';
-                    await datasource.triggerEmergencyAlarm(currentUser.uid, name);
-                  }
-                  
-                  if (context.mounted) {
-                    Navigator.of(context).pop(); // Dismiss loading
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: const Text('¡Alerta de emergencia activada con éxito!'),
-                        backgroundColor: Colors.red[800],
-                        behavior: SnackBarBehavior.floating,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                          try {
+                            final datasource = ref.read(authFirebaseDatasourceProvider);
+                            final currentUser = datasource.currentUser;
+                            if (currentUser != null) {
+                              final profile = await datasource.getResidentProfile(currentUser.uid);
+                              final name = profile?.name ?? currentUser.email ?? 'Vecino';
+                              await datasource.triggerEmergencyAlarm(currentUser.uid, name);
+                            }
+                            
+                            if (context.mounted) {
+                              Navigator.of(context).pop(); // Cerrar el diálogo
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: const Text('¡Alerta de emergencia activada con éxito!'),
+                                  backgroundColor: vc.destructive,
+                                  behavior: SnackBarBehavior.floating,
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(VecinalRadius.md)),
+                                ),
+                              );
+                            }
+                          } catch (e) {
+                            if (context.mounted) {
+                              setState(() {
+                                isDialogLoading = false;
+                              });
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Error al activar la alarma: $e'),
+                                  backgroundColor: vc.surfacePrimary,
+                                  behavior: SnackBarBehavior.floating,
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(VecinalRadius.md)),
+                                ),
+                              );
+                            }
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: vc.destructive,
+                          foregroundColor: vc.textOnPrimary,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(VecinalRadius.md)),
+                        ),
+                        child: const Text('Activar Alarma', style: TextStyle(fontWeight: FontWeight.bold)),
                       ),
-                    );
-                  }
-                } catch (e) {
-                  if (context.mounted) {
-                    Navigator.of(context).pop(); // Dismiss loading
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('Error al activar la alarma: $e'),
-                        backgroundColor: Colors.black87,
-                        behavior: SnackBarBehavior.floating,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                      ),
-                    );
-                  }
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red[800],
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-              ),
-              child: const Text('Activar Alarma', style: TextStyle(fontWeight: FontWeight.bold)),
-            ),
-          ],
+                    ],
+            );
+          },
         );
       },
     );

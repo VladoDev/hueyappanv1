@@ -6,6 +6,10 @@ import '../../features/authentication/presentation/providers/auth_provider.dart'
 import '../../features/authentication/presentation/screens/login_screen.dart';
 import '../../features/authentication/presentation/screens/register_screen.dart';
 import '../../features/authentication/presentation/screens/main_shell_screen.dart';
+import '../../features/authentication/presentation/widgets/home_tab.dart';
+import '../../features/authentication/presentation/widgets/announcements_tab.dart';
+import '../../features/authentication/presentation/widgets/payments_tab.dart';
+import '../../features/authentication/presentation/widgets/profile_tab.dart';
 
 class GoRouterRefreshStream extends ChangeNotifier {
   late final StreamSubscription<dynamic> _subscription;
@@ -72,21 +76,61 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/register',
         builder: (context, state) => const RegisterScreen(),
       ),
-      GoRoute(
-        path: '/home',
-        builder: (context, state) => const MainShellScreen(initialIndex: 0),
-      ),
-      GoRoute(
-        path: '/announcements',
-        builder: (context, state) => const MainShellScreen(initialIndex: 1),
-      ),
-      GoRoute(
-        path: '/payments',
-        builder: (context, state) => const MainShellScreen(initialIndex: 2),
-      ),
-      GoRoute(
-        path: '/profile',
-        builder: (context, state) => const MainShellScreen(initialIndex: 3),
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) {
+          return MainShellScreen(navigationShell: navigationShell);
+        },
+        branches: [
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/home',
+                builder: (context, state) => Consumer(
+                  builder: (context, ref, child) {
+                    final user = ref.watch(authStateProvider).value;
+                    if (user == null) return const SizedBox.shrink();
+                    return HomeTab(residentName: user.name, housingUnit: user.housingUnit);
+                  },
+                ),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/announcements',
+                builder: (context, state) => const AnnouncementsTab(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/payments',
+                builder: (context, state) => const PaymentsTab(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/profile',
+                builder: (context, state) => Consumer(
+                  builder: (context, ref, child) {
+                    final user = ref.watch(authStateProvider).value;
+                    if (user == null) return const SizedBox.shrink();
+                    return ProfileTab(
+                      name: user.name,
+                      email: user.email,
+                      housingUnit: user.housingUnit,
+                      status: user.accountStatus,
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     ],
   );
