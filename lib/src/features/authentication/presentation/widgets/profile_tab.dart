@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hueyappanv1/l10n/app_localizations.dart';
 import 'package:hueyappanv1/src/core/theme/vecinal_theme.dart';
 import '../providers/auth_provider.dart';
 
@@ -21,11 +22,12 @@ class ProfileTab extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final controller = ref.watch(authControllerProvider);
     final vc = context.vecinalColors;
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'My Profile',
+          l10n.myProfile,
           style: VecinalTextStyles.headlineSmall.copyWith(
             fontWeight: FontWeight.bold,
             color: vc.primaryDefault,
@@ -38,17 +40,17 @@ class ProfileTab extends ConsumerWidget {
           _buildAvatarSection(vc),
           const SizedBox(height: 32),
           Text(
-            'Account Information',
+            l10n.accountInformation,
             style: VecinalTextStyles.headlineSmall.copyWith(
               fontWeight: FontWeight.bold,
               color: vc.textPrimary,
             ),
           ),
           const SizedBox(height: 12),
-          _buildInfoRow('Housing Unit', 'Unit $housingUnit', vc),
-          _buildInfoRow('Resident Status', status, vc),
+          _buildInfoRow(l10n.housingUnitLabel, l10n.housingUnitValue(housingUnit), vc),
+          _buildInfoRow(l10n.residentStatusLabel, status, vc),
           const SizedBox(height: 48),
-          _buildSignOutButton(ref, controller.isLoading, vc),
+          _buildSignOutButton(context, ref, controller.isLoading, vc),
         ],
       ),
     );
@@ -81,7 +83,8 @@ class ProfileTab extends ConsumerWidget {
     );
   }
 
-  Widget _buildSignOutButton(WidgetRef ref, bool isLoading, VecinalSemanticColors vc) {
+  Widget _buildSignOutButton(BuildContext context, WidgetRef ref, bool isLoading, VecinalSemanticColors vc) {
+    final l10n = AppLocalizations.of(context)!;
     return ElevatedButton.icon(
       onPressed: isLoading
           ? null
@@ -93,9 +96,9 @@ class ProfileTab extends ConsumerWidget {
               child: CircularProgressIndicator(strokeWidth: 2, color: vc.textOnPrimary),
             )
           : const Icon(Icons.logout),
-      label: const Text(
-        'Sign Out',
-        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+      label: Text(
+        l10n.signOut,
+        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
       ),
       style: ElevatedButton.styleFrom(
         backgroundColor: vc.destructive,

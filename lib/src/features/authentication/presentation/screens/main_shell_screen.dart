@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hueyappanv1/l10n/app_localizations.dart';
 import 'package:hueyappanv1/src/core/theme/vecinal_theme.dart';
 import '../providers/auth_provider.dart';
 import '../providers/emergency_provider.dart';
@@ -67,26 +68,27 @@ class _MainShellScreenState extends ConsumerState<MainShellScreen> {
     final emergencyState = ref.watch(emergencyProvider);
     final hasActiveAlert = emergencyState.activeEmergency != null;
 
+    final l10n = AppLocalizations.of(context)!;
     final List<_FloatingTabBarItem> navItems = [
       _FloatingTabBarItem(
         icon: Icons.dashboard_outlined,
         selectedIcon: Icons.dashboard,
-        label: 'Home',
+        label: l10n.navHome,
       ),
       _FloatingTabBarItem(
         icon: Icons.campaign_outlined,
         selectedIcon: Icons.campaign,
-        label: 'Noticias',
+        label: l10n.navNews,
       ),
       _FloatingTabBarItem(
         icon: Icons.account_balance_wallet_outlined,
         selectedIcon: Icons.account_balance_wallet,
-        label: 'Pagos',
+        label: l10n.navPayments,
       ),
       _FloatingTabBarItem(
         icon: Icons.person_outline,
         selectedIcon: Icons.person,
-        label: 'Perfil',
+        label: l10n.navProfile,
       ),
     ];
 
@@ -179,6 +181,7 @@ class _MainShellScreenState extends ConsumerState<MainShellScreen> {
   }
 
   Widget _buildEmergencyOverlay(String currentUid, VecinalSemanticColors vc, Map<String, dynamic>? activeEmergency) {
+    final l10n = AppLocalizations.of(context)!;
     final senderName = activeEmergency?['triggeredByName'] ?? 'Un residente';
     final id = activeEmergency?['id'] ?? '';
 
@@ -196,7 +199,7 @@ class _MainShellScreenState extends ConsumerState<MainShellScreen> {
                   const _PulsingWarningIcon(),
                   const SizedBox(height: 32),
                   Text(
-                    '¡ALERTA DE EMERGENCIA!',
+                    l10n.emergencyOverlayTitle,
                     textAlign: TextAlign.center,
                     style: VecinalTextStyles.displayLarge.copyWith(
                       color: vc.emergencyText,
@@ -205,7 +208,7 @@ class _MainShellScreenState extends ConsumerState<MainShellScreen> {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'El residente $senderName ha activado una alerta de emergencia en la comunidad.',
+                    l10n.emergencyOverlayBody(senderName),
                     textAlign: TextAlign.center,
                     style: VecinalTextStyles.bodyLarge.copyWith(
                       color: vc.emergencyText.withValues(alpha: 0.8),
@@ -217,9 +220,9 @@ class _MainShellScreenState extends ConsumerState<MainShellScreen> {
                       ref.read(emergencyProvider.notifier).silenceAlarm(id);
                     },
                     icon: Icon(Icons.volume_off, color: vc.destructive),
-                    label: const Text(
-                      'Silenciar Alarma',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    label: Text(
+                      l10n.silenceAlarm,
+                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: vc.surfacePrimary,

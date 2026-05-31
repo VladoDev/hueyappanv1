@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hueyappanv1/l10n/app_localizations.dart';
 import 'package:hueyappanv1/src/core/theme/vecinal_theme.dart';
 
 class PaymentsTab extends StatelessWidget {
@@ -7,11 +8,12 @@ class PaymentsTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final vc = context.vecinalColors;
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Maintenance Fees',
+          l10n.maintenanceFees,
           style: VecinalTextStyles.headlineSmall.copyWith(
             fontWeight: FontWeight.bold,
             color: vc.primaryDefault,
@@ -23,10 +25,10 @@ class PaymentsTab extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildBalanceCard(vc),
+            _buildBalanceCard(context, vc),
             const SizedBox(height: 24),
             Text(
-              'Payment History',
+              l10n.paymentHistory,
               style: VecinalTextStyles.headlineSmall.copyWith(
                 fontWeight: FontWeight.bold,
                 color: vc.textPrimary,
@@ -34,15 +36,15 @@ class PaymentsTab extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             _buildHistoryItem(
-              'April 2026 Maintenance Fee',
-              '\$120.00',
-              'Paid on Apr 04, 2026',
+              l10n.aprilFee,
+              l10n.amountPaidValue('120.00'),
+              l10n.aprilFeeDate,
               vc,
             ),
             _buildHistoryItem(
-              'March 2026 Maintenance Fee',
-              '\$120.00',
-              'Paid on Mar 02, 2026',
+              l10n.marchFee,
+              l10n.amountPaidValue('120.00'),
+              l10n.marchFeeDate,
               vc,
             ),
           ],
@@ -51,7 +53,8 @@ class PaymentsTab extends StatelessWidget {
     );
   }
 
-  Widget _buildBalanceCard(VecinalSemanticColors vc) {
+  Widget _buildBalanceCard(BuildContext context, VecinalSemanticColors vc) {
+    final l10n = AppLocalizations.of(context)!;
     return Card(
       elevation: 0,
       shape: RoundedRectangleBorder(
@@ -67,7 +70,7 @@ class PaymentsTab extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'May 2026 Dues',
+                  l10n.mayDues,
                   style: VecinalTextStyles.bodyLarge.copyWith(
                     fontWeight: FontWeight.bold,
                     color: vc.paymentText,
@@ -81,7 +84,7 @@ class PaymentsTab extends StatelessWidget {
                     border: Border.all(color: vc.paymentSuccessText.withValues(alpha: 0.3), width: 1),
                   ),
                   child: Text(
-                    'PAID',
+                    l10n.paidStatus,
                     style: VecinalTextStyles.labelSmall.copyWith(
                       color: vc.paymentSuccessText,
                       fontWeight: FontWeight.bold,
@@ -95,11 +98,11 @@ class PaymentsTab extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Amount Paid',
+                  l10n.amountPaid,
                   style: VecinalTextStyles.bodyMedium.copyWith(color: vc.paymentText.withValues(alpha: 0.8)),
                 ),
                 Text(
-                  '\$120.00 USD',
+                  l10n.amountPaidValue('120.00'),
                   style: VecinalTextStyles.headlineMedium.copyWith(
                     fontWeight: FontWeight.bold,
                     color: vc.paymentText,

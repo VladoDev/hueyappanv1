@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import '../models/resident_model.dart';
@@ -10,14 +12,17 @@ class AuthFirebaseDatasource {
   final FirebaseAuth _auth;
   final FirebaseFirestore _firestore;
   final FirebaseMessaging _messaging;
+  final FirebaseAnalytics _analytics;
 
   AuthFirebaseDatasource({
     FirebaseAuth? auth,
     FirebaseFirestore? firestore,
     FirebaseMessaging? messaging,
+    FirebaseAnalytics? analytics,
   })  : _auth = auth ?? FirebaseAuth.instance,
         _firestore = firestore ?? FirebaseFirestore.instance,
-        _messaging = messaging ?? FirebaseMessaging.instance;
+        _messaging = messaging ?? FirebaseMessaging.instance,
+        _analytics = analytics ?? FirebaseAnalytics.instance;
 
   Stream<User?> get authStateChanges => _auth.authStateChanges();
 
@@ -99,8 +104,13 @@ class AuthFirebaseDatasource {
         'updatedAt': FieldValue.serverTimestamp(),
         'isActive': true,
       }, SetOptions(merge: true));
-    } catch (e) {
+    } catch (e, stackTrace) {
       debugPrint('❌ [Notifications] Error registering device token: $e');
+      await FirebaseCrashlytics.instance.recordError(
+        e,
+        stackTrace,
+        reason: 'registerDeviceToken failed',
+      );
     }
   }
 
@@ -121,8 +131,13 @@ class AuthFirebaseDatasource {
         'isActive': false,
         'updatedAt': FieldValue.serverTimestamp(),
       });
-    } catch (e) {
+    } catch (e, stackTrace) {
       debugPrint('Error unregistering device token: $e');
+      await FirebaseCrashlytics.instance.recordError(
+        e,
+        stackTrace,
+        reason: 'unregisterDeviceToken failed',
+      );
     }
   }
 
@@ -141,25 +156,49 @@ class AuthFirebaseDatasource {
   }
 
   Future<void> triggerEmergencyAlarm(String uid, String name) async {
-    // 1. Write the emergency event to Firestore
-    await _firestore.collection('emergencies').add({
-      'triggeredBy': uid,
-      'triggeredByName': name,
-      'timestamp': FieldValue.serverTimestamp(),
-      'status': 'active',
-    });
-
-    // 2. Try to fetch FCM legacy server key from Firestore config to send push notifications
     try {
-      final configDoc = await _firestore.collection('config').doc('fcm').get();
-      if (configDoc.exists && configDoc.data() != null) {
-        final serverKey = configDoc.data()!['serverKey'] as String?;
-        if (serverKey != null && serverKey.isNotEmpty) {
-          await _sendDirectFcmPushNotification(serverKey, name);
+      // 1. Write the emergency event to Firestore
+      await _firestore.collection('emergencies').add({
+        'triggeredBy': uid,
+        'triggeredByName': name,
+        'timestamp': FieldValue.serverTimestamp(),
+        'status': 'active',
+      });
+
+      // Log success event to Analytics
+      await _analytics.logEvent(
+        name: 'trigger_emergency',
+        parameters: {
+          'triggered_by_uid': uid,
+          'triggered_by_name': name,
+        },
+      );
+
+      // 2. Try to fetch FCM legacy server key from Firestore config to send push notifications
+      try {
+        final configDoc = await _firestore.collection('config').doc('fcm').get();
+        if (configDoc.exists && configDoc.data() != null) {
+          final serverKey = configDoc.data()!['serverKey'] as String?;
+          if (serverKey != null && serverKey.isNotEmpty) {
+            await _sendDirectFcmPushNotification(serverKey, name);
+          }
         }
+      } catch (e, stackTrace) {
+        debugPrint('FCM config not found or failed to read. Skipping direct push notification: $e');
+        // Record non-fatal error in Crashlytics but do not block client
+        await FirebaseCrashlytics.instance.recordError(
+          e,
+          stackTrace,
+          reason: 'FCM direct push notification fallback failed',
+        );
       }
-    } catch (e) {
-      debugPrint('FCM config not found or failed to read. Skipping direct push notification: $e');
+    } catch (e, stackTrace) {
+      await FirebaseCrashlytics.instance.recordError(
+        e,
+        stackTrace,
+        reason: 'Failed to trigger emergency alarm',
+      );
+      rethrow;
     }
   }
 

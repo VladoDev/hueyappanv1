@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hueyappanv1/l10n/app_localizations.dart';
 import 'package:hueyappanv1/src/core/theme/vecinal_theme.dart';
 import '../providers/auth_provider.dart';
 
@@ -16,11 +17,12 @@ class HomeTab extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final vc = context.vecinalColors;
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'HueyAPPan',
+          l10n.appName,
           style: VecinalTextStyles.headlineSmall.copyWith(
             fontWeight: FontWeight.bold,
             color: vc.primaryDefault,
@@ -36,7 +38,7 @@ class HomeTab extends ConsumerWidget {
             ),
             child: IconButton(
               icon: Icon(Icons.campaign, color: vc.emergencyIcon, size: 24),
-              tooltip: 'Activar Alerta de Emergencia',
+              tooltip: l10n.emergencyAlertTitle,
               onPressed: () => _showEmergencyDialog(context, ref, vc),
             ),
           ),
@@ -54,12 +56,12 @@ class HomeTab extends ConsumerWidget {
           child: ListView(
             padding: const EdgeInsets.all(VecinalSpacing.xl),
             children: [
-              _buildWelcomeHeader(vc),
+              _buildWelcomeHeader(context, vc),
               const SizedBox(height: 32),
-              _buildFeatureCard(vc),
+              _buildFeatureCard(context, vc),
               const SizedBox(height: 24),
               Text(
-                'Recent Activity',
+                l10n.recentActivity,
                 style: VecinalTextStyles.headlineSmall.copyWith(
                   fontWeight: FontWeight.bold,
                   color: vc.textPrimary,
@@ -67,14 +69,14 @@ class HomeTab extends ConsumerWidget {
               ),
               const SizedBox(height: 12),
               _buildActivityItem(
-                'Emergency system maintenance scheduled for next Saturday.',
-                '1h ago',
+                l10n.activityMaintenance,
+                l10n.activityMaintenanceTime,
                 Icons.build_circle,
                 vc,
               ),
               _buildActivityItem(
-                'Monthly resident assembly meeting minutes are uploaded.',
-                '1d ago',
+                l10n.activityAssembly,
+                l10n.activityAssemblyTime,
                 Icons.description,
                 vc,
               ),
@@ -85,7 +87,8 @@ class HomeTab extends ConsumerWidget {
     );
   }
 
-  Widget _buildWelcomeHeader(VecinalSemanticColors vc) {
+  Widget _buildWelcomeHeader(BuildContext context, VecinalSemanticColors vc) {
+    final l10n = AppLocalizations.of(context)!;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -94,7 +97,7 @@ class HomeTab extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Welcome back,',
+                l10n.welcomeBack,
                 style: VecinalTextStyles.bodyMedium.copyWith(
                   color: vc.textSecondary,
                   fontWeight: FontWeight.w500,
@@ -126,7 +129,7 @@ class HomeTab extends ConsumerWidget {
               Icon(Icons.home, size: 16, color: vc.onPrimaryContainer),
               const SizedBox(width: 4),
               Text(
-                'Unit $housingUnit',
+                l10n.housingUnitValue(housingUnit),
                 style: VecinalTextStyles.labelSmall.copyWith(
                   fontWeight: FontWeight.bold,
                   color: vc.onPrimaryContainer,
@@ -139,7 +142,8 @@ class HomeTab extends ConsumerWidget {
     );
   }
 
-  Widget _buildFeatureCard(VecinalSemanticColors vc) {
+  Widget _buildFeatureCard(BuildContext context, VecinalSemanticColors vc) {
+    final l10n = AppLocalizations.of(context)!;
     return Card(
       elevation: 0,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(VecinalRadius.lg)),
@@ -154,7 +158,7 @@ class HomeTab extends ConsumerWidget {
                 Icon(Icons.shield, color: vc.textOnPrimary, size: 28),
                 const SizedBox(width: 12),
                 Text(
-                  'Neighborhood Overview',
+                  l10n.homeFeatureTitle,
                   style: VecinalTextStyles.headlineMedium.copyWith(
                     color: vc.textOnPrimary,
                     fontWeight: FontWeight.bold,
@@ -164,7 +168,7 @@ class HomeTab extends ConsumerWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              'Convento Hueyapan Safe Community',
+              l10n.homeFeatureSubtitle,
               style: VecinalTextStyles.bodyMedium.copyWith(
                 color: vc.textOnPrimary.withValues(alpha: 0.8),
                 fontWeight: FontWeight.w500,
@@ -172,7 +176,7 @@ class HomeTab extends ConsumerWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              'All systems operational. Security is monitoring access 24/7.',
+              l10n.homeFeatureBody,
               style: VecinalTextStyles.bodyLarge.copyWith(
                 color: vc.textOnPrimary.withValues(alpha: 0.9),
                 height: 1.4,
@@ -210,6 +214,7 @@ class HomeTab extends ConsumerWidget {
 
   void _showEmergencyDialog(BuildContext context, WidgetRef ref, VecinalSemanticColors vc) {
     bool isDialogLoading = false;
+    final l10n = AppLocalizations.of(context)!;
 
     showDialog(
       context: context,
@@ -223,7 +228,7 @@ class HomeTab extends ConsumerWidget {
                   Icon(Icons.warning_amber_rounded, color: vc.destructive, size: 28),
                   const SizedBox(width: 8),
                   Text(
-                    'Alerta de Emergencia',
+                    l10n.emergencyAlertTitle,
                     style: TextStyle(fontWeight: FontWeight.bold, color: vc.destructive),
                   ),
                 ],
@@ -235,17 +240,16 @@ class HomeTab extends ConsumerWidget {
                         child: CircularProgressIndicator(color: vc.destructive),
                       ),
                     )
-                  : const Text(
-                      '¿Estás seguro de que deseas activar la alerta de emergencia?\n\n'
-                      'Esta acción enviará una notificación de alerta crítica con sonido a todos los residentes de la comunidad.',
-                      style: TextStyle(fontSize: 15),
+                  : Text(
+                      l10n.emergencyAlertConfirm,
+                      style: const TextStyle(fontSize: 15),
                     ),
               actions: isDialogLoading
                   ? null
                   : [
                       TextButton(
                         onPressed: () => Navigator.of(context).pop(),
-                        child: Text('Cancelar', style: TextStyle(color: vc.textSecondary, fontWeight: FontWeight.w600)),
+                        child: Text(l10n.cancel, style: TextStyle(color: vc.textSecondary, fontWeight: FontWeight.w600)),
                       ),
                       ElevatedButton(
                         onPressed: () async {
@@ -266,7 +270,7 @@ class HomeTab extends ConsumerWidget {
                               Navigator.of(context).pop(); // Cerrar el diálogo
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
-                                  content: const Text('¡Alerta de emergencia activada con éxito!'),
+                                  content: Text(l10n.alarmActivatedSuccess),
                                   backgroundColor: vc.destructive,
                                   behavior: SnackBarBehavior.floating,
                                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(VecinalRadius.md)),
@@ -276,11 +280,11 @@ class HomeTab extends ConsumerWidget {
                           } catch (e) {
                             if (context.mounted) {
                               setState(() {
-                                isDialogLoading = false;
+                                    isDialogLoading = false;
                               });
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
-                                  content: Text('Error al activar la alarma: $e'),
+                                  content: Text(l10n.alarmActivatedError(e.toString())),
                                   backgroundColor: vc.surfacePrimary,
                                   behavior: SnackBarBehavior.floating,
                                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(VecinalRadius.md)),
@@ -294,7 +298,7 @@ class HomeTab extends ConsumerWidget {
                           foregroundColor: vc.textOnPrimary,
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(VecinalRadius.md)),
                         ),
-                        child: const Text('Activar Alarma', style: TextStyle(fontWeight: FontWeight.bold)),
+                        child: Text(l10n.activateAlarm, style: const TextStyle(fontWeight: FontWeight.bold)),
                       ),
                     ],
             );

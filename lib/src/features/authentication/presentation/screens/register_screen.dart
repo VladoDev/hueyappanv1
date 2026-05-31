@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hueyappanv1/l10n/app_localizations.dart';
 import 'package:hueyappanv1/src/core/theme/vecinal_theme.dart';
 import '../providers/auth_provider.dart';
 
@@ -156,6 +157,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   }
 
   Widget _buildNameFields(bool isLoading, VecinalSemanticColors vc) {
+    final l10n = AppLocalizations.of(context)!;
     return Row(
       children: [
         Expanded(
@@ -163,10 +165,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             controller: _firstNameController,
             enabled: !isLoading,
             decoration: InputDecoration(
-              labelText: 'Nombre',
+              labelText: l10n.firstNameLabel,
               prefixIcon: Icon(Icons.person_outline, color: vc.primaryDefault),
             ),
-            validator: (val) => val == null || val.trim().isEmpty ? 'Requerido' : null,
+            validator: (val) => val == null || val.trim().isEmpty ? l10n.requiredField : null,
           ),
         ),
         const SizedBox(width: 12),
@@ -174,10 +176,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           child: TextFormField(
             controller: _lastNameController,
             enabled: !isLoading,
-            decoration: const InputDecoration(
-              labelText: 'Apellidos',
+            decoration: InputDecoration(
+              labelText: l10n.lastNameLabel,
             ),
-            validator: (val) => val == null || val.trim().isEmpty ? 'Requerido' : null,
+            validator: (val) => val == null || val.trim().isEmpty ? l10n.requiredField : null,
           ),
         ),
       ],
@@ -185,6 +187,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   }
 
   Widget _buildDropdowns(bool isLoading, VecinalSemanticColors vc) {
+    final l10n = AppLocalizations.of(context)!;
     return Column(
       children: [
         Row(
@@ -193,24 +196,24 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
               child: DropdownButtonFormField<String>(
                 initialValue: _selectedLot,
                 decoration: InputDecoration(
-                  labelText: 'Lote',
+                  labelText: l10n.lotLabel,
                   prefixIcon: Icon(Icons.home_outlined, color: vc.primaryDefault),
                 ),
                 items: _lots.map((l) => DropdownMenuItem(value: l, child: Text(l))).toList(),
                 onChanged: isLoading ? null : (val) => setState(() => _selectedLot = val),
-                validator: (val) => val == null ? 'Requerido' : null,
+                validator: (val) => val == null ? l10n.requiredField : null,
               ),
             ),
             const SizedBox(width: 12),
             Expanded(
               child: DropdownButtonFormField<String>(
                 initialValue: _selectedHouse,
-                decoration: const InputDecoration(
-                  labelText: 'Casa',
+                decoration: InputDecoration(
+                  labelText: l10n.houseLabel,
                 ),
                 items: _houses.map((h) => DropdownMenuItem(value: h, child: Text(h))).toList(),
                 onChanged: isLoading ? null : (val) => setState(() => _selectedHouse = val),
-                validator: (val) => val == null ? 'Requerido' : null,
+                validator: (val) => val == null ? l10n.requiredField : null,
               ),
             ),
           ],
@@ -219,18 +222,27 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         DropdownButtonFormField<String>(
           initialValue: _selectedResidentType,
           decoration: InputDecoration(
-            labelText: 'Tipo de Residente',
+            labelText: l10n.residentTypeLabel,
             prefixIcon: Icon(Icons.assignment_ind_outlined, color: vc.primaryDefault),
           ),
-          items: _residentTypes.map((t) => DropdownMenuItem(value: t, child: Text(t))).toList(),
+          items: _residentTypes.map((t) {
+            final String label;
+            if (t == 'Propietario') {
+              label = l10n.propietarioLabel;
+            } else {
+              label = l10n.inquilinoLabel;
+            }
+            return DropdownMenuItem(value: t, child: Text(label));
+          }).toList(),
           onChanged: isLoading ? null : (val) => setState(() => _selectedResidentType = val),
-          validator: (val) => val == null ? 'Requerido' : null,
+          validator: (val) => val == null ? l10n.requiredField : null,
         ),
       ],
     );
   }
 
   Widget _buildContactFields(bool isLoading, VecinalSemanticColors vc) {
+    final l10n = AppLocalizations.of(context)!;
     return Column(
       children: [
         TextFormField(
@@ -238,12 +250,12 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           enabled: !isLoading,
           keyboardType: TextInputType.phone,
           decoration: InputDecoration(
-            labelText: 'Teléfono Móvil',
+            labelText: l10n.phoneLabel,
             prefixIcon: Icon(Icons.phone_android_outlined, color: vc.primaryDefault),
           ),
           validator: (val) {
-            if (val == null || val.isEmpty) return 'El teléfono es requerido';
-            if (!RegExp(r'^\d{10}$').hasMatch(val)) return 'Debe tener exactamente 10 dígitos';
+            if (val == null || val.isEmpty) return l10n.phoneRequired;
+            if (!RegExp(r'^\d{10}$').hasMatch(val)) return l10n.phoneLengthInvalid;
             return null;
           },
         ),
@@ -253,12 +265,12 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           enabled: !isLoading && !_isPreAuthenticated,
           keyboardType: TextInputType.emailAddress,
           decoration: InputDecoration(
-            labelText: 'Correo Electrónico',
+            labelText: l10n.emailLabel,
             prefixIcon: Icon(Icons.email_outlined, color: vc.primaryDefault),
           ),
           validator: (val) {
-            if (val == null || val.trim().isEmpty) return 'El correo es requerido';
-            if (!val.contains('@')) return 'Ingresa un correo válido';
+            if (val == null || val.trim().isEmpty) return l10n.emailRequiredRegister;
+            if (!val.contains('@')) return l10n.emailInvalidRegister;
             return null;
           },
         ),
@@ -268,12 +280,12 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           enabled: !isLoading && !_isPreAuthenticated,
           obscureText: true,
           decoration: InputDecoration(
-            labelText: 'Contraseña',
+            labelText: l10n.passwordLabel,
             prefixIcon: Icon(Icons.lock_outline, color: vc.primaryDefault),
           ),
           validator: (val) {
-            if (val == null || val.isEmpty) return 'La contraseña es requerida';
-            if (val.length < 6) return 'Mínimo 6 caracteres';
+            if (val == null || val.isEmpty) return l10n.passwordRequiredRegister;
+            if (val.length < 6) return l10n.passwordTooShortRegister;
             return null;
           },
         ),
@@ -282,6 +294,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   }
 
   Widget _buildSubmitButton(bool isLoading, VecinalSemanticColors vc) {
+    final l10n = AppLocalizations.of(context)!;
     return SizedBox(
       width: double.infinity,
       height: 54,
@@ -299,9 +312,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 height: 24,
                 child: CircularProgressIndicator(strokeWidth: 2.5, color: vc.textOnPrimary),
               )
-            : const Text(
-                'Registrarse',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            : Text(
+                l10n.registerButton,
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
       ),
     );
@@ -352,6 +365,7 @@ class _HeaderSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final vc = context.vecinalColors;
+    final l10n = AppLocalizations.of(context)!;
     return Column(
       children: [
         CircleAvatar(
@@ -361,7 +375,7 @@ class _HeaderSection extends StatelessWidget {
         ),
         const SizedBox(height: 12),
         Text(
-          'Registro de Residente',
+          l10n.registerHeaderTitle,
           style: VecinalTextStyles.headlineMedium.copyWith(
             color: vc.primaryDefault,
             fontWeight: FontWeight.bold,

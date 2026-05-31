@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hueyappanv1/l10n/app_localizations.dart';
 import 'package:hueyappanv1/src/core/theme/vecinal_theme.dart';
 
 class AnnouncementsTab extends StatelessWidget {
@@ -7,11 +8,12 @@ class AnnouncementsTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final vc = context.vecinalColors;
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Community News',
+          l10n.communityNews,
           style: VecinalTextStyles.headlineSmall.copyWith(
             fontWeight: FontWeight.bold,
             color: vc.primaryDefault,
@@ -22,18 +24,18 @@ class AnnouncementsTab extends StatelessWidget {
         padding: const EdgeInsets.all(VecinalSpacing.xl),
         children: [
           _buildNewsCard(
-            'New Access Control Guidelines',
-            'Please ensure your guest register codes are generated via the portal 24 hours prior to their arrival. RFID tags are required for vehicle access.',
-            'May 28, 2026',
-            'Security Committee',
+            l10n.news1Title,
+            l10n.news1Body,
+            l10n.news1Date,
+            l10n.news1Author,
             vc,
           ),
           const SizedBox(height: 16),
           _buildNewsCard(
-            'Annual Swimming Pool Opening',
-            'The neighborhood swimming pool will open for the season starting this Friday. Pool hours are 8:00 AM - 10:00 PM daily. Please review the safety rules posted at the entry.',
-            'May 24, 2026',
-            'Administration',
+            l10n.news2Title,
+            l10n.news2Body,
+            l10n.news2Date,
+            l10n.news2Author,
             vc,
           ),
         ],

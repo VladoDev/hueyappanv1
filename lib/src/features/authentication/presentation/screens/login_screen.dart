@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hueyappanv1/l10n/app_localizations.dart';
 import 'package:hueyappanv1/src/core/theme/vecinal_theme.dart';
 import '../providers/auth_provider.dart';
 
@@ -98,7 +99,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                 ? null
                                 : () => context.push('/register'),
                             child: Text(
-                              '¿No tienes cuenta? Regístrate aquí',
+                              AppLocalizations.of(context)!.registerLink,
                               style: TextStyle(
                                 color: vc.primaryDefault,
                                 fontWeight: FontWeight.bold,
@@ -119,40 +120,43 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   Widget _buildEmailField(bool isLoading, VecinalSemanticColors vc) {
+    final l10n = AppLocalizations.of(context)!;
     return TextFormField(
       controller: _emailController,
       enabled: !isLoading,
       keyboardType: TextInputType.emailAddress,
       decoration: InputDecoration(
-        labelText: 'Email Address',
+        labelText: l10n.emailLabel,
         prefixIcon: Icon(Icons.email_outlined, color: vc.primaryDefault),
       ),
       validator: (value) {
-        if (value == null || value.trim().isEmpty) return 'Email is required';
-        if (!value.contains('@')) return 'Please enter a valid email';
+        if (value == null || value.trim().isEmpty) return l10n.emailRequired;
+        if (!value.contains('@')) return l10n.emailInvalid;
         return null;
       },
     );
   }
 
   Widget _buildPasswordField(bool isLoading, VecinalSemanticColors vc) {
+    final l10n = AppLocalizations.of(context)!;
     return TextFormField(
       controller: _passwordController,
       enabled: !isLoading,
       obscureText: true,
       decoration: InputDecoration(
-        labelText: 'Password',
+        labelText: l10n.passwordLabel,
         prefixIcon: Icon(Icons.lock_outlined, color: vc.primaryDefault),
       ),
       validator: (value) {
-        if (value == null || value.isEmpty) return 'Password is required';
-        if (value.length < 6) return 'Password must be at least 6 characters';
+        if (value == null || value.isEmpty) return l10n.passwordRequired;
+        if (value.length < 6) return l10n.passwordTooShort;
         return null;
       },
     );
   }
 
   Widget _buildSubmitButton(bool isLoading, VecinalSemanticColors vc) {
+    final l10n = AppLocalizations.of(context)!;
     return SizedBox(
       width: double.infinity,
       height: 54,
@@ -170,9 +174,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 height: 24,
                 child: CircularProgressIndicator(strokeWidth: 2.5, color: vc.textOnPrimary),
               )
-            : const Text(
-                'Access Portal',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            : Text(
+                l10n.loginButton,
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
       ),
     );
@@ -223,6 +227,7 @@ class _HeaderSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final vc = context.vecinalColors;
+    final l10n = AppLocalizations.of(context)!;
     return Column(
       children: [
         CircleAvatar(
@@ -232,7 +237,7 @@ class _HeaderSection extends StatelessWidget {
         ),
         const SizedBox(height: 16),
         Text(
-          'HueyAPPan',
+          l10n.appName,
           style: VecinalTextStyles.displayLarge.copyWith(
             color: vc.primaryDefault,
             fontSize: 28,
@@ -240,7 +245,7 @@ class _HeaderSection extends StatelessWidget {
         ),
         const SizedBox(height: 6),
         Text(
-          'Convento Hueyapan Resident Portal',
+          l10n.loginPortalSubtitle,
           style: VecinalTextStyles.bodyMedium.copyWith(
             color: vc.textSecondary,
             fontWeight: FontWeight.w500,
