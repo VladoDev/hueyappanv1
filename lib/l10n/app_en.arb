@@ -109,5 +109,28 @@
   "news2Title": "Annual Swimming Pool Opening",
   "news2Body": "The neighborhood swimming pool will open for the season starting this Friday. Pool hours are 8:00 AM - 10:00 PM daily. Please review the safety rules posted at the entry.",
   "news2Date": "May 24, 2026",
-  "news2Author": "Administration"
+  "news2Author": "Administration",
+  "navContacts": "Contacts",
+  "contactsTitle": "Contact Numbers",
+  "searchContacts": "Search contacts...",
+  "noContactsFound": "No contacts found",
+  "favoritesOnly": "Favorites",
+  "allContacts": "All",
+  "securityCategory": "Security",
+  "adminCategory": "Admin",
+  "servicesCategory": "Services",
+  "emergencyCategory": "Emergency",
+  "callConfirmTitle": "Call Contact",
+  "callConfirmBody": "Do you want to make a call to {name} at {number}?",
+  "@callConfirmBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "callAction": "Call"
 }
