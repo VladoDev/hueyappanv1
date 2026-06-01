@@ -284,4 +284,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get callAction => 'Call';
+
+  @override
+  String get roleLabel => 'Role';
+
+  @override
+  String get roleAdmin => 'Admin';
+
+  @override
+  String get roleVecino => 'Neighbor';
 }

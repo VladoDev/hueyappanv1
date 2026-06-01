@@ -14,6 +14,7 @@ abstract class ResidentModel with _$ResidentModel {
     required String accountStatus,
     String? phone,
     String? residentType,
+    @Default('vecino') String role,
   }) = _ResidentModel;
 
   factory ResidentModel.fromJson(Map<String, dynamic> json) =>
@@ -27,6 +28,7 @@ abstract class ResidentModel with _$ResidentModel {
         accountStatus: entity.accountStatus,
         phone: entity.phone,
         residentType: entity.residentType,
+        role: entity.role,
       );
 }
 
@@ -39,5 +41,6 @@ extension ResidentModelX on ResidentModel {
         accountStatus: accountStatus,
         phone: phone,
         residentType: residentType,
+        role: role,
       );
 }

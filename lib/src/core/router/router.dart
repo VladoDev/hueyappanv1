@@ -137,6 +137,7 @@ final routerProvider = Provider<GoRouter>((ref) {
                       email: user.email,
                       housingUnit: user.housingUnit,
                       status: user.accountStatus,
+                      role: user.role,
                     );
                   },
                 ),

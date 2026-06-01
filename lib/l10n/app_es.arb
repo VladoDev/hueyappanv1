@@ -132,5 +132,8 @@
       }
     }
   },
-  "callAction": "Llamar"
+  "callAction": "Llamar",
+  "roleLabel": "Rol",
+  "roleAdmin": "Administrador",
+  "roleVecino": "Vecino"
 }
