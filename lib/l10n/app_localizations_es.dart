@@ -245,4 +245,45 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get news2Author => 'Administración';
+
+  @override
+  String get navContacts => 'Contactos';
+
+  @override
+  String get contactsTitle => 'Números de Contacto';
+
+  @override
+  String get searchContacts => 'Buscar contactos...';
+
+  @override
+  String get noContactsFound => 'No se encontraron contactos';
+
+  @override
+  String get favoritesOnly => 'Favoritos';
+
+  @override
+  String get allContacts => 'Todos';
+
+  @override
+  String get securityCategory => 'Seguridad';
+
+  @override
+  String get adminCategory => 'Admin';
+
+  @override
+  String get servicesCategory => 'Servicios';
+
+  @override
+  String get emergencyCategory => 'Emergencia';
+
+  @override
+  String get callConfirmTitle => 'Llamar Contacto';
+
+  @override
+  String callConfirmBody(String name, String number) {
+    return '¿Deseas realizar una llamada a $name al $number?';
+  }
+
+  @override
+  String get callAction => 'Llamar';
 }

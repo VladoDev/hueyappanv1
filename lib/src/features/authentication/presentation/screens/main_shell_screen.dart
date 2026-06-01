@@ -6,6 +6,7 @@ import 'package:hueyappanv1/l10n/app_localizations.dart';
 import 'package:hueyappanv1/src/core/theme/vecinal_theme.dart';
 import '../providers/auth_provider.dart';
 import '../providers/emergency_provider.dart';
+import '../widgets/pulsing_warning_icon.dart';
 
 class MainShellScreen extends ConsumerStatefulWidget {
   final StatefulNavigationShell navigationShell;
@@ -84,6 +85,11 @@ class _MainShellScreenState extends ConsumerState<MainShellScreen> {
         icon: Icons.account_balance_wallet_outlined,
         selectedIcon: Icons.account_balance_wallet,
         label: l10n.navPayments,
+      ),
+      _FloatingTabBarItem(
+        icon: Icons.phone_outlined,
+        selectedIcon: Icons.phone,
+        label: l10n.navContacts,
       ),
       _FloatingTabBarItem(
         icon: Icons.person_outline,
@@ -196,7 +202,7 @@ class _MainShellScreenState extends ConsumerState<MainShellScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const _PulsingWarningIcon(),
+                  const PulsingWarningIcon(),
                   const SizedBox(height: 32),
                   Text(
                     l10n.emergencyOverlayTitle,
@@ -252,54 +258,4 @@ class _FloatingTabBarItem {
     required this.selectedIcon,
     required this.label,
   });
-}
-
-class _PulsingWarningIcon extends StatefulWidget {
-  const _PulsingWarningIcon();
-
-  @override
-  State<_PulsingWarningIcon> createState() => _PulsingWarningIconState();
-}
-
-class _PulsingWarningIconState extends State<_PulsingWarningIcon>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 1),
-    )..repeat(reverse: true);
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final vc = context.vecinalColors;
-    return ScaleTransition(
-      scale: Tween<double>(begin: 0.9, end: 1.15).animate(
-        CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-      ),
-      child: Container(
-        padding: const EdgeInsets.all(24),
-        decoration: BoxDecoration(
-          color: vc.emergencyIcon.withValues(alpha: 0.2),
-          shape: BoxShape.circle,
-          border: Border.all(color: vc.emergencyIcon, width: 2),
-        ),
-        child: Icon(
-          Icons.warning_amber_rounded,
-          color: vc.emergencyIcon,
-          size: 64,
-        ),
-      ),
-    );
-  }
 }

@@ -11,6 +11,7 @@ import '../../features/authentication/presentation/widgets/home_tab.dart';
 import '../../features/authentication/presentation/widgets/announcements_tab.dart';
 import '../../features/authentication/presentation/widgets/payments_tab.dart';
 import '../../features/authentication/presentation/widgets/profile_tab.dart';
+import '../../features/contacts/presentation/screens/contacts_tab.dart';
 
 class GoRouterRefreshStream extends ChangeNotifier {
   late final StreamSubscription<dynamic> _subscription;
@@ -112,6 +113,14 @@ final routerProvider = Provider<GoRouter>((ref) {
               GoRoute(
                 path: '/payments',
                 builder: (context, state) => const PaymentsTab(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/contacts',
+                builder: (context, state) => const ContactsTab(),
               ),
             ],
           ),

@@ -36,11 +36,15 @@ Con el fin de mitigar la complejidad ciclomática y asegurar el cumplimiento del
 * **Archivos de Código (`.dart`):** Ningún archivo fuente podrá exceder las **300 líneas de código** en su totalidad.
 
 ### 6. Estrategia de Control de Versiones (Git Branching)
-El desarrollo se realizará mediante un esquema ordenado de ramificaciones basado en características. Queda estrictamente prohibido realizar commits directos a la rama principal (`main` o `master`). La nomenclatura de las ramas se define según el caso de uso:
-* Para el desarrollo de nuevas pantallas, servicios o funcionalidades: `feature/nombre-del-feature`
-* Para la resolución de errores, fallos técnicos o regresiones detectadas: `bugfix/nombre-del-bug`
+El desarrollo se realizará mediante un esquema ordenado de ramificaciones basado en características. Todo nuevo feature o bugfix debe crearse a partir de la rama `dev`. Queda estrictamente prohibido realizar commits directos a la rama principal (`main` o `master`), y tampoco se permite crear ramas de bugfix directamente desde `main`. La única forma de actualizar la rama `main` es mediante un Pull Request (PR) desde la rama `dev` hacia `main`.
 
-Todo el código deberá integrarse mediante Pull Requests (PR) que requieran revisión de código y validación automatizada.
+Cada vez que se cree un nuevo feature o se resuelva un error, se creará una nueva rama con la siguiente nomenclatura según el caso de uso:
+* Para el desarrollo de nuevas pantallas, servicios o funcionalidades: `feature/###-nombre-del-feature`
+* Para la resolución de errores, fallos técnicos o regresiones detectadas: `bugfix/###-nombre-del-bug`
+
+Donde `###` representa un identificador numérico secuencial de tres dígitos (por ejemplo, `001` o `002`).
+
+Todo el código deberá integrarse mediante Pull Requests (PR) hacia `dev` que requieran revisión de código y validación automatizada.
 
 ### 7. Política de Calidad y Pruebas (Testing Policy)
 La estabilidad del software es prioritaria dada su naturaleza comunitaria. Por lo tanto:

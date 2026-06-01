@@ -541,6 +541,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Administration'**
   String get news2Author;
+
+  /// No description provided for @navContacts.
+  ///
+  /// In en, this message translates to:
+  /// **'Contacts'**
+  String get navContacts;
+
+  /// No description provided for @contactsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact Numbers'**
+  String get contactsTitle;
+
+  /// No description provided for @searchContacts.
+  ///
+  /// In en, this message translates to:
+  /// **'Search contacts...'**
+  String get searchContacts;
+
+  /// No description provided for @noContactsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No contacts found'**
+  String get noContactsFound;
+
+  /// No description provided for @favoritesOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Favorites'**
+  String get favoritesOnly;
+
+  /// No description provided for @allContacts.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get allContacts;
+
+  /// No description provided for @securityCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Security'**
+  String get securityCategory;
+
+  /// No description provided for @adminCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Admin'**
+  String get adminCategory;
+
+  /// No description provided for @servicesCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Services'**
+  String get servicesCategory;
+
+  /// No description provided for @emergencyCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Emergency'**
+  String get emergencyCategory;
+
+  /// No description provided for @callConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Call Contact'**
+  String get callConfirmTitle;
+
+  /// No description provided for @callConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you want to make a call to {name} at {number}?'**
+  String callConfirmBody(String name, String number);
+
+  /// No description provided for @callAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Call'**
+  String get callAction;
 }
 
 class _AppLocalizationsDelegate

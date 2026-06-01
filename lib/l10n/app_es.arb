@@ -109,5 +109,28 @@
   "news2Title": "Apertura Anual de la Alberca",
   "news2Body": "La alberca del vecindario abrirá para la temporada a partir de este viernes. El horario de la alberca es de 8:00 AM a 10:00 PM todos los días. Por favor, revise las reglas de seguridad publicadas en la entrada.",
   "news2Date": "24 de mayo, 2026",
-  "news2Author": "Administración"
+  "news2Author": "Administración",
+  "navContacts": "Contactos",
+  "contactsTitle": "Números de Contacto",
+  "searchContacts": "Buscar contactos...",
+  "noContactsFound": "No se encontraron contactos",
+  "favoritesOnly": "Favoritos",
+  "allContacts": "Todos",
+  "securityCategory": "Seguridad",
+  "adminCategory": "Admin",
+  "servicesCategory": "Servicios",
+  "emergencyCategory": "Emergencia",
+  "callConfirmTitle": "Llamar Contacto",
+  "callConfirmBody": "¿Deseas realizar una llamada a {name} al {number}?",
+  "@callConfirmBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "callAction": "Llamar"
 }
