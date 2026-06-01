@@ -637,6 +637,318 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Neighbor'**
   String get roleVecino;
+
+  /// No description provided for @paymentsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Community Payments'**
+  String get paymentsTitle;
+
+  /// No description provided for @paymentsHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment History'**
+  String get paymentsHistory;
+
+  /// No description provided for @paymentsPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending Dues'**
+  String get paymentsPending;
+
+  /// No description provided for @transferDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Transfer Details'**
+  String get transferDetails;
+
+  /// No description provided for @bankNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Bank'**
+  String get bankNameLabel;
+
+  /// No description provided for @clabeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'CLABE'**
+  String get clabeLabel;
+
+  /// No description provided for @beneficiaryLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Beneficiary'**
+  String get beneficiaryLabel;
+
+  /// No description provided for @copySuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'CLABE copied to clipboard'**
+  String get copySuccess;
+
+  /// No description provided for @partialPaymentTag.
+  ///
+  /// In en, this message translates to:
+  /// **'Partial Payment'**
+  String get partialPaymentTag;
+
+  /// No description provided for @pendingPaymentTag.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending'**
+  String get pendingPaymentTag;
+
+  /// No description provided for @paidPaymentTag.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid'**
+  String get paidPaymentTag;
+
+  /// No description provided for @conceptDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Concept Details'**
+  String get conceptDetails;
+
+  /// No description provided for @conceptBreakdown.
+  ///
+  /// In en, this message translates to:
+  /// **'Charge Breakdown'**
+  String get conceptBreakdown;
+
+  /// No description provided for @adminPanel.
+  ///
+  /// In en, this message translates to:
+  /// **'Administration Panel'**
+  String get adminPanel;
+
+  /// No description provided for @createConcept.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Payment Concept'**
+  String get createConcept;
+
+  /// No description provided for @editConcept.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Payment Concept'**
+  String get editConcept;
+
+  /// No description provided for @deleteConcept.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Concept'**
+  String get deleteConcept;
+
+  /// No description provided for @conceptTitleLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Concept Name'**
+  String get conceptTitleLabel;
+
+  /// No description provided for @conceptDescLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Description (optional)'**
+  String get conceptDescLabel;
+
+  /// No description provided for @conceptTotalCost.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Cost'**
+  String get conceptTotalCost;
+
+  /// No description provided for @conceptTotalUnits.
+  ///
+  /// In en, this message translates to:
+  /// **'Number of Houses'**
+  String get conceptTotalUnits;
+
+  /// No description provided for @amountPerHouseLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount per House'**
+  String get amountPerHouseLabel;
+
+  /// No description provided for @subItemsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Details / Breakdown'**
+  String get subItemsLabel;
+
+  /// No description provided for @addSubItem.
+  ///
+  /// In en, this message translates to:
+  /// **'Add detail'**
+  String get addSubItem;
+
+  /// No description provided for @itemLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get itemLabel;
+
+  /// No description provided for @itemAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Cost (optional)'**
+  String get itemAmount;
+
+  /// No description provided for @editConceptWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'Note: Editing an existing concept will NOT automatically recalculate already generated dues to avoid altering recorded payments.'**
+  String get editConceptWarning;
+
+  /// No description provided for @recordedExpenseLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Recorded Real Expense'**
+  String get recordedExpenseLabel;
+
+  /// No description provided for @availableBalanceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Available Balance'**
+  String get availableBalanceLabel;
+
+  /// No description provided for @totalCollectedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Collected'**
+  String get totalCollectedLabel;
+
+  /// No description provided for @totalPendingLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Pending'**
+  String get totalPendingLabel;
+
+  /// No description provided for @updateExpense.
+  ///
+  /// In en, this message translates to:
+  /// **'Record Real Expense'**
+  String get updateExpense;
+
+  /// No description provided for @paidHouses.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid Houses'**
+  String get paidHouses;
+
+  /// No description provided for @pendingHouses.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending Houses'**
+  String get pendingHouses;
+
+  /// No description provided for @registerPayment.
+  ///
+  /// In en, this message translates to:
+  /// **'Register Payment'**
+  String get registerPayment;
+
+  /// No description provided for @amountReceivedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount Received'**
+  String get amountReceivedLabel;
+
+  /// No description provided for @referenceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Reference / Receipt (optional)'**
+  String get referenceLabel;
+
+  /// No description provided for @notesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes (optional)'**
+  String get notesLabel;
+
+  /// No description provided for @partialAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Partial Payment'**
+  String get partialAction;
+
+  /// No description provided for @completeAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete Payment'**
+  String get completeAction;
+
+  /// No description provided for @save.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get save;
+
+  /// No description provided for @deleteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this payment concept? This will delete the concept and all associated housing dues.'**
+  String get deleteConfirm;
+
+  /// No description provided for @delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get delete;
+
+  /// No description provided for @fieldRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Required field'**
+  String get fieldRequired;
+
+  /// No description provided for @invalidAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid amount'**
+  String get invalidAmount;
+
+  /// No description provided for @activeStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get activeStatus;
+
+  /// No description provided for @closedStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Closed'**
+  String get closedStatus;
+
+  /// No description provided for @cancelledStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled'**
+  String get cancelledStatus;
+
+  /// No description provided for @noPaymentsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No payments found'**
+  String get noPaymentsFound;
+
+  /// No description provided for @noPendingPayments.
+  ///
+  /// In en, this message translates to:
+  /// **'You have no pending dues 🎉'**
+  String get noPendingPayments;
+
+  /// No description provided for @bankTransferReference.
+  ///
+  /// In en, this message translates to:
+  /// **'Transfer reference'**
+  String get bankTransferReference;
+
+  /// No description provided for @referenceCopySuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Reference copied to clipboard'**
+  String get referenceCopySuccess;
 }
 
 class _AppLocalizationsDelegate

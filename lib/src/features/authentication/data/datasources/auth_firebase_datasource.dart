@@ -91,7 +91,8 @@ class AuthFirebaseDatasource {
 
       // Subscribe to emergencies topic
       await _messaging.subscribeToTopic('emergencies');
-      debugPrint('🔔 [Notifications] Subscribed to topic: emergencies');
+      await _messaging.subscribeToTopic('payments');
+      debugPrint('🔔 [Notifications] Subscribed to topic: emergencies and payments');
 
       await _firestore
           .collection('residents')
@@ -121,6 +122,7 @@ class AuthFirebaseDatasource {
 
       // Unsubscribe from emergencies topic
       await _messaging.unsubscribeFromTopic('emergencies');
+      await _messaging.unsubscribeFromTopic('payments');
 
       await _firestore
           .collection('residents')

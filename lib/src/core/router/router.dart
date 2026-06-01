@@ -9,7 +9,9 @@ import '../../features/authentication/presentation/screens/register_screen.dart'
 import '../../features/authentication/presentation/screens/main_shell_screen.dart';
 import '../../features/authentication/presentation/widgets/home_tab.dart';
 import '../../features/authentication/presentation/widgets/announcements_tab.dart';
-import '../../features/authentication/presentation/widgets/payments_tab.dart';
+import '../../features/payments/presentation/screens/payments_tab_screen.dart';
+import '../../features/payments/presentation/screens/concept_form_screen.dart';
+import '../../features/payments/presentation/screens/concept_detail_screen.dart';
 import '../../features/authentication/presentation/widgets/profile_tab.dart';
 import '../../features/contacts/presentation/screens/contacts_tab.dart';
 
@@ -112,7 +114,27 @@ final routerProvider = Provider<GoRouter>((ref) {
             routes: [
               GoRoute(
                 path: '/payments',
-                builder: (context, state) => const PaymentsTab(),
+                builder: (context, state) => const PaymentsTabScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'new',
+                    builder: (context, state) => const ConceptFormScreen(),
+                  ),
+                  GoRoute(
+                    path: 'edit/:id',
+                    builder: (context, state) {
+                      final id = state.pathParameters['id']!;
+                      return ConceptFormScreen(conceptId: id);
+                    },
+                  ),
+                  GoRoute(
+                    path: 'detail/:id',
+                    builder: (context, state) {
+                      final id = state.pathParameters['id']!;
+                      return ConceptDetailScreen(conceptId: id);
+                    },
+                  ),
+                ],
               ),
             ],
           ),
