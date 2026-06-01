@@ -15,6 +15,7 @@ _ResidentModel _$ResidentModelFromJson(Map<String, dynamic> json) =>
       accountStatus: json['accountStatus'] as String,
       phone: json['phone'] as String?,
       residentType: json['residentType'] as String?,
+      role: json['role'] as String? ?? 'vecino',
     );
 
 Map<String, dynamic> _$ResidentModelToJson(_ResidentModel instance) =>
@@ -26,4 +27,5 @@ Map<String, dynamic> _$ResidentModelToJson(_ResidentModel instance) =>
       'accountStatus': instance.accountStatus,
       'phone': instance.phone,
       'residentType': instance.residentType,
+      'role': instance.role,
     };

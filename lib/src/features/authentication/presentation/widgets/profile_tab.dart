@@ -9,6 +9,7 @@ class ProfileTab extends ConsumerWidget {
   final String email;
   final String housingUnit;
   final String status;
+  final String role;
 
   const ProfileTab({
     super.key,
@@ -16,6 +17,7 @@ class ProfileTab extends ConsumerWidget {
     required this.email,
     required this.housingUnit,
     required this.status,
+    required this.role,
   });
 
   @override
@@ -49,6 +51,7 @@ class ProfileTab extends ConsumerWidget {
           const SizedBox(height: 12),
           _buildInfoRow(l10n.housingUnitLabel, l10n.housingUnitValue(housingUnit), vc),
           _buildInfoRow(l10n.residentStatusLabel, status, vc),
+          _buildInfoRow(l10n.roleLabel, role == 'admin' ? l10n.roleAdmin : l10n.roleVecino, vc),
           const SizedBox(height: 48),
           _buildSignOutButton(context, ref, controller.isLoading, vc),
         ],

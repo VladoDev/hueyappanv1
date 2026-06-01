@@ -43,9 +43,14 @@ class AuthRepositoryImpl implements AuthRepository {
         name: 'resident_type',
         value: profile.residentType ?? 'unknown',
       );
+      await FirebaseAnalytics.instance.setUserProperty(
+        name: 'user_role',
+        value: profile.role,
+      );
       
       await FirebaseCrashlytics.instance.setUserIdentifier(uid);
       await FirebaseCrashlytics.instance.setCustomKey('resident_type', profile.residentType ?? 'unknown');
+      await FirebaseCrashlytics.instance.setCustomKey('user_role', profile.role);
 
       return profile.toEntity();
     } catch (e, stackTrace) {
@@ -124,6 +129,7 @@ class AuthRepositoryImpl implements AuthRepository {
         accountStatus: 'Active',
         phone: phone.trim(),
         residentType: residentType,
+        role: 'vecino',
       );
 
       // 4. Save to Firestore
@@ -139,9 +145,14 @@ class AuthRepositoryImpl implements AuthRepository {
         name: 'resident_type',
         value: residentType,
       );
+      await FirebaseAnalytics.instance.setUserProperty(
+        name: 'user_role',
+        value: 'vecino',
+      );
 
       await FirebaseCrashlytics.instance.setUserIdentifier(uid);
       await FirebaseCrashlytics.instance.setCustomKey('resident_type', residentType);
+      await FirebaseCrashlytics.instance.setCustomKey('user_role', 'vecino');
 
       return profile.toEntity();
     } catch (e, stackTrace) {

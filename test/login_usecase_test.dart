@@ -15,6 +15,7 @@ class MockAuthRepository implements AuthRepository {
       email: email,
       housingUnit: 'A1',
       accountStatus: 'Active',
+      role: 'vecino',
     );
   }
 
@@ -43,6 +44,7 @@ class MockAuthRepository implements AuthRepository {
       accountStatus: 'Active',
       phone: phone,
       residentType: residentType,
+      role: 'vecino',
     );
   }
 }

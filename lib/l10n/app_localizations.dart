@@ -619,6 +619,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Call'**
   String get callAction;
+
+  /// No description provided for @roleLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Role'**
+  String get roleLabel;
+
+  /// No description provided for @roleAdmin.
+  ///
+  /// In en, this message translates to:
+  /// **'Admin'**
+  String get roleAdmin;
+
+  /// No description provided for @roleVecino.
+  ///
+  /// In en, this message translates to:
+  /// **'Neighbor'**
+  String get roleVecino;
 }
 
 class _AppLocalizationsDelegate
