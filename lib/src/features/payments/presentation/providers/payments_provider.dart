@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../authentication/presentation/providers/auth_provider.dart';
 import '../../data/datasources/payments_firebase_datasource.dart';
@@ -16,6 +17,7 @@ import '../../domain/usecases/watch_concept_payments_usecase.dart';
 import '../../domain/usecases/watch_concepts_usecase.dart';
 import '../../domain/usecases/watch_neighbor_payments_usecase.dart';
 import '../../domain/usecases/watch_payment_transactions_usecase.dart';
+import '../../domain/usecases/confirm_payment_transaction_usecase.dart';
 
 // ── Datasource & Repository Providers ──
 
@@ -70,6 +72,11 @@ final registerPaymentTransactionUsecaseProvider = Provider<RegisterPaymentTransa
   return RegisterPaymentTransactionUsecase(repo);
 });
 
+final confirmPaymentTransactionUsecaseProvider = Provider<ConfirmPaymentTransactionUsecase>((ref) {
+  final repo = ref.watch(paymentsRepositoryProvider);
+  return ConfirmPaymentTransactionUsecase(repo);
+});
+
 final updateRecordedExpenseUsecaseProvider = Provider<UpdateRecordedExpenseUsecase>((ref) {
   final repo = ref.watch(paymentsRepositoryProvider);
   return UpdateRecordedExpenseUsecase(repo);
@@ -96,6 +103,79 @@ final conceptPaymentsStreamProvider = StreamProvider.family<List<HousingPaymentE
 
 final paymentTransactionsStreamProvider = StreamProvider.family<List<PaymentTransactionEntity>, String>((ref, paymentId) {
   return ref.watch(watchPaymentTransactionsUsecaseProvider).execute(paymentId);
+});
+
+final neighborTransactionsStreamProvider = StreamProvider.family<List<PaymentTransactionEntity>, String>((ref, housingUnit) {
+  final paymentsAsync = ref.watch(neighborPaymentsStreamProvider(housingUnit));
+  final conceptsAsync = ref.watch(conceptsStreamProvider);
+  
+  final concepts = conceptsAsync.value ?? [];
+
+  return paymentsAsync.when(
+    data: (payments) {
+      if (payments.isEmpty) {
+        return Stream.value(<PaymentTransactionEntity>[]);
+      }
+
+      final controller = StreamController<List<PaymentTransactionEntity>>();
+      final Map<String, List<PaymentTransactionEntity>> latestLists = {};
+      final List<StreamSubscription> subscriptions = [];
+
+      void emitCombined() {
+        if (controller.isClosed) return;
+        final allTransactions = latestLists.values.expand((list) => list).toList();
+        allTransactions.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+        controller.add(allTransactions);
+      }
+
+      for (final payment in payments) {
+        final concept = concepts.where((c) => c.id == payment.conceptId).firstOrNull;
+        final conceptTitle = concept?.title ?? 'Pago';
+
+        final stream = ref.read(paymentsRepositoryProvider).watchPaymentTransactions(payment.id);
+        final sub = stream.listen((txs) {
+          final mappedTxs = txs.map((tx) {
+            return PaymentTransactionEntity(
+              id: tx.id,
+              housingPaymentId: tx.housingPaymentId,
+              amount: tx.amount,
+              extraAmount: tx.extraAmount,
+              type: tx.type,
+              createdAt: tx.createdAt,
+              createdBy: tx.createdBy,
+              notes: tx.notes,
+              housingUnit: tx.housingUnit ?? payment.housingUnit,
+              conceptTitle: tx.conceptTitle ?? conceptTitle,
+              conceptId: tx.conceptId ?? payment.conceptId,
+              isConfirmed: tx.isConfirmed,
+              confirmedAt: tx.confirmedAt,
+            );
+          }).toList();
+
+          latestLists[payment.id] = mappedTxs;
+          emitCombined();
+        }, onError: (err) {
+          if (!controller.isClosed) {
+            controller.addError(err);
+          }
+        });
+        subscriptions.add(sub);
+      }
+
+      emitCombined();
+
+      ref.onDispose(() {
+        for (final sub in subscriptions) {
+          sub.cancel();
+        }
+        controller.close();
+      });
+
+      return controller.stream;
+    },
+    loading: () => Stream.value(<PaymentTransactionEntity>[]),
+    error: (err, stack) => Stream.error(err, stack),
+  );
 });
 
 // ── State Action Controller Provider ──
@@ -148,6 +228,8 @@ class PaymentsController extends Notifier<AsyncValue<void>> {
     required double amount,
     required String type,
     required String createdBy,
+    bool isAdmin = true,
+    double extraAmount = 0.0,
     String? notes,
   }) async {
     state = const AsyncValue.loading();
@@ -157,7 +239,27 @@ class PaymentsController extends Notifier<AsyncValue<void>> {
             amount: amount,
             type: type,
             createdBy: createdBy,
+            isAdmin: isAdmin,
+            extraAmount: extraAmount,
             notes: notes,
+          );
+      state = const AsyncValue.data(null);
+      return true;
+    } catch (e, stack) {
+      state = AsyncValue.error(e, stack);
+      return false;
+    }
+  }
+
+  Future<bool> confirmPaymentTransaction({
+    required String housingPaymentId,
+    required String transactionId,
+  }) async {
+    state = const AsyncValue.loading();
+    try {
+      await ref.read(confirmPaymentTransactionUsecaseProvider).execute(
+            housingPaymentId: housingPaymentId,
+            transactionId: transactionId,
           );
       state = const AsyncValue.data(null);
       return true;
@@ -187,7 +289,7 @@ class PaymentsController extends Notifier<AsyncValue<void>> {
 }
 
 final paymentsControllerProvider =
-    NotifierProvider.autoDispose<PaymentsController, AsyncValue<void>>(
+    NotifierProvider<PaymentsController, AsyncValue<void>>(
         PaymentsController.new);
 
 final residentNameProvider = FutureProvider.family<String, String>((ref, uid) async {

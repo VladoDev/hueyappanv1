@@ -21,7 +21,12 @@ class AnnouncementsTab extends StatelessWidget {
         ),
       ),
       body: ListView(
-        padding: const EdgeInsets.all(VecinalSpacing.xl),
+        padding: const EdgeInsets.only(
+          left: VecinalSpacing.xl,
+          right: VecinalSpacing.xl,
+          top: VecinalSpacing.xl,
+          bottom: 100,
+        ),
         children: [
           _buildNewsCard(
             l10n.news1Title,

@@ -16,8 +16,10 @@ _HousingPaymentModel _$HousingPaymentModelFromJson(Map<String, dynamic> json) =>
       amountPaid: (json['amountPaid'] as num).toDouble(),
       balance: (json['balance'] as num).toDouble(),
       paymentStatus: json['paymentStatus'] as String,
+      extraAmount: (json['extraAmount'] as num?)?.toDouble() ?? 0.0,
       paidAt: const NullableTimestampConverter().fromJson(json['paidAt']),
       notes: json['notes'] as String?,
+      hasPendingConfirmation: json['hasPendingConfirmation'] as bool? ?? false,
     );
 
 Map<String, dynamic> _$HousingPaymentModelToJson(
@@ -31,6 +33,8 @@ Map<String, dynamic> _$HousingPaymentModelToJson(
   'amountPaid': instance.amountPaid,
   'balance': instance.balance,
   'paymentStatus': instance.paymentStatus,
+  'extraAmount': instance.extraAmount,
   'paidAt': const NullableTimestampConverter().toJson(instance.paidAt),
   'notes': instance.notes,
+  'hasPendingConfirmation': instance.hasPendingConfirmation,
 };

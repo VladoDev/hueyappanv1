@@ -403,7 +403,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get registerPayment => 'Registrar Pago';
 
   @override
-  String get amountReceivedLabel => 'Monto Recibido';
+  String get amountReceivedLabel => 'Abono a la cuota principal';
 
   @override
   String get referenceLabel => 'Referencia / Comprobante (opcional)';
@@ -453,4 +453,13 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get referenceCopySuccess => 'Referencia copiada al portapapeles';
+
+  @override
+  String get extraAmountLabel => 'Monto Extra';
+
+  @override
+  String get extraAmountInput => 'Monto extra (ej. llaves, controles, etc.)';
+
+  @override
+  String get extraPaid => 'Extra pagado';
 }

@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:hueyappanv1/l10n/app_localizations.dart';
 import 'package:hueyappanv1/src/core/theme/vecinal_theme.dart';
 import '../providers/auth_provider.dart';
@@ -33,6 +34,45 @@ class _MainShellScreenState extends ConsumerState<MainShellScreen> {
           ref.read(authFirebaseDatasourceProvider).registerDeviceToken(user.uid);
         }
       }
+    });
+
+    // Listen to incoming foreground FCM messages
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      if (!mounted) return;
+      final title = message.notification?.title ?? 'Notificación';
+      final body = message.notification?.body;
+      
+      final vc = context.vecinalColors;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+              if (body != null) ...[
+                const SizedBox(height: 4),
+                Text(body, style: const TextStyle(fontSize: 14)),
+              ],
+            ],
+          ),
+          backgroundColor: vc.surfacePrimary,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+            side: BorderSide(color: vc.primaryDefault.withValues(alpha: 0.5), width: 1.5),
+          ),
+          margin: const EdgeInsets.only(bottom: 80, left: 16, right: 16),
+          duration: const Duration(seconds: 4),
+          action: SnackBarAction(
+            label: 'Cerrar',
+            textColor: vc.primaryDefault,
+            onPressed: () {
+              ScaffoldMessenger.of(context).hideCurrentSnackBar();
+            },
+          ),
+        ),
+      );
     });
   }
 

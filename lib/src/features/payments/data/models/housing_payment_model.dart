@@ -16,8 +16,10 @@ abstract class HousingPaymentModel with _$HousingPaymentModel {
     required double amountPaid,
     required double balance,
     required String paymentStatus,
+    @Default(0.0) double extraAmount,
     @NullableTimestampConverter() DateTime? paidAt,
     String? notes,
+    @Default(false) bool hasPendingConfirmation,
   }) = _HousingPaymentModel;
 
   factory HousingPaymentModel.fromJson(Map<String, dynamic> json) =>
@@ -33,8 +35,10 @@ abstract class HousingPaymentModel with _$HousingPaymentModel {
         amountPaid: entity.amountPaid,
         balance: entity.balance,
         paymentStatus: entity.paymentStatus,
+        extraAmount: entity.extraAmount,
         paidAt: entity.paidAt,
         notes: entity.notes,
+        hasPendingConfirmation: entity.hasPendingConfirmation,
       );
 }
 
@@ -48,7 +52,9 @@ extension HousingPaymentModelX on HousingPaymentModel {
         amountPaid: amountPaid,
         balance: balance,
         paymentStatus: paymentStatus,
+        extraAmount: extraAmount,
         paidAt: paidAt,
         notes: notes,
+        hasPendingConfirmation: hasPendingConfirmation,
       );
 }

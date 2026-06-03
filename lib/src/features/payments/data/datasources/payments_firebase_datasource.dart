@@ -164,6 +164,25 @@ class PaymentsFirebaseDatasource {
     }).toList();
   }
 
+  Future<List<String>> getAdminTokens() async {
+    try {
+      final snapshot = await _firestore
+          .collection('residents')
+          .where('role', isEqualTo: 'admin')
+          .get();
+
+      final List<String> allAdminTokens = [];
+      for (final doc in snapshot.docs) {
+        final tokens = await getResidentTokens(doc.id);
+        allAdminTokens.addAll(tokens);
+      }
+      return allAdminTokens;
+    } catch (e) {
+      debugPrint('⚠️ [FCM Tokens] Error fetching admin tokens: $e');
+      return [];
+    }
+  }
+
   // ── Push Notifications / FCM ──
 
   Future<String?> getFcmServerKey() async {

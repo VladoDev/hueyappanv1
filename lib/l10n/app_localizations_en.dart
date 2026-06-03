@@ -401,7 +401,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get registerPayment => 'Register Payment';
 
   @override
-  String get amountReceivedLabel => 'Amount Received';
+  String get amountReceivedLabel => 'Payment to main fee';
 
   @override
   String get referenceLabel => 'Reference / Receipt (optional)';
@@ -451,4 +451,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get referenceCopySuccess => 'Reference copied to clipboard';
+
+  @override
+  String get extraAmountLabel => 'Extra Amount';
+
+  @override
+  String get extraAmountInput => 'Extra amount (e.g. keys, controls, etc.)';
+
+  @override
+  String get extraPaid => 'Extra paid';
 }

@@ -851,7 +851,7 @@ abstract class AppLocalizations {
   /// No description provided for @amountReceivedLabel.
   ///
   /// In en, this message translates to:
-  /// **'Amount Received'**
+  /// **'Payment to main fee'**
   String get amountReceivedLabel;
 
   /// No description provided for @referenceLabel.
@@ -949,6 +949,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Reference copied to clipboard'**
   String get referenceCopySuccess;
+
+  /// No description provided for @extraAmountLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Extra Amount'**
+  String get extraAmountLabel;
+
+  /// No description provided for @extraAmountInput.
+  ///
+  /// In en, this message translates to:
+  /// **'Extra amount (e.g. keys, controls, etc.)'**
+  String get extraAmountInput;
+
+  /// No description provided for @extraPaid.
+  ///
+  /// In en, this message translates to:
+  /// **'Extra paid'**
+  String get extraPaid;
 }
 
 class _AppLocalizationsDelegate

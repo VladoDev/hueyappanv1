@@ -171,7 +171,7 @@
   "paidHouses": "Paid Houses",
   "pendingHouses": "Pending Houses",
   "registerPayment": "Register Payment",
-  "amountReceivedLabel": "Amount Received",
+  "amountReceivedLabel": "Payment to main fee",
   "referenceLabel": "Reference / Receipt (optional)",
   "notesLabel": "Notes (optional)",
   "partialAction": "Partial Payment",
@@ -187,5 +187,8 @@
   "noPaymentsFound": "No payments found",
   "noPendingPayments": "You have no pending dues 🎉",
   "bankTransferReference": "Transfer reference",
-  "referenceCopySuccess": "Reference copied to clipboard"
+  "referenceCopySuccess": "Reference copied to clipboard",
+  "extraAmountLabel": "Extra Amount",
+  "extraAmountInput": "Extra amount (e.g. keys, controls, etc.)",
+  "extraPaid": "Extra paid"
 }

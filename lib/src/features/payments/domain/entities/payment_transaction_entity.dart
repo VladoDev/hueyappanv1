@@ -2,19 +2,31 @@ class PaymentTransactionEntity {
   final String id;
   final String housingPaymentId;
   final double amount;
+  final double extraAmount;
   final String type; // 'partial', 'complete', 'correction'
   final DateTime createdAt;
   final String createdBy;
   final String? notes;
+  final String? housingUnit;
+  final String? conceptTitle;
+  final String? conceptId;
+  final bool isConfirmed;
+  final DateTime? confirmedAt;
 
   const PaymentTransactionEntity({
     required this.id,
     required this.housingPaymentId,
     required this.amount,
+    this.extraAmount = 0.0,
     required this.type,
     required this.createdAt,
     required this.createdBy,
     this.notes,
+    this.housingUnit,
+    this.conceptTitle,
+    this.conceptId,
+    this.isConfirmed = true,
+    this.confirmedAt,
   });
 
   @override
@@ -25,18 +37,30 @@ class PaymentTransactionEntity {
           id == other.id &&
           housingPaymentId == other.housingPaymentId &&
           amount == other.amount &&
+          extraAmount == other.extraAmount &&
           type == other.type &&
           createdAt == other.createdAt &&
           createdBy == other.createdBy &&
-          notes == other.notes;
+          notes == other.notes &&
+          housingUnit == other.housingUnit &&
+          conceptTitle == other.conceptTitle &&
+          conceptId == other.conceptId &&
+          isConfirmed == other.isConfirmed &&
+          confirmedAt == other.confirmedAt;
 
   @override
   int get hashCode =>
       id.hashCode ^
       housingPaymentId.hashCode ^
       amount.hashCode ^
+      extraAmount.hashCode ^
       type.hashCode ^
       createdAt.hashCode ^
       createdBy.hashCode ^
-      notes.hashCode;
+      notes.hashCode ^
+      housingUnit.hashCode ^
+      conceptTitle.hashCode ^
+      conceptId.hashCode ^
+      isConfirmed.hashCode ^
+      confirmedAt.hashCode;
 }

@@ -171,7 +171,7 @@
   "paidHouses": "Casas que ya pagaron",
   "pendingHouses": "Casas pendientes",
   "registerPayment": "Registrar Pago",
-  "amountReceivedLabel": "Monto Recibido",
+  "amountReceivedLabel": "Abono a la cuota principal",
   "referenceLabel": "Referencia / Comprobante (opcional)",
   "notesLabel": "Notas (opcional)",
   "partialAction": "Pago Parcial",
@@ -187,5 +187,8 @@
   "noPaymentsFound": "No se encontraron pagos",
   "noPendingPayments": "No tienes adeudos pendientes 🎉",
   "bankTransferReference": "Referencia bancaria",
-  "referenceCopySuccess": "Referencia copiada al portapapeles"
+  "referenceCopySuccess": "Referencia copiada al portapapeles",
+  "extraAmountLabel": "Monto Extra",
+  "extraAmountInput": "Monto extra (ej. llaves, controles, etc.)",
+  "extraPaid": "Extra pagado"
 }

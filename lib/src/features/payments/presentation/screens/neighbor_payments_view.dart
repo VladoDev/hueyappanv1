@@ -4,7 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hueyappanv1/l10n/app_localizations.dart';
 import 'package:hueyappanv1/src/core/theme/vecinal_theme.dart';
 import '../../domain/entities/housing_payment_entity.dart';
+import '../../domain/entities/payment_transaction_entity.dart';
 import '../providers/payments_provider.dart';
+import '../../../authentication/presentation/providers/auth_provider.dart';
 
 class NeighborPaymentsView extends ConsumerWidget {
   final String housingUnit;
@@ -19,6 +21,7 @@ class NeighborPaymentsView extends ConsumerWidget {
     final vc = context.vecinalColors;
     final l10n = AppLocalizations.of(context)!;
     final paymentsAsync = ref.watch(neighborPaymentsStreamProvider(housingUnit));
+    final transactionsAsync = ref.watch(neighborTransactionsStreamProvider(housingUnit));
 
     return Scaffold(
       appBar: AppBar(
@@ -33,10 +36,14 @@ class NeighborPaymentsView extends ConsumerWidget {
       body: paymentsAsync.when(
         data: (payments) {
           final pending = payments.where((p) => p.paymentStatus != 'paid').toList();
-          final history = payments.where((p) => p.paymentStatus == 'paid').toList();
 
           return ListView(
-            padding: const EdgeInsets.symmetric(horizontal: VecinalSpacing.xl, vertical: VecinalSpacing.base),
+            padding: const EdgeInsets.only(
+              left: VecinalSpacing.xl,
+              right: VecinalSpacing.xl,
+              top: VecinalSpacing.base,
+              bottom: 100,
+            ),
             children: [
               _buildTransferCard(context),
               const SizedBox(height: 24),
@@ -52,19 +59,49 @@ class NeighborPaymentsView extends ConsumerWidget {
                 _buildEmptyState(l10n.noPendingPayments, Icons.check_circle_outline, vc)
               else
                 ...pending.map((p) => _NeighborPaymentCard(payment: p)),
-              const SizedBox(height: 24),
-              Text(
-                l10n.paymentsHistory,
-                style: VecinalTextStyles.headlineMedium.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: vc.textPrimary,
+              transactionsAsync.when(
+                data: (transactions) {
+                  final pendingConfirmations = transactions.where((t) => !t.isConfirmed).toList();
+                  final confirmedHistory = transactions.where((t) => t.isConfirmed).toList();
+
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (pendingConfirmations.isNotEmpty) ...[
+                        Text(
+                          'Confirmaciones Pendientes',
+                          style: VecinalTextStyles.headlineMedium.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: vc.textPrimary,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        ...pendingConfirmations.map((t) => _NeighborPendingConfirmationCard(transaction: t)),
+                        const SizedBox(height: 24),
+                      ],
+                      Text(
+                        l10n.paymentsHistory,
+                        style: VecinalTextStyles.headlineMedium.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: vc.textPrimary,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      if (confirmedHistory.isEmpty)
+                        _buildEmptyState(l10n.noPaymentsFound, Icons.history_outlined, vc)
+                      else
+                        ...confirmedHistory.map((t) => _NeighborHistoryCard(transaction: t)),
+                    ],
+                  );
+                },
+                loading: () => const Center(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: 24.0),
+                    child: CircularProgressIndicator(),
+                  ),
                 ),
+                error: (err, stack) => Center(child: Text('Error: $err')),
               ),
-              const SizedBox(height: 12),
-              if (history.isEmpty)
-                _buildEmptyState(l10n.noPaymentsFound, Icons.history_outlined, vc)
-              else
-                ...history.map((p) => _NeighborHistoryCard(payment: p)),
               const SizedBox(height: 32),
             ],
           );
@@ -277,12 +314,24 @@ class _NeighborPaymentCard extends ConsumerWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    '${l10n.conceptTotalCost}: \$${payment.totalDue.toStringAsFixed(2)}',
-                    style: VecinalTextStyles.bodySmall.copyWith(color: vc.textHint),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '${l10n.amountPerHouseLabel}: \$${payment.totalDue.toStringAsFixed(2)}',
+                        style: VecinalTextStyles.bodySmall.copyWith(color: vc.textHint),
+                      ),
+                      if (concept != null) ...[
+                        const SizedBox(height: 2),
+                        Text(
+                          '${l10n.conceptTotalCost} (Ref): \$${concept.totalAmount.toStringAsFixed(2)}',
+                          style: VecinalTextStyles.bodySmall.copyWith(color: vc.textHint),
+                        ),
+                      ],
+                    ],
                   ),
                   Text(
-                    'Saldo: \$${payment.balance.toStringAsFixed(2)}',
+                    'Adeudo: \$${payment.balance.toStringAsFixed(2)}',
                     style: VecinalTextStyles.labelLarge.copyWith(
                       fontWeight: FontWeight.bold,
                       color: isPartial ? vc.noticeText : vc.destructive,
@@ -340,14 +389,48 @@ class _NeighborPaymentCard extends ConsumerWidget {
                   loading: () => const LinearProgressIndicator(),
                   error: (err, stack) => Text('Error: $err'),
                 ),
-                if (isPartial) ...[
+                if (payment.amountPaid > 0 || payment.extraAmount > 0) ...[
                   const SizedBox(height: 12),
                   const Divider(height: 16),
-                  Text(
-                    'Total pagado: \$${payment.amountPaid.toStringAsFixed(2)}',
-                    style: VecinalTextStyles.bodyMedium.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: vc.paymentSuccessText,
+                  if (payment.amountPaid > 0)
+                    Text(
+                      'Total pagado: \$${payment.amountPaid.toStringAsFixed(2)}',
+                      style: VecinalTextStyles.bodyMedium.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: vc.paymentSuccessText,
+                      ),
+                    ),
+                  if (payment.extraAmount > 0) ...[
+                    if (payment.amountPaid > 0) const SizedBox(height: 4),
+                    Text(
+                      '${l10n.extraPaid}: \$${payment.extraAmount.toStringAsFixed(2)}',
+                      style: VecinalTextStyles.bodyMedium.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: vc.primaryDefault,
+                      ),
+                    ),
+                  ],
+                ],
+                if (payment.balance > 0) ...[
+                  const SizedBox(height: 24),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                      onPressed: () => _showReportPaymentDialog(context, ref, payment, concept?.title, vc),
+                      icon: const Icon(Icons.receipt_long, size: 18),
+                      label: const Text(
+                        'Reportar Pago',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: vc.surfacePrimary,
+                        foregroundColor: vc.primaryDefault,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(VecinalRadius.md),
+                          side: BorderSide(color: vc.primaryDefault, width: 1.5),
+                        ),
+                      ),
                     ),
                   ),
                 ]
@@ -358,26 +441,134 @@ class _NeighborPaymentCard extends ConsumerWidget {
       ),
     );
   }
+
+  void _showReportPaymentDialog(
+    BuildContext context,
+    WidgetRef ref,
+    HousingPaymentEntity payment,
+    String? conceptTitle,
+    VecinalSemanticColors vc,
+  ) {
+    final amountController = TextEditingController(text: payment.balance.toStringAsFixed(2));
+    final notesController = TextEditingController();
+    bool isLoading = false;
+
+    showDialog(
+      context: context,
+      builder: (dialogCtx) => StatefulBuilder(
+        builder: (ctx, setState) {
+          return AlertDialog(
+            title: const Text('Reportar Pago', style: TextStyle(fontWeight: FontWeight.bold)),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Registra el pago que realizaste para "${conceptTitle ?? 'Cuota'}".',
+                    style: TextStyle(color: vc.textSecondary),
+                  ),
+                  const SizedBox(height: 16),
+                  TextField(
+                    controller: amountController,
+                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                    decoration: InputDecoration(
+                      labelText: 'Monto Abonado',
+                      prefixText: '\$ ',
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  TextField(
+                    controller: notesController,
+                    decoration: InputDecoration(
+                      labelText: 'Notas / Referencia (Opcional)',
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                    ),
+                    maxLines: 2,
+                  ),
+                  if (isLoading) ...[
+                    const SizedBox(height: 24),
+                    const Center(child: CircularProgressIndicator()),
+                  ],
+                ],
+              ),
+            ),
+            actions: isLoading
+                ? []
+                : [
+                    TextButton(
+                      onPressed: () => Navigator.pop(dialogCtx),
+                      child: Text('Cancelar', style: TextStyle(color: vc.textSecondary)),
+                    ),
+                    ElevatedButton(
+                      onPressed: () async {
+                        final amount = double.tryParse(amountController.text) ?? 0.0;
+                        if (amount <= 0) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('El monto debe ser mayor a 0')),
+                          );
+                          return;
+                        }
+
+                        setState(() => isLoading = true);
+
+                        final authState = ref.read(authStateProvider);
+                        final user = authState.value;
+
+                        final type = amount >= payment.balance ? 'complete' : 'partial';
+
+                        final success = await ref
+                            .read(paymentsControllerProvider.notifier)
+                            .registerPaymentTransaction(
+                              housingPaymentId: payment.id,
+                              amount: amount,
+                              type: type,
+                              createdBy: user?.name ?? 'Vecino',
+                              isAdmin: false,
+                              notes: notesController.text.trim().isEmpty ? null : notesController.text.trim(),
+                            );
+
+                        if (context.mounted) {
+                          Navigator.pop(dialogCtx);
+                          if (success) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Pago reportado exitosamente. Esperando confirmación del administrador.')),
+                            );
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Error al reportar el pago.')),
+                            );
+                          }
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: vc.primaryDefault,
+                        foregroundColor: vc.textOnPrimary,
+                      ),
+                      child: const Text('Enviar Reporte'),
+                    ),
+                  ],
+          );
+        },
+      ),
+    );
+  }
 }
 
 // ── Neighbour Paid History Card ──
 
 class _NeighborHistoryCard extends ConsumerWidget {
-  final HousingPaymentEntity payment;
+  final PaymentTransactionEntity transaction;
 
-  const _NeighborHistoryCard({required this.payment});
+  const _NeighborHistoryCard({required this.transaction});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final vc = context.vecinalColors;
     final l10n = AppLocalizations.of(context)!;
 
-    final concepts = ref.watch(conceptsStreamProvider).value;
-    final concept = concepts?.firstWhere((c) => c.id == payment.conceptId);
-
-    final dateStr = payment.paidAt != null
-        ? '${payment.paidAt!.day}/${payment.paidAt!.month}/${payment.paidAt!.year}'
-        : '';
+    final dateStr = '${transaction.createdAt.day}/${transaction.createdAt.month}/${transaction.createdAt.year}';
 
     return Card(
       elevation: 0,
@@ -389,19 +580,196 @@ class _NeighborHistoryCard extends ConsumerWidget {
       child: ListTile(
         leading: Icon(Icons.check_circle, color: vc.paymentSuccessText, size: 28),
         title: Text(
-          concept?.title ?? l10n.conceptDetails,
+          transaction.conceptTitle ?? l10n.conceptDetails,
           style: VecinalTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.bold),
         ),
-        subtitle: Text(
-          dateStr.isNotEmpty ? 'Pagado el $dateStr' : '',
-          style: VecinalTextStyles.bodySmall.copyWith(color: vc.textHint),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'Abonado el $dateStr',
+              style: VecinalTextStyles.bodySmall.copyWith(color: vc.textHint),
+            ),
+            if (transaction.notes != null && transaction.notes!.isNotEmpty) ...[
+              const SizedBox(height: 2),
+              Text(
+                transaction.notes!,
+                style: VecinalTextStyles.bodySmall.copyWith(color: vc.textSecondary, fontStyle: FontStyle.italic),
+              ),
+            ],
+          ],
         ),
-        trailing: Text(
-          '\$${payment.amountPaid.toStringAsFixed(2)}',
-          style: VecinalTextStyles.labelLarge.copyWith(
-            fontWeight: FontWeight.bold,
-            color: vc.textPrimary,
-          ),
+        trailing: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Text(
+              '\$${transaction.amount.toStringAsFixed(2)}',
+              style: VecinalTextStyles.labelLarge.copyWith(
+                fontWeight: FontWeight.bold,
+                color: vc.textPrimary,
+              ),
+            ),
+            if (transaction.extraAmount > 0)
+              Text(
+                '+\$${transaction.extraAmount.toStringAsFixed(2)} ${l10n.extraAmountLabel.toLowerCase()}',
+                style: VecinalTextStyles.bodySmall.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: vc.primaryDefault,
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _NeighborPendingConfirmationCard extends ConsumerStatefulWidget {
+  final PaymentTransactionEntity transaction;
+
+  const _NeighborPendingConfirmationCard({required this.transaction});
+
+  @override
+  ConsumerState<_NeighborPendingConfirmationCard> createState() => _NeighborPendingConfirmationCardState();
+}
+
+class _NeighborPendingConfirmationCardState extends ConsumerState<_NeighborPendingConfirmationCard> {
+  bool _isConfirming = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final vc = context.vecinalColors;
+    final l10n = AppLocalizations.of(context)!;
+    final t = widget.transaction;
+    
+    final dateStr = '${t.createdAt.day}/${t.createdAt.month}/${t.createdAt.year}';
+
+    return Card(
+      elevation: 0,
+      margin: const EdgeInsets.only(bottom: 12),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(VecinalRadius.md),
+        side: BorderSide(color: vc.noticeBorder, width: 1.0),
+      ),
+      color: vc.noticeBg.withValues(alpha: 0.2),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Text(
+                    t.conceptTitle ?? l10n.conceptDetails,
+                    style: VecinalTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Text(
+                  '\$${t.amount.toStringAsFixed(2)}',
+                  style: VecinalTextStyles.labelLarge.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: vc.destructive,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 6),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Registrado el $dateStr',
+                  style: VecinalTextStyles.bodySmall.copyWith(color: vc.textHint),
+                ),
+                if (t.extraAmount > 0)
+                  Text(
+                    '+\$${t.extraAmount.toStringAsFixed(2)} ${l10n.extraAmountLabel.toLowerCase()}',
+                    style: VecinalTextStyles.bodySmall.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: vc.primaryDefault,
+                    ),
+                  ),
+              ],
+            ),
+            if (t.notes != null && t.notes!.isNotEmpty) ...[
+              const SizedBox(height: 8),
+              Text(
+                t.notes!,
+                style: VecinalTextStyles.bodySmall.copyWith(color: vc.textSecondary, fontStyle: FontStyle.italic),
+              ),
+            ],
+            const SizedBox(height: 12),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                onPressed: _isConfirming
+                    ? null
+                    : () {
+                        showDialog(
+                          context: context,
+                          builder: (dialogCtx) => AlertDialog(
+                            title: const Text('Confirmar Pago', style: TextStyle(fontWeight: FontWeight.bold)),
+                            content: Text('¿Confirmas que realizaste el pago de \$${t.amount.toStringAsFixed(2)} para el concepto "${t.conceptTitle ?? 'Cuota'}"?'),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(dialogCtx),
+                                child: Text('Cancelar', style: TextStyle(color: vc.textSecondary, fontWeight: FontWeight.w600)),
+                              ),
+                              ElevatedButton(
+                                onPressed: () async {
+                                  Navigator.pop(dialogCtx);
+                                  setState(() {
+                                    _isConfirming = true;
+                                  });
+                                  final messenger = ScaffoldMessenger.of(context);
+                                  final success = await ref
+                                      .read(paymentsControllerProvider.notifier)
+                                      .confirmPaymentTransaction(
+                                        housingPaymentId: t.housingPaymentId,
+                                        transactionId: t.id,
+                                      );
+                                  if (mounted) {
+                                    setState(() {
+                                      _isConfirming = false;
+                                    });
+                                    if (success) {
+                                      messenger.showSnackBar(
+                                        const SnackBar(content: Text('Pago confirmado con éxito')),
+                                      );
+                                    } else {
+                                      messenger.showSnackBar(
+                                        const SnackBar(content: Text('Error al confirmar el pago')),
+                                      );
+                                    }
+                                  }
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: vc.primaryDefault,
+                                  foregroundColor: vc.textOnPrimary,
+                                ),
+                                child: const Text('Confirmar', style: TextStyle(fontWeight: FontWeight.bold)),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                icon: const Icon(Icons.check_circle_outline, size: 18),
+                label: const Text(
+                  'Confirmar Pago',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: vc.primaryDefault,
+                  foregroundColor: vc.textOnPrimary,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(VecinalRadius.md)),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

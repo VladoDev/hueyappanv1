@@ -7,8 +7,10 @@ class HousingPaymentEntity {
   final double amountPaid;
   final double balance;
   final String paymentStatus; // 'pending', 'partial', 'paid'
+  final double extraAmount;
   final DateTime? paidAt;
   final String? notes;
+  final bool hasPendingConfirmation;
 
   const HousingPaymentEntity({
     required this.id,
@@ -19,8 +21,10 @@ class HousingPaymentEntity {
     required this.amountPaid,
     required this.balance,
     required this.paymentStatus,
+    this.extraAmount = 0.0,
     this.paidAt,
     this.notes,
+    this.hasPendingConfirmation = false,
   });
 
   @override
@@ -36,8 +40,10 @@ class HousingPaymentEntity {
           amountPaid == other.amountPaid &&
           balance == other.balance &&
           paymentStatus == other.paymentStatus &&
+          extraAmount == other.extraAmount &&
           paidAt == other.paidAt &&
-          notes == other.notes;
+          notes == other.notes &&
+          hasPendingConfirmation == other.hasPendingConfirmation;
 
   @override
   int get hashCode =>
@@ -49,6 +55,8 @@ class HousingPaymentEntity {
       amountPaid.hashCode ^
       balance.hashCode ^
       paymentStatus.hashCode ^
+      extraAmount.hashCode ^
       paidAt.hashCode ^
-      notes.hashCode;
+      notes.hashCode ^
+      hasPendingConfirmation.hashCode;
 }

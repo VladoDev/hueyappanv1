@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$PaymentTransactionModel {
 
- String get id; String get housingPaymentId; double get amount; String get type;@TimestampConverter() DateTime get createdAt; String get createdBy; String? get notes;
+ String get id; String get housingPaymentId; double get amount; double get extraAmount; String get type;@TimestampConverter() DateTime get createdAt; String get createdBy; String? get notes; String? get housingUnit; String? get conceptTitle; String? get conceptId; bool get isConfirmed;@NullableTimestampConverter() DateTime? get confirmedAt;
 /// Create a copy of PaymentTransactionModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $PaymentTransactionModelCopyWith<PaymentTransactionModel> get copyWith => _$Paym
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PaymentTransactionModel&&(identical(other.id, id) || other.id == id)&&(identical(other.housingPaymentId, housingPaymentId) || other.housingPaymentId == housingPaymentId)&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.type, type) || other.type == type)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.createdBy, createdBy) || other.createdBy == createdBy)&&(identical(other.notes, notes) || other.notes == notes));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PaymentTransactionModel&&(identical(other.id, id) || other.id == id)&&(identical(other.housingPaymentId, housingPaymentId) || other.housingPaymentId == housingPaymentId)&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.extraAmount, extraAmount) || other.extraAmount == extraAmount)&&(identical(other.type, type) || other.type == type)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.createdBy, createdBy) || other.createdBy == createdBy)&&(identical(other.notes, notes) || other.notes == notes)&&(identical(other.housingUnit, housingUnit) || other.housingUnit == housingUnit)&&(identical(other.conceptTitle, conceptTitle) || other.conceptTitle == conceptTitle)&&(identical(other.conceptId, conceptId) || other.conceptId == conceptId)&&(identical(other.isConfirmed, isConfirmed) || other.isConfirmed == isConfirmed)&&(identical(other.confirmedAt, confirmedAt) || other.confirmedAt == confirmedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,housingPaymentId,amount,type,createdAt,createdBy,notes);
+int get hashCode => Object.hash(runtimeType,id,housingPaymentId,amount,extraAmount,type,createdAt,createdBy,notes,housingUnit,conceptTitle,conceptId,isConfirmed,confirmedAt);
 
 @override
 String toString() {
-  return 'PaymentTransactionModel(id: $id, housingPaymentId: $housingPaymentId, amount: $amount, type: $type, createdAt: $createdAt, createdBy: $createdBy, notes: $notes)';
+  return 'PaymentTransactionModel(id: $id, housingPaymentId: $housingPaymentId, amount: $amount, extraAmount: $extraAmount, type: $type, createdAt: $createdAt, createdBy: $createdBy, notes: $notes, housingUnit: $housingUnit, conceptTitle: $conceptTitle, conceptId: $conceptId, isConfirmed: $isConfirmed, confirmedAt: $confirmedAt)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $PaymentTransactionModelCopyWith<$Res>  {
   factory $PaymentTransactionModelCopyWith(PaymentTransactionModel value, $Res Function(PaymentTransactionModel) _then) = _$PaymentTransactionModelCopyWithImpl;
 @useResult
 $Res call({
- String id, String housingPaymentId, double amount, String type,@TimestampConverter() DateTime createdAt, String createdBy, String? notes
+ String id, String housingPaymentId, double amount, double extraAmount, String type,@TimestampConverter() DateTime createdAt, String createdBy, String? notes, String? housingUnit, String? conceptTitle, String? conceptId, bool isConfirmed,@NullableTimestampConverter() DateTime? confirmedAt
 });
 
 
@@ -65,16 +65,22 @@ class _$PaymentTransactionModelCopyWithImpl<$Res>
 
 /// Create a copy of PaymentTransactionModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? housingPaymentId = null,Object? amount = null,Object? type = null,Object? createdAt = null,Object? createdBy = null,Object? notes = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? housingPaymentId = null,Object? amount = null,Object? extraAmount = null,Object? type = null,Object? createdAt = null,Object? createdBy = null,Object? notes = freezed,Object? housingUnit = freezed,Object? conceptTitle = freezed,Object? conceptId = freezed,Object? isConfirmed = null,Object? confirmedAt = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,housingPaymentId: null == housingPaymentId ? _self.housingPaymentId : housingPaymentId // ignore: cast_nullable_to_non_nullable
 as String,amount: null == amount ? _self.amount : amount // ignore: cast_nullable_to_non_nullable
+as double,extraAmount: null == extraAmount ? _self.extraAmount : extraAmount // ignore: cast_nullable_to_non_nullable
 as double,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,createdBy: null == createdBy ? _self.createdBy : createdBy // ignore: cast_nullable_to_non_nullable
 as String,notes: freezed == notes ? _self.notes : notes // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,housingUnit: freezed == housingUnit ? _self.housingUnit : housingUnit // ignore: cast_nullable_to_non_nullable
+as String?,conceptTitle: freezed == conceptTitle ? _self.conceptTitle : conceptTitle // ignore: cast_nullable_to_non_nullable
+as String?,conceptId: freezed == conceptId ? _self.conceptId : conceptId // ignore: cast_nullable_to_non_nullable
+as String?,isConfirmed: null == isConfirmed ? _self.isConfirmed : isConfirmed // ignore: cast_nullable_to_non_nullable
+as bool,confirmedAt: freezed == confirmedAt ? _self.confirmedAt : confirmedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,
   ));
 }
 
@@ -159,10 +165,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String housingPaymentId,  double amount,  String type, @TimestampConverter()  DateTime createdAt,  String createdBy,  String? notes)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String housingPaymentId,  double amount,  double extraAmount,  String type, @TimestampConverter()  DateTime createdAt,  String createdBy,  String? notes,  String? housingUnit,  String? conceptTitle,  String? conceptId,  bool isConfirmed, @NullableTimestampConverter()  DateTime? confirmedAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _PaymentTransactionModel() when $default != null:
-return $default(_that.id,_that.housingPaymentId,_that.amount,_that.type,_that.createdAt,_that.createdBy,_that.notes);case _:
+return $default(_that.id,_that.housingPaymentId,_that.amount,_that.extraAmount,_that.type,_that.createdAt,_that.createdBy,_that.notes,_that.housingUnit,_that.conceptTitle,_that.conceptId,_that.isConfirmed,_that.confirmedAt);case _:
   return orElse();
 
 }
@@ -180,10 +186,10 @@ return $default(_that.id,_that.housingPaymentId,_that.amount,_that.type,_that.cr
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String housingPaymentId,  double amount,  String type, @TimestampConverter()  DateTime createdAt,  String createdBy,  String? notes)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String housingPaymentId,  double amount,  double extraAmount,  String type, @TimestampConverter()  DateTime createdAt,  String createdBy,  String? notes,  String? housingUnit,  String? conceptTitle,  String? conceptId,  bool isConfirmed, @NullableTimestampConverter()  DateTime? confirmedAt)  $default,) {final _that = this;
 switch (_that) {
 case _PaymentTransactionModel():
-return $default(_that.id,_that.housingPaymentId,_that.amount,_that.type,_that.createdAt,_that.createdBy,_that.notes);case _:
+return $default(_that.id,_that.housingPaymentId,_that.amount,_that.extraAmount,_that.type,_that.createdAt,_that.createdBy,_that.notes,_that.housingUnit,_that.conceptTitle,_that.conceptId,_that.isConfirmed,_that.confirmedAt);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -200,10 +206,10 @@ return $default(_that.id,_that.housingPaymentId,_that.amount,_that.type,_that.cr
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String housingPaymentId,  double amount,  String type, @TimestampConverter()  DateTime createdAt,  String createdBy,  String? notes)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String housingPaymentId,  double amount,  double extraAmount,  String type, @TimestampConverter()  DateTime createdAt,  String createdBy,  String? notes,  String? housingUnit,  String? conceptTitle,  String? conceptId,  bool isConfirmed, @NullableTimestampConverter()  DateTime? confirmedAt)?  $default,) {final _that = this;
 switch (_that) {
 case _PaymentTransactionModel() when $default != null:
-return $default(_that.id,_that.housingPaymentId,_that.amount,_that.type,_that.createdAt,_that.createdBy,_that.notes);case _:
+return $default(_that.id,_that.housingPaymentId,_that.amount,_that.extraAmount,_that.type,_that.createdAt,_that.createdBy,_that.notes,_that.housingUnit,_that.conceptTitle,_that.conceptId,_that.isConfirmed,_that.confirmedAt);case _:
   return null;
 
 }
@@ -215,16 +221,22 @@ return $default(_that.id,_that.housingPaymentId,_that.amount,_that.type,_that.cr
 @JsonSerializable()
 
 class _PaymentTransactionModel implements PaymentTransactionModel {
-  const _PaymentTransactionModel({required this.id, required this.housingPaymentId, required this.amount, required this.type, @TimestampConverter() required this.createdAt, required this.createdBy, this.notes});
+  const _PaymentTransactionModel({required this.id, required this.housingPaymentId, required this.amount, this.extraAmount = 0.0, required this.type, @TimestampConverter() required this.createdAt, required this.createdBy, this.notes, this.housingUnit, this.conceptTitle, this.conceptId, this.isConfirmed = true, @NullableTimestampConverter() this.confirmedAt});
   factory _PaymentTransactionModel.fromJson(Map<String, dynamic> json) => _$PaymentTransactionModelFromJson(json);
 
 @override final  String id;
 @override final  String housingPaymentId;
 @override final  double amount;
+@override@JsonKey() final  double extraAmount;
 @override final  String type;
 @override@TimestampConverter() final  DateTime createdAt;
 @override final  String createdBy;
 @override final  String? notes;
+@override final  String? housingUnit;
+@override final  String? conceptTitle;
+@override final  String? conceptId;
+@override@JsonKey() final  bool isConfirmed;
+@override@NullableTimestampConverter() final  DateTime? confirmedAt;
 
 /// Create a copy of PaymentTransactionModel
 /// with the given fields replaced by the non-null parameter values.
@@ -239,16 +251,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PaymentTransactionModel&&(identical(other.id, id) || other.id == id)&&(identical(other.housingPaymentId, housingPaymentId) || other.housingPaymentId == housingPaymentId)&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.type, type) || other.type == type)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.createdBy, createdBy) || other.createdBy == createdBy)&&(identical(other.notes, notes) || other.notes == notes));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PaymentTransactionModel&&(identical(other.id, id) || other.id == id)&&(identical(other.housingPaymentId, housingPaymentId) || other.housingPaymentId == housingPaymentId)&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.extraAmount, extraAmount) || other.extraAmount == extraAmount)&&(identical(other.type, type) || other.type == type)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.createdBy, createdBy) || other.createdBy == createdBy)&&(identical(other.notes, notes) || other.notes == notes)&&(identical(other.housingUnit, housingUnit) || other.housingUnit == housingUnit)&&(identical(other.conceptTitle, conceptTitle) || other.conceptTitle == conceptTitle)&&(identical(other.conceptId, conceptId) || other.conceptId == conceptId)&&(identical(other.isConfirmed, isConfirmed) || other.isConfirmed == isConfirmed)&&(identical(other.confirmedAt, confirmedAt) || other.confirmedAt == confirmedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,housingPaymentId,amount,type,createdAt,createdBy,notes);
+int get hashCode => Object.hash(runtimeType,id,housingPaymentId,amount,extraAmount,type,createdAt,createdBy,notes,housingUnit,conceptTitle,conceptId,isConfirmed,confirmedAt);
 
 @override
 String toString() {
-  return 'PaymentTransactionModel(id: $id, housingPaymentId: $housingPaymentId, amount: $amount, type: $type, createdAt: $createdAt, createdBy: $createdBy, notes: $notes)';
+  return 'PaymentTransactionModel(id: $id, housingPaymentId: $housingPaymentId, amount: $amount, extraAmount: $extraAmount, type: $type, createdAt: $createdAt, createdBy: $createdBy, notes: $notes, housingUnit: $housingUnit, conceptTitle: $conceptTitle, conceptId: $conceptId, isConfirmed: $isConfirmed, confirmedAt: $confirmedAt)';
 }
 
 
@@ -259,7 +271,7 @@ abstract mixin class _$PaymentTransactionModelCopyWith<$Res> implements $Payment
   factory _$PaymentTransactionModelCopyWith(_PaymentTransactionModel value, $Res Function(_PaymentTransactionModel) _then) = __$PaymentTransactionModelCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String housingPaymentId, double amount, String type,@TimestampConverter() DateTime createdAt, String createdBy, String? notes
+ String id, String housingPaymentId, double amount, double extraAmount, String type,@TimestampConverter() DateTime createdAt, String createdBy, String? notes, String? housingUnit, String? conceptTitle, String? conceptId, bool isConfirmed,@NullableTimestampConverter() DateTime? confirmedAt
 });
 
 
@@ -276,16 +288,22 @@ class __$PaymentTransactionModelCopyWithImpl<$Res>
 
 /// Create a copy of PaymentTransactionModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? housingPaymentId = null,Object? amount = null,Object? type = null,Object? createdAt = null,Object? createdBy = null,Object? notes = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? housingPaymentId = null,Object? amount = null,Object? extraAmount = null,Object? type = null,Object? createdAt = null,Object? createdBy = null,Object? notes = freezed,Object? housingUnit = freezed,Object? conceptTitle = freezed,Object? conceptId = freezed,Object? isConfirmed = null,Object? confirmedAt = freezed,}) {
   return _then(_PaymentTransactionModel(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,housingPaymentId: null == housingPaymentId ? _self.housingPaymentId : housingPaymentId // ignore: cast_nullable_to_non_nullable
 as String,amount: null == amount ? _self.amount : amount // ignore: cast_nullable_to_non_nullable
+as double,extraAmount: null == extraAmount ? _self.extraAmount : extraAmount // ignore: cast_nullable_to_non_nullable
 as double,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,createdBy: null == createdBy ? _self.createdBy : createdBy // ignore: cast_nullable_to_non_nullable
 as String,notes: freezed == notes ? _self.notes : notes // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,housingUnit: freezed == housingUnit ? _self.housingUnit : housingUnit // ignore: cast_nullable_to_non_nullable
+as String?,conceptTitle: freezed == conceptTitle ? _self.conceptTitle : conceptTitle // ignore: cast_nullable_to_non_nullable
+as String?,conceptId: freezed == conceptId ? _self.conceptId : conceptId // ignore: cast_nullable_to_non_nullable
+as String?,isConfirmed: null == isConfirmed ? _self.isConfirmed : isConfirmed // ignore: cast_nullable_to_non_nullable
+as bool,confirmedAt: freezed == confirmedAt ? _self.confirmedAt : confirmedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,
   ));
 }
 

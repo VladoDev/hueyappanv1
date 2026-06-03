@@ -32,6 +32,7 @@ class MockPaymentsRepository implements PaymentsRepository {
       amountPaid: 0.0,
       balance: 100.0,
       paymentStatus: 'pending',
+      hasPendingConfirmation: false,
     ),
   ];
 
@@ -86,17 +87,100 @@ class MockPaymentsRepository implements PaymentsRepository {
     required double amount,
     required String type,
     required String createdBy,
+    bool isAdmin = true,
+    double extraAmount = 0.0,
     String? notes,
   }) async {
     final idx = _payments.indexWhere((p) => p.id == housingPaymentId);
     if (idx == -1) throw Exception('Adeudo no encontrado');
 
     final current = _payments[idx];
-    double newAmountPaid = current.amountPaid + amount;
+    _payments[idx] = HousingPaymentEntity(
+      id: current.id,
+      conceptId: current.conceptId,
+      residentUid: current.residentUid,
+      housingUnit: current.housingUnit,
+      totalDue: current.totalDue,
+      amountPaid: current.amountPaid,
+      balance: current.balance,
+      paymentStatus: current.paymentStatus,
+      extraAmount: current.extraAmount,
+      paidAt: current.paidAt,
+      notes: notes,
+      hasPendingConfirmation: true,
+    );
+
+    final concept = _concepts.firstWhere((c) => c.id == current.conceptId);
+
+    _transactions.add(PaymentTransactionEntity(
+      id: 't_${_transactions.length}',
+      housingPaymentId: housingPaymentId,
+      amount: amount,
+      extraAmount: extraAmount,
+      type: type,
+      createdAt: DateTime.now(),
+      createdBy: createdBy,
+      notes: notes,
+      housingUnit: current.housingUnit,
+      conceptTitle: concept.title,
+      conceptId: current.conceptId,
+      isConfirmed: false,
+      confirmedAt: null,
+    ));
+  }
+
+  @override
+  Future<void> confirmPaymentTransaction({
+    required String housingPaymentId,
+    required String transactionId,
+  }) async {
+    final idx = _payments.indexWhere((p) => p.id == housingPaymentId);
+    if (idx == -1) throw Exception('Adeudo no encontrado');
+    final current = _payments[idx];
+
+    final txIdx = _transactions.indexWhere((t) => t.id == transactionId);
+    if (txIdx == -1) throw Exception('Transacción no encontrada');
+    final tx = _transactions[txIdx];
+
+    if (tx.isConfirmed) return;
+
+    _transactions[txIdx] = PaymentTransactionEntity(
+      id: tx.id,
+      housingPaymentId: tx.housingPaymentId,
+      amount: tx.amount,
+      extraAmount: tx.extraAmount,
+      type: tx.type,
+      createdAt: tx.createdAt,
+      createdBy: tx.createdBy,
+      notes: tx.notes,
+      housingUnit: tx.housingUnit,
+      conceptTitle: tx.conceptTitle,
+      conceptId: tx.conceptId,
+      isConfirmed: true,
+      confirmedAt: DateTime.now(),
+    );
+
+    double newAmountPaid = 0.0;
+    double newExtraAmount = 0.0;
+    bool hasUnconfirmed = false;
+    bool hasComplete = false;
+
+    for (final transaction in _transactions.where((t) => t.housingPaymentId == housingPaymentId)) {
+      if (transaction.isConfirmed) {
+        if (transaction.type == 'complete') {
+          hasComplete = true;
+        }
+        newAmountPaid += transaction.amount;
+        newExtraAmount += transaction.extraAmount;
+      } else {
+        hasUnconfirmed = true;
+      }
+    }
+
     double newBalance = current.totalDue - newAmountPaid;
     String newStatus;
 
-    if (type == 'complete' || newBalance <= 0) {
+    if (hasComplete || newBalance <= 0) {
       newAmountPaid = current.totalDue;
       newBalance = 0.0;
       newStatus = 'paid';
@@ -117,19 +201,11 @@ class MockPaymentsRepository implements PaymentsRepository {
       amountPaid: newAmountPaid,
       balance: newBalance,
       paymentStatus: newStatus,
+      extraAmount: newExtraAmount,
       paidAt: newStatus == 'paid' ? DateTime.now() : null,
-      notes: notes,
+      notes: current.notes,
+      hasPendingConfirmation: hasUnconfirmed,
     );
-
-    _transactions.add(PaymentTransactionEntity(
-      id: 't_${_transactions.length}',
-      housingPaymentId: housingPaymentId,
-      amount: amount,
-      type: type,
-      createdAt: DateTime.now(),
-      createdBy: createdBy,
-      notes: notes,
-    ));
   }
 
   @override
@@ -175,7 +251,7 @@ void main() {
       expect(list.first.amountPerUnit, 100.0);
     });
 
-    test('registerPaymentTransaction calculates partial status and balance correctly', () async {
+    test('registerPaymentTransaction starts as unconfirmed and applies correctly after confirm', () async {
       // Abono parcial de $40 a una deuda de $100
       await registerPaymentUsecase.execute(
         housingPaymentId: 'hp1',
@@ -184,15 +260,33 @@ void main() {
         createdBy: 'admin_uid',
       );
 
-      final payments = await repository.watchConceptPayments('1').first;
-      final payment = payments.firstWhere((p) => p.id == 'hp1');
+      var payments = await repository.watchConceptPayments('1').first;
+      var payment = payments.firstWhere((p) => p.id == 'hp1');
+
+      // Check transaction starts as unconfirmed
+      expect(payment.amountPaid, 0.0);
+      expect(payment.balance, 100.0);
+      expect(payment.paymentStatus, 'pending');
+      expect(payment.hasPendingConfirmation, true);
+
+      // Resident confirms transaction
+      final txs = await repository.watchPaymentTransactions('hp1').first;
+      expect(txs.length, 1);
+      await repository.confirmPaymentTransaction(
+        housingPaymentId: 'hp1',
+        transactionId: txs.first.id,
+      );
+
+      payments = await repository.watchConceptPayments('1').first;
+      payment = payments.firstWhere((p) => p.id == 'hp1');
 
       expect(payment.amountPaid, 40.0);
       expect(payment.balance, 60.0);
       expect(payment.paymentStatus, 'partial');
+      expect(payment.hasPendingConfirmation, false);
     });
 
-    test('registerPaymentTransaction calculates paid status on complete payment', () async {
+    test('registerPaymentTransaction calculates paid status on complete payment after confirm', () async {
       // Pago completo de $100
       await registerPaymentUsecase.execute(
         housingPaymentId: 'hp1',
@@ -201,12 +295,43 @@ void main() {
         createdBy: 'admin_uid',
       );
 
+      final txs = await repository.watchPaymentTransactions('hp1').first;
+      await repository.confirmPaymentTransaction(
+        housingPaymentId: 'hp1',
+        transactionId: txs.first.id,
+      );
+
       final payments = await repository.watchConceptPayments('1').first;
       final payment = payments.firstWhere((p) => p.id == 'hp1');
 
       expect(payment.amountPaid, 100.0);
       expect(payment.balance, 0.0);
       expect(payment.paymentStatus, 'paid');
+    });
+
+    test('registerPaymentTransaction logs extraAmount correctly without reducing balance after confirm', () async {
+      // Pago de extra de $50
+      await registerPaymentUsecase.execute(
+        housingPaymentId: 'hp1',
+        amount: 0.0,
+        type: 'partial',
+        createdBy: 'admin_uid',
+        extraAmount: 50.0,
+      );
+
+      final txs = await repository.watchPaymentTransactions('hp1').first;
+      await repository.confirmPaymentTransaction(
+        housingPaymentId: 'hp1',
+        transactionId: txs.first.id,
+      );
+
+      final payments = await repository.watchConceptPayments('1').first;
+      final payment = payments.firstWhere((p) => p.id == 'hp1');
+
+      expect(payment.amountPaid, 0.0);
+      expect(payment.balance, 100.0);
+      expect(payment.extraAmount, 50.0);
+      expect(payment.paymentStatus, 'pending');
     });
   });
 }

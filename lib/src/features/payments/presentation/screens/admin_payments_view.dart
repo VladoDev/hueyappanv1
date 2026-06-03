@@ -67,7 +67,12 @@ class AdminPaymentsView extends ConsumerWidget {
           }
 
           return ListView.builder(
-            padding: const EdgeInsets.all(VecinalSpacing.xl),
+            padding: const EdgeInsets.only(
+              left: VecinalSpacing.xl,
+              right: VecinalSpacing.xl,
+              top: VecinalSpacing.xl,
+              bottom: 100,
+            ),
             itemCount: concepts.length,
             itemBuilder: (context, index) {
               return _ConceptCard(concept: concepts[index]);
@@ -258,7 +263,7 @@ class _ConceptCard extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Total: \$${concept.totalAmount.toStringAsFixed(2)}',
+                        '${l10n.conceptTotalCost}: \$${concept.totalAmount.toStringAsFixed(2)}',
                         style: VecinalTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.w500),
                       ),
                       const SizedBox(height: 4),

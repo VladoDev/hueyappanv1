@@ -102,21 +102,34 @@ class _ConceptDetailScreenState extends ConsumerState<ConceptDetailScreen> with 
               final pending = payments.where((p) => p.paymentStatus != 'paid').toList();
 
               final totalCollected = payments.fold<double>(0, (sum, p) => sum + p.amountPaid);
+              final totalExtraCollected = payments.fold<double>(0, (sum, p) => sum + p.extraAmount);
               final totalPending = payments.fold<double>(0, (sum, p) => sum + p.balance);
               final recordedExpense = concept.recordedExpense;
-              final availableBalance = totalCollected - recordedExpense;
+              final availableBalance = totalCollected + totalExtraCollected - recordedExpense;
 
               return Column(
                 children: [
-                  _buildFinancialSummary(totalCollected, totalPending, recordedExpense, availableBalance, () => _showUpdateExpenseDialog(concept, vc, l10n), vc, l10n),
+                  _buildFinancialSummary(totalCollected, totalExtraCollected, totalPending, recordedExpense, availableBalance, () => _showUpdateExpenseDialog(concept, vc, l10n), vc, l10n),
                   TabBar(
                     controller: _tabController,
                     labelColor: vc.primaryDefault,
                     unselectedLabelColor: vc.textSecondary,
                     indicatorColor: vc.primaryDefault,
                     tabs: [
-                      Tab(text: '${l10n.pendingHouses} (${pending.length})'),
-                      Tab(text: '${l10n.paidHouses} (${paid.length})'),
+                      Tab(
+                        child: Text(
+                          '${l10n.pendingHouses} (${pending.length})',
+                          textAlign: TextAlign.center,
+                          softWrap: true,
+                        ),
+                      ),
+                      Tab(
+                        child: Text(
+                          '${l10n.paidHouses} (${paid.length})',
+                          textAlign: TextAlign.center,
+                          softWrap: true,
+                        ),
+                      ),
                     ],
                   ),
                   Expanded(
@@ -142,7 +155,7 @@ class _ConceptDetailScreenState extends ConsumerState<ConceptDetailScreen> with 
   }
 
   Widget _buildFinancialSummary(
-      double collected, double pending, double expense, double balance, VoidCallback onUpdateExpense, VecinalSemanticColors vc, AppLocalizations l10n) {
+      double collected, double extraCollected, double pending, double expense, double balance, VoidCallback onUpdateExpense, VecinalSemanticColors vc, AppLocalizations l10n) {
     return Container(
       color: vc.surfaceSecondary,
       padding: const EdgeInsets.all(VecinalSpacing.xl),
@@ -150,7 +163,13 @@ class _ConceptDetailScreenState extends ConsumerState<ConceptDetailScreen> with 
         children: [
           Row(
             children: [
-              _buildSummaryItem(l10n.totalCollectedLabel, collected, vc.paymentSuccessText, vc),
+              _buildSummaryItem(
+                l10n.totalCollectedLabel,
+                collected,
+                vc.paymentSuccessText,
+                vc,
+                subtitle: extraCollected > 0 ? '${l10n.extraAmountLabel}: +\$${extraCollected.toStringAsFixed(2)}' : null,
+              ),
               const SizedBox(width: 16),
               _buildSummaryItem(l10n.totalPendingLabel, pending, vc.destructive, vc),
             ],
@@ -181,7 +200,7 @@ class _ConceptDetailScreenState extends ConsumerState<ConceptDetailScreen> with 
     );
   }
 
-  Widget _buildSummaryItem(String label, double value, Color valueColor, VecinalSemanticColors vc) {
+  Widget _buildSummaryItem(String label, double value, Color valueColor, VecinalSemanticColors vc, {String? subtitle}) {
     return Expanded(
       child: Container(
         padding: const EdgeInsets.all(12),
@@ -202,6 +221,13 @@ class _ConceptDetailScreenState extends ConsumerState<ConceptDetailScreen> with 
                 color: valueColor,
               ),
             ),
+            if (subtitle != null) ...[
+              const SizedBox(height: 4),
+              Text(
+                subtitle,
+                style: VecinalTextStyles.bodySmall.copyWith(color: vc.primaryDefault, fontWeight: FontWeight.bold),
+              ),
+            ],
           ],
         ),
       ),
@@ -257,11 +283,31 @@ class _PaymentListRow extends ConsumerWidget {
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            payment.housingUnit,
-            style: VecinalTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.bold),
+          Expanded(
+            child: Text(
+              payment.housingUnit,
+              style: VecinalTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.bold),
+              softWrap: true,
+            ),
           ),
-          if (!isPaid)
+          if (payment.hasPendingConfirmation)
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+              decoration: BoxDecoration(
+                color: vc.noticeBg,
+                borderRadius: BorderRadius.circular(VecinalRadius.xs),
+                border: Border.all(color: vc.noticeBorder, width: 0.5),
+              ),
+              child: const Text(
+                'Por confirmar',
+                style: TextStyle(
+                  color: Colors.orange,
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            )
+          else if (!isPaid)
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
               decoration: BoxDecoration(
@@ -288,19 +334,32 @@ class _PaymentListRow extends ConsumerWidget {
               loading: () => Text('Cargando...', style: VecinalTextStyles.bodyMedium.copyWith(color: vc.textHint)),
               error: (err, stack) => Text('Residente', style: VecinalTextStyles.bodyMedium.copyWith(color: vc.textHint)),
             ),
-            if (isPaid)
-              Text(
-                'Pagó: \$${payment.amountPaid.toStringAsFixed(2)}',
-                style: VecinalTextStyles.bodyMedium.copyWith(color: vc.paymentSuccessText, fontWeight: FontWeight.bold),
-              )
-            else
-              Text(
-                'Debe: \$${payment.balance.toStringAsFixed(2)}',
-                style: VecinalTextStyles.bodyMedium.copyWith(
-                  color: isPartial ? vc.noticeText : vc.destructive,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                if (isPaid)
+                  Text(
+                    'Pagó: \$${payment.amountPaid.toStringAsFixed(2)}',
+                    style: VecinalTextStyles.bodyMedium.copyWith(color: vc.paymentSuccessText, fontWeight: FontWeight.bold),
+                  )
+                else
+                  Text(
+                    'Debe: \$${payment.balance.toStringAsFixed(2)}',
+                    style: VecinalTextStyles.bodyMedium.copyWith(
+                      color: isPartial ? vc.noticeText : vc.destructive,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                if (payment.extraAmount > 0)
+                  Text(
+                    '+ \$${payment.extraAmount.toStringAsFixed(2)} extra',
+                    style: VecinalTextStyles.bodySmall.copyWith(
+                      color: vc.primaryDefault,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+              ],
+            ),
           ],
         ),
       ),

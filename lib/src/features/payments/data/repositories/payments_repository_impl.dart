@@ -32,14 +32,18 @@ class PaymentsRepositoryImpl implements PaymentsRepository {
 
   @override
   Stream<List<HousingPaymentEntity>> watchNeighborPayments(String housingUnit) {
-    return _dataSource.watchNeighborPayments(housingUnit).map((list) =>
-        list.map((model) => model.toEntity()).toList());
+    return _dataSource.watchNeighborPayments(housingUnit).map((list) {
+      final entities = list.map((model) => model.toEntity()).toList();
+      return _mergeHousingPayments(entities);
+    });
   }
 
   @override
   Stream<List<HousingPaymentEntity>> watchConceptPayments(String conceptId) {
-    return _dataSource.watchConceptPayments(conceptId).map((list) =>
-        list.map((model) => model.toEntity()).toList());
+    return _dataSource.watchConceptPayments(conceptId).map((list) {
+      final entities = list.map((model) => model.toEntity()).toList();
+      return _mergeHousingPayments(entities);
+    });
   }
 
   @override
@@ -61,9 +65,13 @@ class PaymentsRepositoryImpl implements PaymentsRepository {
     final conceptModel = PaymentConceptModel.fromEntity(concept);
     final itemModels = items.map((e) => ConceptItemModel.fromEntity(e)).toList();
 
-    // 3. Generate housing payment records for each active resident
+    // 3. Generate housing payment records for each unique housing unit
     final List<HousingPaymentModel> payments = [];
+    final Set<String> uniqueHousingUnits = {};
     for (final resident in activeResidents) {
+      if (uniqueHousingUnits.contains(resident.housingUnit)) continue;
+      uniqueHousingUnits.add(resident.housingUnit);
+
       final paymentId = FirebaseFirestore.instance.collection('housing_payments').doc().id;
       payments.add(HousingPaymentModel(
         id: paymentId,
@@ -74,6 +82,7 @@ class PaymentsRepositoryImpl implements PaymentsRepository {
         amountPaid: 0.0,
         balance: concept.amountPerUnit,
         paymentStatus: 'pending',
+        extraAmount: 0.0,
         paidAt: null,
         notes: null,
       ));
@@ -120,6 +129,8 @@ class PaymentsRepositoryImpl implements PaymentsRepository {
     required double amount,
     required String type,
     required String createdBy,
+    bool isAdmin = true,
+    double extraAmount = 0.0,
     String? notes,
   }) async {
     // 1. Fetch current payment details
@@ -130,45 +141,37 @@ class PaymentsRepositoryImpl implements PaymentsRepository {
     }
     final currentModel = HousingPaymentModel.fromJson(paymentDoc.data()!);
 
-    // 2. Perform calculations
-    double newAmountPaid = currentModel.amountPaid + amount;
-    double newBalance = currentModel.totalDue - newAmountPaid;
-    String newStatus;
-    DateTime? newPaidAt = currentModel.paidAt;
-
-    if (type == 'complete' || newBalance <= 0) {
-      newAmountPaid = currentModel.totalDue;
-      newBalance = 0.0;
-      newStatus = 'paid';
-      newPaidAt = DateTime.now();
-    } else if (newAmountPaid > 0) {
-      newStatus = 'partial';
-      newPaidAt = null;
-    } else {
-      newAmountPaid = 0.0;
-      newBalance = currentModel.totalDue;
-      newStatus = 'pending';
-      newPaidAt = null;
+    // Fetch concept title for context & metadata
+    final conceptDoc = await FirebaseFirestore.instance
+        .collection('concepts')
+        .doc(currentModel.conceptId)
+        .get();
+    String conceptTitle = 'Pago';
+    if (conceptDoc.exists && conceptDoc.data() != null) {
+      conceptTitle = conceptDoc.data()!['title'] as String? ?? 'Pago';
     }
 
+    // Set hasPendingConfirmation to true, but do not update totals yet
     final updatedModel = currentModel.copyWith(
-      amountPaid: newAmountPaid,
-      balance: newBalance,
-      paymentStatus: newStatus,
-      paidAt: newPaidAt,
-      notes: notes,
+      hasPendingConfirmation: true,
     );
 
-    // 3. Create the transaction record
+    // 3. Create the transaction record as unconfirmed
     final transactionId = docRef.collection('transactions').doc().id;
     final transactionModel = PaymentTransactionModel(
       id: transactionId,
       housingPaymentId: housingPaymentId,
       amount: amount,
+      extraAmount: extraAmount,
       type: type,
       createdAt: DateTime.now(),
       createdBy: createdBy,
       notes: notes,
+      housingUnit: currentModel.housingUnit,
+      conceptTitle: conceptTitle,
+      conceptId: currentModel.conceptId,
+      isConfirmed: false,
+      confirmedAt: null,
     );
 
     // 4. Save to Firestore
@@ -177,42 +180,131 @@ class PaymentsRepositoryImpl implements PaymentsRepository {
       transaction: transactionModel,
     );
 
-    // 5. Send push notification to target resident
+    // 5. Send push notification depending on who registered the payment
     try {
       final serverKey = await _dataSource.getFcmServerKey();
-      final tokens = await _dataSource.getResidentTokens(currentModel.residentUid);
+      
+      final List<String> targetTokens = [];
+      String notificationBody = '';
+      String notificationTitle = 'Confirmación de Pago Pendiente 💳';
 
-      if (tokens.isNotEmpty) {
-        // Fetch concept title for context
-        final conceptDoc = await FirebaseFirestore.instance
-            .collection('concepts')
-            .doc(currentModel.conceptId)
-            .get();
+      if (isAdmin) {
+        // Admin registered it -> send to neighbors of that unit
+        final activeResidents = await _dataSource.getActiveResidents();
+        final unitResidents = activeResidents.where((r) => r.housingUnit == currentModel.housingUnit);
         
-        String conceptTitle = 'Pago';
-        if (conceptDoc.exists && conceptDoc.data() != null) {
-          conceptTitle = conceptDoc.data()!['title'] as String? ?? 'Pago';
+        for (final resident in unitResidents) {
+          final t = await _dataSource.getResidentTokens(resident.uid);
+          targetTokens.addAll(t);
         }
 
-        String body;
-        if (newStatus == 'paid') {
-          body = 'Tu pago para el concepto "$conceptTitle" por \$${amount.toStringAsFixed(2)} fue recibido. ¡Tu adeudo ha quedado liquidado!';
-        } else if (type == 'correction') {
-          body = 'Se ha registrado un ajuste en tu adeudo del concepto "$conceptTitle" por \$${amount.toStringAsFixed(2)}. Saldo restante: \$${newBalance.toStringAsFixed(2)}.';
-        } else {
-          body = 'Tu abono para el concepto "$conceptTitle" por \$${amount.toStringAsFixed(2)} fue recibido. Saldo restante: \$${newBalance.toStringAsFixed(2)}.';
-        }
+        notificationBody = 'El administrador registró un pago por \$${amount.toStringAsFixed(2)} para el concepto "$conceptTitle". Por favor confírmalo para que se refleje en tu cuenta.';
+      } else {
+        // Neighbor registered it -> send to admins
+        final adminTokens = await _dataSource.getAdminTokens();
+        targetTokens.addAll(adminTokens);
+        
+        notificationBody = 'El residente de ${currentModel.housingUnit} ha reportado un pago por \$${amount.toStringAsFixed(2)} para el concepto "$conceptTitle". Por favor revísalo y confírmalo.';
+      }
 
+      if (targetTokens.isNotEmpty) {
         await _dataSource.sendPushNotification(
           serverKey,
-          title: 'Pago Registrado 💳',
-          body: body,
-          targetTokens: tokens,
+          title: notificationTitle,
+          body: notificationBody,
+          targetTokens: targetTokens,
         );
       }
     } catch (e) {
       debugPrint('⚠️ Error sending push notification for payment: $e');
     }
+  }
+
+  @override
+  Future<void> confirmPaymentTransaction({
+    required String housingPaymentId,
+    required String transactionId,
+  }) async {
+    final docRef = FirebaseFirestore.instance.collection('housing_payments').doc(housingPaymentId);
+    final paymentDoc = await docRef.get();
+    if (!paymentDoc.exists || paymentDoc.data() == null) {
+      throw Exception('Registro de adeudo no encontrado.');
+    }
+    final parentModel = HousingPaymentModel.fromJson(paymentDoc.data()!);
+
+    final txDocRef = docRef.collection('transactions').doc(transactionId);
+    final txDoc = await txDocRef.get();
+    if (!txDoc.exists || txDoc.data() == null) {
+      throw Exception('Transacción no encontrada.');
+    }
+    final transactionModel = PaymentTransactionModel.fromJson(txDoc.data()!);
+
+    if (transactionModel.isConfirmed) {
+      // Already confirmed, nothing to do
+      return;
+    }
+
+    // Fetch all transactions to recalculate totals
+    final txsSnapshot = await docRef.collection('transactions').get();
+    final allTransactions = txsSnapshot.docs
+        .map((d) => PaymentTransactionModel.fromJson(d.data()))
+        .toList();
+
+    double newAmountPaid = 0.0;
+    double newExtraAmount = 0.0;
+    bool hasUnconfirmed = false;
+    bool hasComplete = false;
+
+    for (final tx in allTransactions) {
+      final isTxConfirmed = (tx.id == transactionId) || tx.isConfirmed;
+      if (isTxConfirmed) {
+        if (tx.type == 'complete') {
+          hasComplete = true;
+        }
+        newAmountPaid += tx.amount;
+        newExtraAmount += tx.extraAmount;
+      } else {
+        hasUnconfirmed = true;
+      }
+    }
+
+    double newBalance = parentModel.totalDue - newAmountPaid;
+    String newStatus;
+    DateTime? newPaidAt = parentModel.paidAt;
+
+    if (hasComplete || newBalance <= 0) {
+      newAmountPaid = parentModel.totalDue;
+      newBalance = 0.0;
+      newStatus = 'paid';
+      newPaidAt = DateTime.now();
+    } else if (newAmountPaid > 0) {
+      newStatus = 'partial';
+      newPaidAt = null;
+    } else {
+      newAmountPaid = 0.0;
+      newBalance = parentModel.totalDue;
+      newStatus = 'pending';
+      newPaidAt = null;
+    }
+
+    final updatedParentModel = parentModel.copyWith(
+      amountPaid: newAmountPaid,
+      balance: newBalance,
+      extraAmount: newExtraAmount,
+      paymentStatus: newStatus,
+      paidAt: newPaidAt,
+      hasPendingConfirmation: hasUnconfirmed,
+    );
+
+    final updatedTransactionModel = transactionModel.copyWith(
+      isConfirmed: true,
+      confirmedAt: DateTime.now(),
+    );
+
+    await _dataSource.savePaymentTransaction(
+      updatedPayment: updatedParentModel,
+      transaction: updatedTransactionModel,
+    );
   }
 
   @override
@@ -231,5 +323,70 @@ class PaymentsRepositoryImpl implements PaymentsRepository {
     );
 
     await _dataSource.updateConcept(updatedModel);
+  }
+
+  List<HousingPaymentEntity> _mergeHousingPayments(List<HousingPaymentEntity> list) {
+    final Map<String, List<HousingPaymentEntity>> grouped = {};
+    for (final payment in list) {
+      final key = '${payment.conceptId}_${payment.housingUnit}';
+      grouped.putIfAbsent(key, () => []).add(payment);
+    }
+
+    final List<HousingPaymentEntity> mergedList = [];
+    grouped.forEach((key, payments) {
+      // Sort payments by ID to guarantee a deterministic representative across different Firestore query orderings
+      payments.sort((a, b) => a.id.compareTo(b.id));
+
+      if (payments.length == 1) {
+        mergedList.add(payments.first);
+      } else {
+        // Merge multiple payments for the same concept and housing unit (lote)
+        final representative = payments.first;
+        
+        final double totalPaid = payments.fold<double>(0, (acc, p) => acc + p.amountPaid);
+        final double totalExtra = payments.fold<double>(0, (acc, p) => acc + p.extraAmount);
+        
+        final double totalDue = representative.totalDue;
+        final double balance = (totalDue - totalPaid).clamp(0.0, totalDue);
+        
+        final String status;
+        if (balance <= 0) {
+          status = 'paid';
+        } else if (totalPaid > 0) {
+          status = 'partial';
+        } else {
+          status = 'pending';
+        }
+        
+        DateTime? latestPaidAt;
+        for (final p in payments) {
+          if (p.paidAt != null) {
+            if (latestPaidAt == null || p.paidAt!.isAfter(latestPaidAt)) {
+              latestPaidAt = p.paidAt;
+            }
+          }
+        }
+        
+        final notesList = payments.map((p) => p.notes).whereType<String>().where((n) => n.isNotEmpty).toList();
+        final notes = notesList.isNotEmpty ? notesList.join(' | ') : null;
+
+        mergedList.add(HousingPaymentEntity(
+          id: representative.id,
+          conceptId: representative.conceptId,
+          residentUid: representative.residentUid,
+          housingUnit: representative.housingUnit,
+          totalDue: totalDue,
+          amountPaid: totalPaid,
+          balance: balance,
+          paymentStatus: status,
+          extraAmount: totalExtra,
+          paidAt: latestPaidAt,
+          notes: notes,
+          hasPendingConfirmation: payments.any((p) => p.hasPendingConfirmation),
+        ));
+      }
+    });
+
+    return mergedList;
   }
 }

@@ -10,6 +10,8 @@ class RegisterPaymentTransactionUsecase {
     required double amount,
     required String type,
     required String createdBy,
+    bool isAdmin = true,
+    double extraAmount = 0.0,
     String? notes,
   }) {
     return _repository.registerPaymentTransaction(
@@ -17,6 +19,8 @@ class RegisterPaymentTransactionUsecase {
       amount: amount,
       type: type,
       createdBy: createdBy,
+      isAdmin: isAdmin,
+      extraAmount: extraAmount,
       notes: notes,
     );
   }

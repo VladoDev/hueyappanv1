@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hueyappanv1/l10n/app_localizations.dart';
 import 'package:hueyappanv1/src/core/theme/vecinal_theme.dart';
 import '../providers/auth_provider.dart';
+import '../../../payments/domain/entities/payment_transaction_entity.dart';
+import '../../../payments/presentation/providers/payments_provider.dart';
 
 class HomeTab extends ConsumerWidget {
   final String residentName;
@@ -21,6 +23,58 @@ class HomeTab extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
+        leading: Consumer(
+          builder: (context, ref, child) {
+            final transactionsAsync = ref.watch(neighborTransactionsStreamProvider(housingUnit));
+            return transactionsAsync.when(
+              data: (transactions) {
+                final pending = transactions.where((t) => !t.isConfirmed).toList();
+                return Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.notifications_none, color: vc.primaryDefault, size: 26),
+                      onPressed: () => _showNotificationsBottomSheet(context, ref, pending),
+                    ),
+                    if (pending.isNotEmpty)
+                      Positioned(
+                        right: 8,
+                        top: 8,
+                        child: Container(
+                          padding: const EdgeInsets.all(2),
+                          decoration: BoxDecoration(
+                            color: vc.destructive,
+                            shape: BoxShape.circle,
+                          ),
+                          constraints: const BoxConstraints(
+                            minWidth: 16,
+                            minHeight: 16,
+                          ),
+                          child: Text(
+                            '${pending.length}',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 9,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                  ],
+                );
+              },
+              loading: () => IconButton(
+                icon: Icon(Icons.notifications_none, color: vc.primaryDefault, size: 26),
+                onPressed: () => _showNotificationsBottomSheet(context, ref, []),
+              ),
+              error: (err, stack) => IconButton(
+                icon: Icon(Icons.notifications_none, color: vc.primaryDefault, size: 26),
+                onPressed: () => _showNotificationsBottomSheet(context, ref, []),
+              ),
+            );
+          },
+        ),
         title: Text(
           l10n.appName,
           style: VecinalTextStyles.headlineSmall.copyWith(
@@ -54,7 +108,12 @@ class HomeTab extends ConsumerWidget {
         ),
         child: SafeArea(
           child: ListView(
-            padding: const EdgeInsets.all(VecinalSpacing.xl),
+            padding: const EdgeInsets.only(
+              left: VecinalSpacing.xl,
+              right: VecinalSpacing.xl,
+              top: VecinalSpacing.xl,
+              bottom: 100,
+            ),
             children: [
               _buildWelcomeHeader(context, vc),
               const SizedBox(height: 32),
@@ -303,6 +362,171 @@ class HomeTab extends ConsumerWidget {
                     ],
             );
           },
+        );
+      },
+    );
+  }
+
+  void _showNotificationsBottomSheet(
+      BuildContext context, WidgetRef ref, List<PaymentTransactionEntity> pending) {
+    final vc = context.vecinalColors;
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: vc.surfacePrimary,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Notificaciones',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ],
+                ),
+                const Divider(),
+                if (pending.isEmpty)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 24.0),
+                    child: Center(
+                      child: Column(
+                        children: [
+                          Icon(Icons.notifications_none, size: 48, color: vc.textHint),
+                          const SizedBox(height: 12),
+                          Text(
+                            'No tienes pagos por confirmar',
+                            style: TextStyle(color: vc.textSecondary),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                else
+                  Flexible(
+                    child: ListView.separated(
+                      shrinkWrap: true,
+                      itemCount: pending.length,
+                      separatorBuilder: (context, index) => const Divider(height: 1),
+                      itemBuilder: (context, index) {
+                        final t = pending[index];
+                        final dateStr = '${t.createdAt.day}/${t.createdAt.month}/${t.createdAt.year}';
+                        return ListTile(
+                          leading: Icon(Icons.payment, color: vc.primaryDefault),
+                          title: Text(t.conceptTitle ?? 'Pago Pendiente', style: const TextStyle(fontWeight: FontWeight.bold)),
+                          subtitle: Text('Registrado el $dateStr'),
+                          trailing: Icon(Icons.chevron_right, color: vc.textHint),
+                          onTap: () {
+                            Navigator.pop(context);
+                            _showConfirmDetailDialog(context, ref, t, vc);
+                          },
+                        );
+                      },
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _showConfirmDetailDialog(
+      BuildContext context, WidgetRef ref, PaymentTransactionEntity t, VecinalSemanticColors vc) {
+    showDialog(
+      context: context,
+      builder: (dialogCtx) {
+        return AlertDialog(
+          title: const Text('Confirmar Pago', style: TextStyle(fontWeight: FontWeight.bold)),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Concepto:',
+                style: TextStyle(fontWeight: FontWeight.bold, color: vc.textSecondary, fontSize: 13),
+              ),
+              Text(
+                t.conceptTitle ?? 'Sin concepto',
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                'Monto a Confirmar:',
+                style: TextStyle(fontWeight: FontWeight.bold, color: vc.textSecondary, fontSize: 13),
+              ),
+              Text(
+                '\$${t.amount.toStringAsFixed(2)}',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: vc.destructive),
+              ),
+              if (t.extraAmount > 0) ...[
+                const SizedBox(height: 4),
+                Text(
+                  '+ \$${t.extraAmount.toStringAsFixed(2)} extra',
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: vc.primaryDefault),
+                ),
+              ],
+              if (t.notes != null && t.notes!.isNotEmpty) ...[
+                const SizedBox(height: 12),
+                Text(
+                  'Notas del administrador:',
+                  style: TextStyle(fontWeight: FontWeight.bold, color: vc.textSecondary, fontSize: 13),
+                ),
+                Text(
+                  t.notes!,
+                  style: const TextStyle(fontSize: 14, fontStyle: FontStyle.italic),
+                ),
+              ],
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(dialogCtx),
+              child: Text('Cancelar', style: TextStyle(color: vc.textSecondary, fontWeight: FontWeight.w600)),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                final messenger = ScaffoldMessenger.of(dialogCtx);
+                Navigator.pop(dialogCtx);
+                messenger.showSnackBar(
+                  const SnackBar(content: Text('Confirmando pago...')),
+                );
+                final success = await ref
+                    .read(paymentsControllerProvider.notifier)
+                    .confirmPaymentTransaction(
+                      housingPaymentId: t.housingPaymentId,
+                      transactionId: t.id,
+                    );
+                if (success) {
+                  messenger.showSnackBar(
+                    const SnackBar(content: Text('Pago confirmado con éxito')),
+                  );
+                } else {
+                  messenger.showSnackBar(
+                    const SnackBar(content: Text('Error al confirmar el pago')),
+                  );
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: vc.primaryDefault,
+                foregroundColor: vc.textOnPrimary,
+              ),
+              child: const Text('Confirmar', style: TextStyle(fontWeight: FontWeight.bold)),
+            ),
+          ],
         );
       },
     );

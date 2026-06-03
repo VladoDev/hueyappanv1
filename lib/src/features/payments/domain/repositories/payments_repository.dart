@@ -19,7 +19,14 @@ abstract class PaymentsRepository {
     required double amount,
     required String type, // 'partial', 'complete', 'correction'
     required String createdBy,
+    bool isAdmin = true,
+    double extraAmount = 0.0,
     String? notes,
+  });
+
+  Future<void> confirmPaymentTransaction({
+    required String housingPaymentId,
+    required String transactionId,
   });
 
   Future<void> updateRecordedExpense({

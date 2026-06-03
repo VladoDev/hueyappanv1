@@ -25,14 +25,12 @@ class _ConceptFormScreenState extends ConsumerState<ConceptFormScreen> {
   final _titleController = TextEditingController();
   final _descController = TextEditingController();
   final _totalCostController = TextEditingController();
-  final _unitsController = TextEditingController();
-
-  String _status = 'active';
-  double _amountPerUnit = 0.0;
+  final _amountPerHouseController = TextEditingController();
 
   final List<_SubItemInput> _subItems = [];
   bool _isEditing = false;
   PaymentConceptEntity? _originalConcept;
+  String _status = 'active';
 
   @override
   void initState() {
@@ -49,9 +47,8 @@ class _ConceptFormScreenState extends ConsumerState<ConceptFormScreen> {
         _titleController.text = concept.title;
         _descController.text = concept.description ?? '';
         _totalCostController.text = concept.totalAmount.toStringAsFixed(2);
-        _unitsController.text = concept.totalUnits.toString();
+        _amountPerHouseController.text = concept.amountPerUnit.toStringAsFixed(2);
         _status = concept.status;
-        _amountPerUnit = concept.amountPerUnit;
 
         // Fetch sub-items
         final items = await repo.watchConceptItems(widget.conceptId!).first;
@@ -66,12 +63,7 @@ class _ConceptFormScreenState extends ConsumerState<ConceptFormScreen> {
           }
         });
       });
-    } else {
-      _unitsController.text = '40'; // Default number of houses
     }
-
-    _totalCostController.addListener(_calculateAmountPerUnit);
-    _unitsController.addListener(_calculateAmountPerUnit);
   }
 
   @override
@@ -79,19 +71,11 @@ class _ConceptFormScreenState extends ConsumerState<ConceptFormScreen> {
     _titleController.dispose();
     _descController.dispose();
     _totalCostController.dispose();
-    _unitsController.dispose();
+    _amountPerHouseController.dispose();
     for (final item in _subItems) {
       item.dispose();
     }
     super.dispose();
-  }
-
-  void _calculateAmountPerUnit() {
-    final cost = double.tryParse(_totalCostController.text) ?? 0.0;
-    final units = int.tryParse(_unitsController.text) ?? 0;
-    setState(() {
-      _amountPerUnit = units > 0 ? (cost / units) : 0.0;
-    });
   }
 
   void _saveForm() async {
@@ -99,7 +83,7 @@ class _ConceptFormScreenState extends ConsumerState<ConceptFormScreen> {
       final controller = ref.read(paymentsControllerProvider.notifier);
 
       final totalAmount = double.parse(_totalCostController.text);
-      final totalUnits = int.parse(_unitsController.text);
+      final amountPerHouse = double.parse(_amountPerHouseController.text);
       final conceptId = _isEditing ? widget.conceptId! : DateTime.now().millisecondsSinceEpoch.toString();
 
       final concept = PaymentConceptEntity(
@@ -107,8 +91,8 @@ class _ConceptFormScreenState extends ConsumerState<ConceptFormScreen> {
         title: _titleController.text.trim(),
         description: _descController.text.trim(),
         totalAmount: totalAmount,
-        totalUnits: totalUnits,
-        amountPerUnit: _amountPerUnit,
+        totalUnits: 0,
+        amountPerUnit: amountPerHouse,
         status: _status,
         createdAt: _originalConcept?.createdAt ?? DateTime.now(),
         updatedAt: DateTime.now(),
@@ -212,49 +196,21 @@ class _ConceptFormScreenState extends ConsumerState<ConceptFormScreen> {
                 const SizedBox(width: 12),
                 Expanded(
                   child: TextFormField(
-                    controller: _unitsController,
+                    controller: _amountPerHouseController,
                     enabled: !isLoading,
-                    keyboardType: TextInputType.number,
+                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
                     decoration: InputDecoration(
-                      labelText: l10n.conceptTotalUnits,
+                      labelText: l10n.amountPerHouseLabel,
                       prefixIcon: Icon(Icons.home_outlined, color: vc.primaryDefault),
                     ),
                     validator: (val) {
                       if (val == null || val.isEmpty) return l10n.fieldRequired;
-                      if (int.tryParse(val) == null) return l10n.fieldRequired;
+                      if (double.tryParse(val) == null) return l10n.invalidAmount;
                       return null;
                     },
                   ),
                 ),
               ],
-            ),
-            const SizedBox(height: 16),
-            Card(
-              elevation: 0,
-              color: vc.surfaceSecondary,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(VecinalRadius.md),
-                side: BorderSide(color: vc.borderDefault, width: 0.5),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      l10n.amountPerHouseLabel,
-                      style: VecinalTextStyles.labelLarge.copyWith(fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      '\$${_amountPerUnit.toStringAsFixed(2)}',
-                      style: VecinalTextStyles.headlineSmall.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: vc.primaryDefault,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
             ),
             if (_isEditing) ...[
               const SizedBox(height: 16),
