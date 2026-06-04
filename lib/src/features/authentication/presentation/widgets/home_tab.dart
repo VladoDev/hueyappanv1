@@ -322,7 +322,8 @@ class HomeTab extends ConsumerWidget {
                             if (currentUser != null) {
                               final profile = await datasource.getResidentProfile(currentUser.uid);
                               final name = profile?.name ?? currentUser.email ?? 'Vecino';
-                              await datasource.triggerEmergencyAlarm(currentUser.uid, name);
+                              final unit = profile?.housingUnit ?? housingUnit;
+                              await datasource.triggerEmergencyAlarm(currentUser.uid, name, unit);
                             }
                             
                             if (context.mounted) {
