@@ -37,7 +37,12 @@ class ProfileTab extends ConsumerWidget {
         ),
       ),
       body: ListView(
-        padding: const EdgeInsets.all(VecinalSpacing.xl),
+        padding: const EdgeInsets.only(
+          left: VecinalSpacing.xl,
+          right: VecinalSpacing.xl,
+          top: VecinalSpacing.xl,
+          bottom: 100,
+        ),
         children: [
           _buildAvatarSection(vc),
           const SizedBox(height: 32),
@@ -126,18 +131,27 @@ class ProfileTab extends ConsumerWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              label,
-              style: VecinalTextStyles.bodyMedium.copyWith(
-                color: vc.textSecondary,
-                fontWeight: FontWeight.w500,
+            Expanded(
+              flex: 2,
+              child: Text(
+                label,
+                style: VecinalTextStyles.bodyMedium.copyWith(
+                  color: vc.textSecondary,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
-            Text(
-              value,
-              style: VecinalTextStyles.bodyMedium.copyWith(
-                fontWeight: FontWeight.bold,
-                color: vc.textPrimary,
+            const SizedBox(width: 8),
+            Expanded(
+              flex: 3,
+              child: Text(
+                value,
+                textAlign: TextAlign.end,
+                softWrap: true,
+                style: VecinalTextStyles.bodyMedium.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: vc.textPrimary,
+                ),
               ),
             ),
           ],

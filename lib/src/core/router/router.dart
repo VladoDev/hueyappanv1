@@ -9,7 +9,9 @@ import '../../features/authentication/presentation/screens/register_screen.dart'
 import '../../features/authentication/presentation/screens/main_shell_screen.dart';
 import '../../features/authentication/presentation/widgets/home_tab.dart';
 import '../../features/authentication/presentation/widgets/announcements_tab.dart';
-import '../../features/authentication/presentation/widgets/payments_tab.dart';
+import '../../features/payments/presentation/screens/payments_tab_screen.dart';
+import '../../features/payments/presentation/screens/concept_form_screen.dart';
+import '../../features/payments/presentation/screens/concept_detail_screen.dart';
 import '../../features/authentication/presentation/widgets/profile_tab.dart';
 import '../../features/contacts/presentation/screens/contacts_tab.dart';
 
@@ -40,37 +42,37 @@ final routerProvider = Provider<GoRouter>((ref) {
       FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance),
     ],
     redirect: (context, state) {
-      if (authState.isLoading || 
-          authState.hasError || 
-          firebaseUserAsync.isLoading || 
-          firebaseUserAsync.hasError) {
-        return null; // Wait until initial load is complete
-      }
-
-      final user = authState.value;
       final firebaseUser = firebaseUserAsync.value;
+      final user = authState.value;
       final isLoggingIn = state.matchedLocation == '/login';
       final isRegistering = state.matchedLocation == '/register';
 
-      // Check if logged in to Firebase Auth but profile is missing in Firestore
-      final hasAuthUser = firebaseUser != null;
-
-      if (hasAuthUser && user == null) {
-        // Half-registered state: redirect to register screen
-        return isRegistering ? null : '/register';
+      // 1. If Firebase Auth is still loading and we have no user, wait.
+      if (firebaseUserAsync.isLoading && firebaseUser == null) {
+        return null;
       }
 
-      if (user == null) {
-        // Not logged in: allow login or register screen, redirect to login otherwise
+      // 2. If Firebase Auth user is null, we are definitely logged out. Redirect to login.
+      if (firebaseUser == null) {
         return (isLoggingIn || isRegistering) ? null : '/login';
       }
 
-      // Logged in: redirect to dashboard if trying to go to login or register screen
+      // 3. If Firebase user is logged in but profile is still loading and we have no value, wait.
+      if (authState.isLoading && user == null) {
+        return null;
+      }
+
+      // 4. If Firebase user is logged in but profile is missing (e.g. half-registered), redirect to register.
+      if (user == null) {
+        return isRegistering ? null : '/register';
+      }
+
+      // 5. If fully logged in, redirect away from auth screens.
       if (isLoggingIn || isRegistering) {
         return '/home';
       }
 
-      return null; // Let the router navigate to the requested page
+      return null; // Allow navigation to the requested route
     },
     routes: [
       GoRoute(
@@ -112,7 +114,27 @@ final routerProvider = Provider<GoRouter>((ref) {
             routes: [
               GoRoute(
                 path: '/payments',
-                builder: (context, state) => const PaymentsTab(),
+                builder: (context, state) => const PaymentsTabScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'new',
+                    builder: (context, state) => const ConceptFormScreen(),
+                  ),
+                  GoRoute(
+                    path: 'edit/:id',
+                    builder: (context, state) {
+                      final id = state.pathParameters['id']!;
+                      return ConceptFormScreen(conceptId: id);
+                    },
+                  ),
+                  GoRoute(
+                    path: 'detail/:id',
+                    builder: (context, state) {
+                      final id = state.pathParameters['id']!;
+                      return ConceptDetailScreen(conceptId: id);
+                    },
+                  ),
+                ],
               ),
             ],
           ),
