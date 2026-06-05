@@ -11,11 +11,13 @@ _ResidentModel _$ResidentModelFromJson(Map<String, dynamic> json) =>
       uid: json['uid'] as String,
       name: json['name'] as String,
       email: json['email'] as String,
-      housingUnit: json['housingUnit'] as String,
+      lot: json['lot'] as String? ?? '',
+      house: json['house'] as String? ?? '',
       accountStatus: json['accountStatus'] as String,
       phone: json['phone'] as String?,
       residentType: json['residentType'] as String?,
       role: json['role'] as String? ?? 'vecino',
+      isPhoneVerified: json['isPhoneVerified'] as bool? ?? false,
     );
 
 Map<String, dynamic> _$ResidentModelToJson(_ResidentModel instance) =>
@@ -23,9 +25,11 @@ Map<String, dynamic> _$ResidentModelToJson(_ResidentModel instance) =>
       'uid': instance.uid,
       'name': instance.name,
       'email': instance.email,
-      'housingUnit': instance.housingUnit,
+      'lot': instance.lot,
+      'house': instance.house,
       'accountStatus': instance.accountStatus,
       'phone': instance.phone,
       'residentType': instance.residentType,
       'role': instance.role,
+      'isPhoneVerified': instance.isPhoneVerified,
     };

@@ -256,4 +256,59 @@ class AuthFirebaseDatasource {
       return data;
     });
   }
+
+  Future<void> requestPhoneVerification(String uid, String phone, String name, String lot, String house) async {
+    await _firestore.collection('phone_verifications').doc(uid).set({
+      'phone': phone,
+      'name': name,
+      'lot': lot,
+      'house': house,
+      'status': 'pending',
+      'createdAt': FieldValue.serverTimestamp(),
+    });
+  }
+
+  Future<bool> verifyPhoneOtp(String uid, String otp) async {
+    try {
+      // Usar HTTPS callable function o llamar al endpoint HTTP de la cloud function 'verifyOtp'
+      // Dado que implementaremos las funciones como http endpoints o callable, asumiremos la URL.
+      // Por simplicidad si no usamos cloud_functions package, podemos guardar el otp ingresado 
+      // en el documento y que una function lo procese, pero es asíncrono.
+      // La mejor opción es escribir a Firestore y escuchar el resultado, o usar un endpoint HTTP.
+      // Para efectos de este código, simularemos la llamada HTTP a la función `verifyOtp`.
+      // En un entorno real de Firebase sin paquete cloud_functions, tendrías la URL de tu function.
+      // Para simplificar, implementaremos la verificación de OTP comprobando el Firestore 
+      // asumiendo que la Cloud Function actualizó el perfil del usuario si es correcto.
+      // Pero como el backend lo haremos como Cloud Function HTTP, escribiremos el request.
+      // Como no conocemos la URL, una alternativa válida es que la app modifique un campo
+      // 'submittedOtp' en el documento phone_verifications, y escuche los cambios.
+      
+      // Enfoque Firestore listener:
+      final docRef = _firestore.collection('phone_verifications').doc(uid);
+      await docRef.update({
+        'submittedOtp': otp,
+        'submittedAt': FieldValue.serverTimestamp(),
+      });
+
+      // Esperar hasta 10 segundos para ver si la Cloud Function lo marca como 'verified'
+      // o 'failed'. 
+      // Alternativa más robusta:
+      int retries = 0;
+      while (retries < 20) {
+        await Future.delayed(const Duration(milliseconds: 500));
+        final snapshot = await docRef.get();
+        final status = snapshot.data()?['status'] as String?;
+        if (status == 'verified') {
+          return true;
+        } else if (status == 'failed') {
+          return false;
+        }
+        retries++;
+      }
+      return false; // Timeout
+    } catch (e) {
+      debugPrint('Error verifying OTP: $e');
+      return false;
+    }
+  }
 }

@@ -61,3 +61,10 @@ A pesar de ser una aplicación local, la arquitectura debe estar preparada globa
 * Italiano (it)
 
 > **Regla de Localización Obligatoria:** Cada texto visible para el usuario final en la interfaz gráfica (UI) deberá pasar obligatoriamente por el sistema de localización e internacionalización (`intl` o archivos ARB). Queda estrictamente prohibido incluir cadenas de texto estáticas (hardcoded) en los widgets.
+
+### 9. Convenciones de Formato de Datos
+Para garantizar consistencia en toda la aplicación (UI, notificaciones push, base de datos y Cloud Functions), se establecen los siguientes formatos estándar:
+
+* **Identificación de Lote:** La identificación de la unidad de vivienda se almacena en dos campos independientes en Firestore: `lot` (número, ej. "148") y `house` (letra/identificador, ej. "A"). Cuando se muestra al usuario en la interfaz, se combinan con la palabra localizada "Lote" mediante el sistema de i18n (ejemplo visual: `Lote 148-A`).
+* **Nombre del Residente:** Se almacena como nombre completo en un solo campo `name` con formato `{nombre} {apellidos}`.
+* **Teléfono:** Se almacena como cadena de 10 dígitos sin prefijo de país en el campo `phone`.

@@ -103,6 +103,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get navProfile => 'Perfil';
 
   @override
+  String get navNotifications => 'Notificaciones';
+
+  @override
+  String get noNotifications => 'No tienes notificaciones';
+
+  @override
   String get emergencyAlertTitle => 'Alerta de Emergencia';
 
   @override
@@ -172,11 +178,11 @@ class AppLocalizationsEs extends AppLocalizations {
   String get accountInformation => 'Información de la Cuenta';
 
   @override
-  String get housingUnitLabel => 'Unidad de Vivienda';
+  String get housingUnitLabel => 'Lote';
 
   @override
-  String housingUnitValue(String unit) {
-    return 'Unidad $unit';
+  String housingUnitValue(String lot, String house) {
+    return '$lot-$house';
   }
 
   @override
@@ -295,4 +301,57 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get roleVecino => 'Vecino';
+
+  @override
+  String get recaptchaRequired => 'Por favor verifica que no eres un robot.';
+
+  @override
+  String get verifyPhoneRequiredTitle => 'Verificación Requerida';
+
+  @override
+  String get verifyPhoneRequiredBody =>
+      'Para poder enviar Alertas Críticas, necesitas verificar tu número de teléfono.';
+
+  @override
+  String get requestVerification => 'Solicitar Verificación';
+
+  @override
+  String get enterOtp => 'Ingresa el código OTP';
+
+  @override
+  String get verifyOtp => 'Verificar Código';
+
+  @override
+  String get otpRequestedSuccess => 'Solicitud enviada a los administradores.';
+
+  @override
+  String get otpVerifiedSuccess => '¡Teléfono verificado correctamente!';
+
+  @override
+  String get otpVerificationFailed => 'El código es incorrecto o ha expirado.';
+
+  @override
+  String get otpAdminNotificationTitle => 'Solicitud de Verificación';
+
+  @override
+  String otpAdminNotificationBody(String name, String lot, String house) {
+    return 'El vecino $name (Lote $lot-$house) ha solicitado verificación OTP.';
+  }
+
+  @override
+  String adminOtpDialogTitle(String name) {
+    return 'Código OTP para $name';
+  }
+
+  @override
+  String adminOtpDialogBody(String name, String lot, String house) {
+    return 'Verificación solicitada por $name (Lote $lot-$house).';
+  }
+
+  @override
+  String get adminOtpDialogInstruction =>
+      'Verifica el teléfono del vecino y comunícale este código.';
+
+  @override
+  String get close => 'Cerrar';
 }

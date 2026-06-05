@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hueyappanv1/l10n/app_localizations.dart';
 import 'package:hueyappanv1/src/core/theme/vecinal_theme.dart';
 import '../providers/auth_provider.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import '../providers/emergency_provider.dart';
 import '../widgets/pulsing_warning_icon.dart';
 
@@ -34,6 +35,97 @@ class _MainShellScreenState extends ConsumerState<MainShellScreen> {
         }
       }
     });
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      _handleIncomingMessage(message);
+    });
+    
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      _handleIncomingMessage(message);
+    });
+  }
+
+  void _handleIncomingMessage(RemoteMessage message) {
+    if (message.data['type'] == 'otp_verification') {
+      final name = message.data['requesterName'] ?? '';
+      final lot = message.data['requesterLot'] ?? '';
+      final house = message.data['requesterHouse'] ?? '';
+      final otp = message.data['otp'] ?? '';
+      final phone = message.data['requesterPhone'] ?? '';
+      
+      if (mounted) {
+        showDialog(
+          context: context,
+          builder: (context) {
+            final l10n = AppLocalizations.of(context)!;
+            final vc = context.vecinalColors;
+            return AlertDialog(
+              title: Text(
+                l10n.adminOtpDialogTitle(name),
+                style: TextStyle(color: vc.textPrimary, fontWeight: FontWeight.bold),
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    l10n.adminOtpDialogBody(name, lot, house),
+                    style: TextStyle(color: vc.textSecondary, fontSize: 14),
+                  ),
+                  if (phone.isNotEmpty) ...[
+                    const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        Icon(Icons.phone, size: 18, color: vc.primaryDefault),
+                        const SizedBox(width: 8),
+                        Text(
+                          phone,
+                          style: TextStyle(
+                            color: vc.textPrimary,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                  const SizedBox(height: 20),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    decoration: BoxDecoration(
+                      color: vc.primaryContainer,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      otp,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 32,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 8,
+                        color: vc.primaryDefault,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    l10n.adminOtpDialogInstruction,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: vc.textSecondary, fontSize: 12),
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text(l10n.close),
+                ),
+              ],
+            );
+          },
+        );
+      }
+    }
   }
 
   void _onItemTapped(int index) {

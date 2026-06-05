@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hueyappanv1/l10n/app_localizations.dart';
 import 'package:hueyappanv1/src/core/theme/vecinal_theme.dart';
 import '../providers/auth_provider.dart';
 
 class HomeTab extends ConsumerWidget {
   final String residentName;
-  final String housingUnit;
+  final String lot;
+  final String house;
 
   const HomeTab({
     super.key,
     required this.residentName,
-    required this.housingUnit,
+    required this.lot,
+    required this.house,
   });
 
   @override
@@ -29,6 +32,12 @@ class HomeTab extends ConsumerWidget {
           ),
         ),
         actions: [
+          IconButton(
+            icon: Icon(Icons.notifications_none, color: vc.primaryDefault),
+            onPressed: () {
+              context.push('/notifications');
+            },
+          ),
           Container(
             margin: const EdgeInsets.only(right: 16),
             decoration: BoxDecoration(
@@ -129,7 +138,7 @@ class HomeTab extends ConsumerWidget {
               Icon(Icons.home, size: 16, color: vc.onPrimaryContainer),
               const SizedBox(width: 4),
               Text(
-                l10n.housingUnitValue(housingUnit),
+                l10n.housingUnitValue(lot, house),
                 style: VecinalTextStyles.labelSmall.copyWith(
                   fontWeight: FontWeight.bold,
                   color: vc.onPrimaryContainer,
@@ -212,10 +221,30 @@ class HomeTab extends ConsumerWidget {
     );
   }
 
-  void _showEmergencyDialog(BuildContext context, WidgetRef ref, VecinalSemanticColors vc) {
-    bool isDialogLoading = false;
+  void _showEmergencyDialog(BuildContext context, WidgetRef ref, VecinalSemanticColors vc) async {
     final l10n = AppLocalizations.of(context)!;
+    final datasource = ref.read(authFirebaseDatasourceProvider);
+    final currentUser = datasource.currentUser;
+    
+    if (currentUser == null) return;
+    
+    // Check if phone is verified or if user is an admin
+    final profile = await datasource.getResidentProfile(currentUser.uid);
+    if (profile == null) return;
+    
+    if (profile.isPhoneVerified || profile.role == 'admin') {
+      if (context.mounted) {
+        _showActiveEmergencyDialog(context, ref, vc, l10n, currentUser.uid, profile.name);
+      }
+    } else {
+      if (context.mounted) {
+        _showOtpVerificationDialog(context, ref, vc, l10n, currentUser.uid, profile.name, profile.lot, profile.house, profile.phone ?? '');
+      }
+    }
+  }
 
+  void _showActiveEmergencyDialog(BuildContext context, WidgetRef ref, VecinalSemanticColors vc, AppLocalizations l10n, String uid, String name) {
+    bool isDialogLoading = false;
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -259,15 +288,10 @@ class HomeTab extends ConsumerWidget {
 
                           try {
                             final datasource = ref.read(authFirebaseDatasourceProvider);
-                            final currentUser = datasource.currentUser;
-                            if (currentUser != null) {
-                              final profile = await datasource.getResidentProfile(currentUser.uid);
-                              final name = profile?.name ?? currentUser.email ?? 'Vecino';
-                              await datasource.triggerEmergencyAlarm(currentUser.uid, name);
-                            }
+                            await datasource.triggerEmergencyAlarm(uid, name);
                             
                             if (context.mounted) {
-                              Navigator.of(context).pop(); // Cerrar el diálogo
+                              Navigator.of(context).pop(); 
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Text(l10n.alarmActivatedSuccess),
@@ -301,6 +325,135 @@ class HomeTab extends ConsumerWidget {
                         child: Text(l10n.activateAlarm, style: const TextStyle(fontWeight: FontWeight.bold)),
                       ),
                     ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  void _showOtpVerificationDialog(BuildContext context, WidgetRef ref, VecinalSemanticColors vc, AppLocalizations l10n, String uid, String name, String lot, String house, String phone) {
+    bool isRequesting = false;
+    bool isRequested = false;
+    bool isVerifying = false;
+    final otpController = TextEditingController();
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Text(
+                l10n.verifyPhoneRequiredTitle,
+                style: TextStyle(fontWeight: FontWeight.bold, color: vc.textPrimary),
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    l10n.verifyPhoneRequiredBody,
+                    style: const TextStyle(fontSize: 15),
+                  ),
+                  const SizedBox(height: 20),
+                  if (isRequested)
+                    TextField(
+                      controller: otpController,
+                      decoration: InputDecoration(
+                        labelText: l10n.enterOtp,
+                        border: const OutlineInputBorder(),
+                      ),
+                      keyboardType: TextInputType.number,
+                      enabled: !isVerifying,
+                    ),
+                ],
+              ),
+              actions: [
+                if (!isRequested)
+                  TextButton(
+                    onPressed: isRequesting ? null : () => Navigator.of(context).pop(),
+                    child: Text(l10n.cancel, style: TextStyle(color: vc.textSecondary)),
+                  ),
+                if (!isRequested)
+                  ElevatedButton(
+                    onPressed: isRequesting
+                        ? null
+                        : () async {
+                            setState(() => isRequesting = true);
+                            try {
+                              await ref.read(authFirebaseDatasourceProvider).requestPhoneVerification(uid, phone, name, lot, house);
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text(l10n.otpRequestedSuccess)),
+                                );
+                                setState(() {
+                                  isRequesting = false;
+                                  isRequested = true;
+                                });
+                              }
+                            } catch (e) {
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text('Error: $e')),
+                                );
+                                setState(() => isRequesting = false);
+                              }
+                            }
+                          },
+                    child: isRequesting
+                        ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
+                        : Text(l10n.requestVerification),
+                  ),
+                if (isRequested)
+                  TextButton(
+                    onPressed: isVerifying ? null : () => Navigator.of(context).pop(),
+                    child: Text(l10n.cancel, style: TextStyle(color: vc.textSecondary)),
+                  ),
+                if (isRequested)
+                  ElevatedButton(
+                    onPressed: isVerifying
+                        ? null
+                        : () async {
+                            final otp = otpController.text.trim();
+                            if (otp.isEmpty) return;
+                            
+                            setState(() => isVerifying = true);
+                            try {
+                              final success = await ref.read(authFirebaseDatasourceProvider).verifyPhoneOtp(uid, otp);
+                              if (context.mounted) {
+                                if (success) {
+                                  Navigator.of(context).pop();
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(l10n.otpVerifiedSuccess),
+                                      backgroundColor: vc.primaryDefault,
+                                    ),
+                                  );
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(l10n.otpVerificationFailed),
+                                      backgroundColor: vc.destructive,
+                                    ),
+                                  );
+                                  setState(() => isVerifying = false);
+                                }
+                              }
+                            } catch (e) {
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text('Error: $e')),
+                                );
+                                setState(() => isVerifying = false);
+                              }
+                            }
+                          },
+                    child: isVerifying
+                        ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
+                        : Text(l10n.verifyOtp),
+                  ),
+              ],
             );
           },
         );

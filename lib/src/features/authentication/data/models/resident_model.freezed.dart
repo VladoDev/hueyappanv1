@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ResidentModel {
 
- String get uid; String get name; String get email; String get housingUnit; String get accountStatus; String? get phone; String? get residentType; String get role;
+ String get uid; String get name; String get email; String get lot; String get house; String get accountStatus; String? get phone; String? get residentType; String get role; bool get isPhoneVerified;
 /// Create a copy of ResidentModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $ResidentModelCopyWith<ResidentModel> get copyWith => _$ResidentModelCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ResidentModel&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.name, name) || other.name == name)&&(identical(other.email, email) || other.email == email)&&(identical(other.housingUnit, housingUnit) || other.housingUnit == housingUnit)&&(identical(other.accountStatus, accountStatus) || other.accountStatus == accountStatus)&&(identical(other.phone, phone) || other.phone == phone)&&(identical(other.residentType, residentType) || other.residentType == residentType)&&(identical(other.role, role) || other.role == role));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ResidentModel&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.name, name) || other.name == name)&&(identical(other.email, email) || other.email == email)&&(identical(other.lot, lot) || other.lot == lot)&&(identical(other.house, house) || other.house == house)&&(identical(other.accountStatus, accountStatus) || other.accountStatus == accountStatus)&&(identical(other.phone, phone) || other.phone == phone)&&(identical(other.residentType, residentType) || other.residentType == residentType)&&(identical(other.role, role) || other.role == role)&&(identical(other.isPhoneVerified, isPhoneVerified) || other.isPhoneVerified == isPhoneVerified));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,uid,name,email,housingUnit,accountStatus,phone,residentType,role);
+int get hashCode => Object.hash(runtimeType,uid,name,email,lot,house,accountStatus,phone,residentType,role,isPhoneVerified);
 
 @override
 String toString() {
-  return 'ResidentModel(uid: $uid, name: $name, email: $email, housingUnit: $housingUnit, accountStatus: $accountStatus, phone: $phone, residentType: $residentType, role: $role)';
+  return 'ResidentModel(uid: $uid, name: $name, email: $email, lot: $lot, house: $house, accountStatus: $accountStatus, phone: $phone, residentType: $residentType, role: $role, isPhoneVerified: $isPhoneVerified)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $ResidentModelCopyWith<$Res>  {
   factory $ResidentModelCopyWith(ResidentModel value, $Res Function(ResidentModel) _then) = _$ResidentModelCopyWithImpl;
 @useResult
 $Res call({
- String uid, String name, String email, String housingUnit, String accountStatus, String? phone, String? residentType, String role
+ String uid, String name, String email, String lot, String house, String accountStatus, String? phone, String? residentType, String role, bool isPhoneVerified
 });
 
 
@@ -65,17 +65,19 @@ class _$ResidentModelCopyWithImpl<$Res>
 
 /// Create a copy of ResidentModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? uid = null,Object? name = null,Object? email = null,Object? housingUnit = null,Object? accountStatus = null,Object? phone = freezed,Object? residentType = freezed,Object? role = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? uid = null,Object? name = null,Object? email = null,Object? lot = null,Object? house = null,Object? accountStatus = null,Object? phone = freezed,Object? residentType = freezed,Object? role = null,Object? isPhoneVerified = null,}) {
   return _then(_self.copyWith(
 uid: null == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
-as String,housingUnit: null == housingUnit ? _self.housingUnit : housingUnit // ignore: cast_nullable_to_non_nullable
+as String,lot: null == lot ? _self.lot : lot // ignore: cast_nullable_to_non_nullable
+as String,house: null == house ? _self.house : house // ignore: cast_nullable_to_non_nullable
 as String,accountStatus: null == accountStatus ? _self.accountStatus : accountStatus // ignore: cast_nullable_to_non_nullable
 as String,phone: freezed == phone ? _self.phone : phone // ignore: cast_nullable_to_non_nullable
 as String?,residentType: freezed == residentType ? _self.residentType : residentType // ignore: cast_nullable_to_non_nullable
 as String?,role: null == role ? _self.role : role // ignore: cast_nullable_to_non_nullable
-as String,
+as String,isPhoneVerified: null == isPhoneVerified ? _self.isPhoneVerified : isPhoneVerified // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 
@@ -160,10 +162,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String uid,  String name,  String email,  String housingUnit,  String accountStatus,  String? phone,  String? residentType,  String role)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String uid,  String name,  String email,  String lot,  String house,  String accountStatus,  String? phone,  String? residentType,  String role,  bool isPhoneVerified)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ResidentModel() when $default != null:
-return $default(_that.uid,_that.name,_that.email,_that.housingUnit,_that.accountStatus,_that.phone,_that.residentType,_that.role);case _:
+return $default(_that.uid,_that.name,_that.email,_that.lot,_that.house,_that.accountStatus,_that.phone,_that.residentType,_that.role,_that.isPhoneVerified);case _:
   return orElse();
 
 }
@@ -181,10 +183,10 @@ return $default(_that.uid,_that.name,_that.email,_that.housingUnit,_that.account
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String uid,  String name,  String email,  String housingUnit,  String accountStatus,  String? phone,  String? residentType,  String role)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String uid,  String name,  String email,  String lot,  String house,  String accountStatus,  String? phone,  String? residentType,  String role,  bool isPhoneVerified)  $default,) {final _that = this;
 switch (_that) {
 case _ResidentModel():
-return $default(_that.uid,_that.name,_that.email,_that.housingUnit,_that.accountStatus,_that.phone,_that.residentType,_that.role);case _:
+return $default(_that.uid,_that.name,_that.email,_that.lot,_that.house,_that.accountStatus,_that.phone,_that.residentType,_that.role,_that.isPhoneVerified);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -201,10 +203,10 @@ return $default(_that.uid,_that.name,_that.email,_that.housingUnit,_that.account
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String uid,  String name,  String email,  String housingUnit,  String accountStatus,  String? phone,  String? residentType,  String role)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String uid,  String name,  String email,  String lot,  String house,  String accountStatus,  String? phone,  String? residentType,  String role,  bool isPhoneVerified)?  $default,) {final _that = this;
 switch (_that) {
 case _ResidentModel() when $default != null:
-return $default(_that.uid,_that.name,_that.email,_that.housingUnit,_that.accountStatus,_that.phone,_that.residentType,_that.role);case _:
+return $default(_that.uid,_that.name,_that.email,_that.lot,_that.house,_that.accountStatus,_that.phone,_that.residentType,_that.role,_that.isPhoneVerified);case _:
   return null;
 
 }
@@ -216,17 +218,19 @@ return $default(_that.uid,_that.name,_that.email,_that.housingUnit,_that.account
 @JsonSerializable()
 
 class _ResidentModel implements ResidentModel {
-  const _ResidentModel({required this.uid, required this.name, required this.email, required this.housingUnit, required this.accountStatus, this.phone, this.residentType, this.role = 'vecino'});
+  const _ResidentModel({required this.uid, required this.name, required this.email, this.lot = '', this.house = '', required this.accountStatus, this.phone, this.residentType, this.role = 'vecino', this.isPhoneVerified = false});
   factory _ResidentModel.fromJson(Map<String, dynamic> json) => _$ResidentModelFromJson(json);
 
 @override final  String uid;
 @override final  String name;
 @override final  String email;
-@override final  String housingUnit;
+@override@JsonKey() final  String lot;
+@override@JsonKey() final  String house;
 @override final  String accountStatus;
 @override final  String? phone;
 @override final  String? residentType;
 @override@JsonKey() final  String role;
+@override@JsonKey() final  bool isPhoneVerified;
 
 /// Create a copy of ResidentModel
 /// with the given fields replaced by the non-null parameter values.
@@ -241,16 +245,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ResidentModel&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.name, name) || other.name == name)&&(identical(other.email, email) || other.email == email)&&(identical(other.housingUnit, housingUnit) || other.housingUnit == housingUnit)&&(identical(other.accountStatus, accountStatus) || other.accountStatus == accountStatus)&&(identical(other.phone, phone) || other.phone == phone)&&(identical(other.residentType, residentType) || other.residentType == residentType)&&(identical(other.role, role) || other.role == role));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ResidentModel&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.name, name) || other.name == name)&&(identical(other.email, email) || other.email == email)&&(identical(other.lot, lot) || other.lot == lot)&&(identical(other.house, house) || other.house == house)&&(identical(other.accountStatus, accountStatus) || other.accountStatus == accountStatus)&&(identical(other.phone, phone) || other.phone == phone)&&(identical(other.residentType, residentType) || other.residentType == residentType)&&(identical(other.role, role) || other.role == role)&&(identical(other.isPhoneVerified, isPhoneVerified) || other.isPhoneVerified == isPhoneVerified));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,uid,name,email,housingUnit,accountStatus,phone,residentType,role);
+int get hashCode => Object.hash(runtimeType,uid,name,email,lot,house,accountStatus,phone,residentType,role,isPhoneVerified);
 
 @override
 String toString() {
-  return 'ResidentModel(uid: $uid, name: $name, email: $email, housingUnit: $housingUnit, accountStatus: $accountStatus, phone: $phone, residentType: $residentType, role: $role)';
+  return 'ResidentModel(uid: $uid, name: $name, email: $email, lot: $lot, house: $house, accountStatus: $accountStatus, phone: $phone, residentType: $residentType, role: $role, isPhoneVerified: $isPhoneVerified)';
 }
 
 
@@ -261,7 +265,7 @@ abstract mixin class _$ResidentModelCopyWith<$Res> implements $ResidentModelCopy
   factory _$ResidentModelCopyWith(_ResidentModel value, $Res Function(_ResidentModel) _then) = __$ResidentModelCopyWithImpl;
 @override @useResult
 $Res call({
- String uid, String name, String email, String housingUnit, String accountStatus, String? phone, String? residentType, String role
+ String uid, String name, String email, String lot, String house, String accountStatus, String? phone, String? residentType, String role, bool isPhoneVerified
 });
 
 
@@ -278,17 +282,19 @@ class __$ResidentModelCopyWithImpl<$Res>
 
 /// Create a copy of ResidentModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? uid = null,Object? name = null,Object? email = null,Object? housingUnit = null,Object? accountStatus = null,Object? phone = freezed,Object? residentType = freezed,Object? role = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? uid = null,Object? name = null,Object? email = null,Object? lot = null,Object? house = null,Object? accountStatus = null,Object? phone = freezed,Object? residentType = freezed,Object? role = null,Object? isPhoneVerified = null,}) {
   return _then(_ResidentModel(
 uid: null == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
-as String,housingUnit: null == housingUnit ? _self.housingUnit : housingUnit // ignore: cast_nullable_to_non_nullable
+as String,lot: null == lot ? _self.lot : lot // ignore: cast_nullable_to_non_nullable
+as String,house: null == house ? _self.house : house // ignore: cast_nullable_to_non_nullable
 as String,accountStatus: null == accountStatus ? _self.accountStatus : accountStatus // ignore: cast_nullable_to_non_nullable
 as String,phone: freezed == phone ? _self.phone : phone // ignore: cast_nullable_to_non_nullable
 as String?,residentType: freezed == residentType ? _self.residentType : residentType // ignore: cast_nullable_to_non_nullable
 as String?,role: null == role ? _self.role : role // ignore: cast_nullable_to_non_nullable
-as String,
+as String,isPhoneVerified: null == isPhoneVerified ? _self.isPhoneVerified : isPhoneVerified // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 

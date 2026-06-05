@@ -68,7 +68,11 @@ class AuthRepositoryImpl implements AuthRepository {
     try {
       final user = _dataSource.currentUser;
       if (user != null) {
-        await _dataSource.unregisterDeviceToken(user.uid);
+        try {
+          await _dataSource.unregisterDeviceToken(user.uid);
+        } catch (e) {
+          // Ignore token unregister errors to ensure we always sign out locally
+        }
       }
       
       // Clear identifiers in Analytics and Crashlytics
@@ -118,14 +122,13 @@ class AuthRepositoryImpl implements AuthRepository {
 
       // 2. Format names and address
       final fullName = '${firstName.trim()} ${lastName.trim()}';
-      final housingUnit = 'Lote $lot - Casa $house';
-
       // 3. Create the model
       final profile = ResidentModel(
         uid: uid,
         name: fullName,
         email: email.trim(),
-        housingUnit: housingUnit,
+        lot: lot,
+        house: house.trim(),
         accountStatus: 'Active',
         phone: phone.trim(),
         residentType: residentType,

@@ -12,6 +12,7 @@ import '../../features/authentication/presentation/widgets/announcements_tab.dar
 import '../../features/authentication/presentation/widgets/payments_tab.dart';
 import '../../features/authentication/presentation/widgets/profile_tab.dart';
 import '../../features/contacts/presentation/screens/contacts_tab.dart';
+import '../../features/notifications/presentation/screens/notifications_screen.dart';
 
 class GoRouterRefreshStream extends ChangeNotifier {
   late final StreamSubscription<dynamic> _subscription;
@@ -94,7 +95,7 @@ final routerProvider = Provider<GoRouter>((ref) {
                   builder: (context, ref, child) {
                     final user = ref.watch(authStateProvider).value;
                     if (user == null) return const SizedBox.shrink();
-                    return HomeTab(residentName: user.name, housingUnit: user.housingUnit);
+                    return HomeTab(residentName: user.name, lot: user.lot, house: user.house);
                   },
                 ),
               ),
@@ -135,7 +136,8 @@ final routerProvider = Provider<GoRouter>((ref) {
                     return ProfileTab(
                       name: user.name,
                       email: user.email,
-                      housingUnit: user.housingUnit,
+                      lot: user.lot,
+                      house: user.house,
                       status: user.accountStatus,
                       role: user.role,
                     );
@@ -145,6 +147,10 @@ final routerProvider = Provider<GoRouter>((ref) {
             ],
           ),
         ],
+      ),
+      GoRoute(
+        path: '/notifications',
+        builder: (context, state) => const NotificationsScreen(),
       ),
     ],
   );

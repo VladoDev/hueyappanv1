@@ -284,6 +284,18 @@ abstract class AppLocalizations {
   /// **'Profile'**
   String get navProfile;
 
+  /// No description provided for @navNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get navNotifications;
+
+  /// No description provided for @noNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'You have no notifications'**
+  String get noNotifications;
+
   /// No description provided for @emergencyAlertTitle.
   ///
   /// In en, this message translates to:
@@ -407,14 +419,14 @@ abstract class AppLocalizations {
   /// No description provided for @housingUnitLabel.
   ///
   /// In en, this message translates to:
-  /// **'Housing Unit'**
+  /// **'Lot'**
   String get housingUnitLabel;
 
   /// No description provided for @housingUnitValue.
   ///
   /// In en, this message translates to:
-  /// **'Unit {unit}'**
-  String housingUnitValue(String unit);
+  /// **'{lot}-{house}'**
+  String housingUnitValue(String lot, String house);
 
   /// No description provided for @residentStatusLabel.
   ///
@@ -629,7 +641,7 @@ abstract class AppLocalizations {
   /// No description provided for @roleAdmin.
   ///
   /// In en, this message translates to:
-  /// **'Admin'**
+  /// **'Administrator'**
   String get roleAdmin;
 
   /// No description provided for @roleVecino.
@@ -637,6 +649,96 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Neighbor'**
   String get roleVecino;
+
+  /// No description provided for @recaptchaRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please verify that you are not a robot.'**
+  String get recaptchaRequired;
+
+  /// No description provided for @verifyPhoneRequiredTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Verification Required'**
+  String get verifyPhoneRequiredTitle;
+
+  /// No description provided for @verifyPhoneRequiredBody.
+  ///
+  /// In en, this message translates to:
+  /// **'In order to send Critical Alerts, you must verify your phone number.'**
+  String get verifyPhoneRequiredBody;
+
+  /// No description provided for @requestVerification.
+  ///
+  /// In en, this message translates to:
+  /// **'Request Verification'**
+  String get requestVerification;
+
+  /// No description provided for @enterOtp.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter OTP code'**
+  String get enterOtp;
+
+  /// No description provided for @verifyOtp.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify Code'**
+  String get verifyOtp;
+
+  /// No description provided for @otpRequestedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Request sent to administrators.'**
+  String get otpRequestedSuccess;
+
+  /// No description provided for @otpVerifiedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone successfully verified!'**
+  String get otpVerifiedSuccess;
+
+  /// No description provided for @otpVerificationFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The code is incorrect or expired.'**
+  String get otpVerificationFailed;
+
+  /// No description provided for @otpAdminNotificationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Verification Request'**
+  String get otpAdminNotificationTitle;
+
+  /// No description provided for @otpAdminNotificationBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Neighbor {name} (Lot {lot}-{house}) requested OTP verification.'**
+  String otpAdminNotificationBody(String name, String lot, String house);
+
+  /// No description provided for @adminOtpDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'OTP Code for {name}'**
+  String adminOtpDialogTitle(String name);
+
+  /// No description provided for @adminOtpDialogBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Verification requested by {name} (Lot {lot}-{house}).'**
+  String adminOtpDialogBody(String name, String lot, String house);
+
+  /// No description provided for @adminOtpDialogInstruction.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify the neighbor\'s phone number and share this code with them.'**
+  String get adminOtpDialogInstruction;
+
+  /// No description provided for @close.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get close;
 }
 
 class _AppLocalizationsDelegate

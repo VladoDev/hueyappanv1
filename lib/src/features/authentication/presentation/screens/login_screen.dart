@@ -41,7 +41,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     final vc = context.vecinalColors;
 
     ref.listen<AsyncValue>(authControllerProvider, (previous, next) {
-      if (next is AsyncError) {
+      if (next.hasError) {
         final errorMsg = next.error.toString().replaceAll('Exception: ', '');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
