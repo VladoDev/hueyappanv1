@@ -6,7 +6,6 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:hueyappanv1/l10n/app_localizations.dart';
 import 'package:hueyappanv1/src/core/theme/vecinal_theme.dart';
 import '../providers/auth_provider.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import '../providers/emergency_provider.dart';
 import '../widgets/pulsing_warning_icon.dart';
 

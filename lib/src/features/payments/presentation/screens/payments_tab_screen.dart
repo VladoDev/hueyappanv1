@@ -23,7 +23,8 @@ class PaymentsTabScreen extends ConsumerWidget {
     if (user.isAdmin) {
       return const AdminPaymentsView();
     } else {
-      return NeighborPaymentsView(housingUnit: user.housingUnit);
+      return NeighborPaymentsView(lot: user.lot,
+        house: user.house);
     }
   }
 }

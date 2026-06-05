@@ -6,7 +6,7 @@ class WatchNeighborPaymentsUsecase {
 
   WatchNeighborPaymentsUsecase(this._repository);
 
-  Stream<List<HousingPaymentEntity>> execute(String housingUnit) {
-    return _repository.watchNeighborPayments(housingUnit);
+  Stream<List<HousingPaymentEntity>> execute(String lot, String house) {
+    return _repository.watchNeighborPayments(lot, house);
   }
 }

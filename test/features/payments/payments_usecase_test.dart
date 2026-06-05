@@ -27,7 +27,7 @@ class MockPaymentsRepository implements PaymentsRepository {
       id: 'hp1',
       conceptId: '1',
       residentUid: 'res123',
-      housingUnit: 'Lote 120 - Casa A',
+      lot: "Lote 120", house: "A",
       totalDue: 100.0,
       amountPaid: 0.0,
       balance: 100.0,
@@ -49,8 +49,8 @@ class MockPaymentsRepository implements PaymentsRepository {
   }
 
   @override
-  Stream<List<HousingPaymentEntity>> watchNeighborPayments(String housingUnit) {
-    return Stream.value(_payments.where((p) => p.housingUnit == housingUnit).toList());
+  Stream<List<HousingPaymentEntity>> watchNeighborPayments(String lot, String house) {
+    return Stream.value(_payments.where((p) => p.lot == lot && p.house == house).toList());
   }
 
   @override
@@ -99,7 +99,8 @@ class MockPaymentsRepository implements PaymentsRepository {
       id: current.id,
       conceptId: current.conceptId,
       residentUid: current.residentUid,
-      housingUnit: current.housingUnit,
+      lot: current.lot,
+      house: current.house,
       totalDue: current.totalDue,
       amountPaid: current.amountPaid,
       balance: current.balance,
@@ -121,7 +122,8 @@ class MockPaymentsRepository implements PaymentsRepository {
       createdAt: DateTime.now(),
       createdBy: createdBy,
       notes: notes,
-      housingUnit: current.housingUnit,
+      lot: current.lot,
+      house: current.house,
       conceptTitle: concept.title,
       conceptId: current.conceptId,
       isConfirmed: false,
@@ -153,7 +155,8 @@ class MockPaymentsRepository implements PaymentsRepository {
       createdAt: tx.createdAt,
       createdBy: tx.createdBy,
       notes: tx.notes,
-      housingUnit: tx.housingUnit,
+      lot: tx.lot,
+      house: tx.house,
       conceptTitle: tx.conceptTitle,
       conceptId: tx.conceptId,
       isConfirmed: true,
@@ -196,7 +199,8 @@ class MockPaymentsRepository implements PaymentsRepository {
       id: current.id,
       conceptId: current.conceptId,
       residentUid: current.residentUid,
-      housingUnit: current.housingUnit,
+      lot: current.lot,
+      house: current.house,
       totalDue: current.totalDue,
       amountPaid: newAmountPaid,
       balance: newBalance,

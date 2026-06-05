@@ -354,4 +354,171 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get close => 'Cerrar';
+
+  @override
+  String get paymentsTitle => 'Pagos de la Privada';
+
+  @override
+  String get paymentsHistory => 'Historial de Pagos';
+
+  @override
+  String get paymentsPending => 'Adeudos Pendientes';
+
+  @override
+  String get transferDetails => 'Datos de Transferencia';
+
+  @override
+  String get bankNameLabel => 'Banco';
+
+  @override
+  String get clabeLabel => 'CLABE';
+
+  @override
+  String get beneficiaryLabel => 'Beneficiario';
+
+  @override
+  String get copySuccess => 'CLABE copiada al portapapeles';
+
+  @override
+  String get partialPaymentTag => 'Pago Parcial';
+
+  @override
+  String get pendingPaymentTag => 'Pendiente';
+
+  @override
+  String get paidPaymentTag => 'Liquidado';
+
+  @override
+  String get conceptDetails => 'Detalles del Concepto';
+
+  @override
+  String get conceptBreakdown => 'Desglose de Cobro';
+
+  @override
+  String get adminPanel => 'Panel de Administración';
+
+  @override
+  String get createConcept => 'Crear Concepto de Pago';
+
+  @override
+  String get editConcept => 'Editar Concepto de Pago';
+
+  @override
+  String get deleteConcept => 'Eliminar Concepto';
+
+  @override
+  String get conceptTitleLabel => 'Nombre del Concepto';
+
+  @override
+  String get conceptDescLabel => 'Descripción (opcional)';
+
+  @override
+  String get conceptTotalCost => 'Costo Total';
+
+  @override
+  String get conceptTotalUnits => 'Número de Casas';
+
+  @override
+  String get amountPerHouseLabel => 'Monto por Casa';
+
+  @override
+  String get subItemsLabel => 'Detalles / Desglose';
+
+  @override
+  String get addSubItem => 'Agregar detalle';
+
+  @override
+  String get itemLabel => 'Descripción';
+
+  @override
+  String get itemAmount => 'Costo (opcional)';
+
+  @override
+  String get editConceptWarning =>
+      'Nota: Editar un concepto existente NO recalculará automáticamente los adeudos ya generados para no alterar pagos registrados.';
+
+  @override
+  String get recordedExpenseLabel => 'Gasto Real Registrado';
+
+  @override
+  String get availableBalanceLabel => 'Saldo Disponible';
+
+  @override
+  String get totalCollectedLabel => 'Total Recaudado';
+
+  @override
+  String get totalPendingLabel => 'Total Pendiente';
+
+  @override
+  String get updateExpense => 'Registrar Gasto Real';
+
+  @override
+  String get paidHouses => 'Casas que ya pagaron';
+
+  @override
+  String get pendingHouses => 'Casas pendientes';
+
+  @override
+  String get registerPayment => 'Registrar Pago';
+
+  @override
+  String get amountReceivedLabel => 'Abono a la cuota principal';
+
+  @override
+  String get referenceLabel => 'Referencia / Comprobante (opcional)';
+
+  @override
+  String get notesLabel => 'Notas (opcional)';
+
+  @override
+  String get partialAction => 'Pago Parcial';
+
+  @override
+  String get completeAction => 'Pago Completo';
+
+  @override
+  String get save => 'Guardar';
+
+  @override
+  String get deleteConfirm =>
+      '¿Estás seguro de que deseas eliminar este concepto de pago? Esta acción eliminará el concepto y todos los adeudos de las casas.';
+
+  @override
+  String get delete => 'Eliminar';
+
+  @override
+  String get fieldRequired => 'Campo requerido';
+
+  @override
+  String get invalidAmount => 'Monto no válido';
+
+  @override
+  String get activeStatus => 'Activo';
+
+  @override
+  String get closedStatus => 'Cerrado';
+
+  @override
+  String get cancelledStatus => 'Cancelado';
+
+  @override
+  String get noPaymentsFound => 'No se encontraron pagos';
+
+  @override
+  String get noPendingPayments => 'No tienes adeudos pendientes 🎉';
+
+  @override
+  String get bankTransferReference => 'Referencia bancaria';
+
+  @override
+  String get referenceCopySuccess => 'Referencia copiada al portapapeles';
+
+  @override
+  String get extraAmountLabel => 'Monto Extra';
+
+  @override
+  String get extraAmountInput => 'Monto extra (ej. llaves, controles, etc.)';
+
+  @override
+  String get extraPaid => 'Extra pagado';
 }

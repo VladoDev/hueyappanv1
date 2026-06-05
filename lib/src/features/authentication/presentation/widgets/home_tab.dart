@@ -28,7 +28,7 @@ class HomeTab extends ConsumerWidget {
       appBar: AppBar(
         leading: Consumer(
           builder: (context, ref, child) {
-            final transactionsAsync = ref.watch(neighborTransactionsStreamProvider(housingUnit));
+            final transactionsAsync = ref.watch(neighborTransactionsStreamProvider((lot: lot, house: house)));
             return transactionsAsync.when(
               data: (transactions) {
                 final pending = transactions.where((t) => !t.isConfirmed).toList();
@@ -466,7 +466,7 @@ class HomeTab extends ConsumerWidget {
                               style: TextStyle(fontWeight: FontWeight.w600, color: vc.textPrimary, fontSize: 14),
                             ),
                             subtitle: Text(
-                              'Monto: \$${payment.amountPaid}',
+                              'Monto: \$${payment.amount}',
                               style: TextStyle(color: vc.textSecondary, fontSize: 13),
                             ),
                             trailing: IconButton(
@@ -701,7 +701,6 @@ class HomeTab extends ConsumerWidget {
               child: const Text('Confirmar', style: TextStyle(fontWeight: FontWeight.bold)),
             ),
           ],
->>>>>>> origin/feature/003-roles-usuario
         );
       },
     );

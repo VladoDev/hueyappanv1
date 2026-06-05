@@ -23,8 +23,8 @@ class ResidentEntity {
     this.isPhoneVerified = false,
   });
 
-  bool get isAdmin => role == 'admin';
-  bool get isVecino => role == 'vecino';
+  bool get isAdmin => role.toLowerCase() == 'admin';
+  bool get isVecino => role.toLowerCase() == 'vecino';
 
   ResidentEntity copyWith({
     String? uid,

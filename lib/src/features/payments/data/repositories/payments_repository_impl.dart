@@ -31,8 +31,8 @@ class PaymentsRepositoryImpl implements PaymentsRepository {
   }
 
   @override
-  Stream<List<HousingPaymentEntity>> watchNeighborPayments(String housingUnit) {
-    return _dataSource.watchNeighborPayments(housingUnit).map((list) {
+  Stream<List<HousingPaymentEntity>> watchNeighborPayments(String lot, String house) {
+    return _dataSource.watchNeighborPayments(lot, house).map((list) {
       final entities = list.map((model) => model.toEntity()).toList();
       return _mergeHousingPayments(entities);
     });
@@ -69,15 +69,16 @@ class PaymentsRepositoryImpl implements PaymentsRepository {
     final List<HousingPaymentModel> payments = [];
     final Set<String> uniqueHousingUnits = {};
     for (final resident in activeResidents) {
-      if (uniqueHousingUnits.contains(resident.housingUnit)) continue;
-      uniqueHousingUnits.add(resident.housingUnit);
+      if (uniqueHousingUnits.contains(resident.lot)) continue;
+      uniqueHousingUnits.add(resident.lot);
 
       final paymentId = FirebaseFirestore.instance.collection('housing_payments').doc().id;
       payments.add(HousingPaymentModel(
         id: paymentId,
         conceptId: concept.id,
         residentUid: resident.uid,
-        housingUnit: resident.housingUnit,
+        lot: resident.lot,
+        house: resident.house,
         totalDue: concept.amountPerUnit,
         amountPaid: 0.0,
         balance: concept.amountPerUnit,
@@ -167,7 +168,8 @@ class PaymentsRepositoryImpl implements PaymentsRepository {
       createdAt: DateTime.now(),
       createdBy: createdBy,
       notes: notes,
-      housingUnit: currentModel.housingUnit,
+      lot: currentModel.lot,
+      house: currentModel.house,
       conceptTitle: conceptTitle,
       conceptId: currentModel.conceptId,
       isConfirmed: false,
@@ -191,7 +193,7 @@ class PaymentsRepositoryImpl implements PaymentsRepository {
       if (isAdmin) {
         // Admin registered it -> send to neighbors of that unit
         final activeResidents = await _dataSource.getActiveResidents();
-        final unitResidents = activeResidents.where((r) => r.housingUnit == currentModel.housingUnit);
+        final unitResidents = activeResidents.where((r) => r.lot == currentModel.lot && r.house == currentModel.house);
         
         for (final resident in unitResidents) {
           final t = await _dataSource.getResidentTokens(resident.uid);
@@ -204,7 +206,7 @@ class PaymentsRepositoryImpl implements PaymentsRepository {
         final adminTokens = await _dataSource.getAdminTokens();
         targetTokens.addAll(adminTokens);
         
-        notificationBody = 'El residente de ${currentModel.housingUnit} ha reportado un pago por \$${amount.toStringAsFixed(2)} para el concepto "$conceptTitle". Por favor revísalo y confírmalo.';
+        notificationBody = 'El residente del Lote ${currentModel.lot}-${currentModel.house} ha reportado un pago por \$${amount.toStringAsFixed(2)} para el concepto "$conceptTitle". Por favor revísalo y confírmalo.';
       }
 
       if (targetTokens.isNotEmpty) {
@@ -328,7 +330,7 @@ class PaymentsRepositoryImpl implements PaymentsRepository {
   List<HousingPaymentEntity> _mergeHousingPayments(List<HousingPaymentEntity> list) {
     final Map<String, List<HousingPaymentEntity>> grouped = {};
     for (final payment in list) {
-      final key = '${payment.conceptId}_${payment.housingUnit}';
+      final key = '${payment.conceptId}_${payment.lot}_${payment.house}';
       grouped.putIfAbsent(key, () => []).add(payment);
     }
 
@@ -374,7 +376,8 @@ class PaymentsRepositoryImpl implements PaymentsRepository {
           id: representative.id,
           conceptId: representative.conceptId,
           residentUid: representative.residentUid,
-          housingUnit: representative.housingUnit,
+          lot: representative.lot,
+          house: representative.house,
           totalDue: totalDue,
           amountPaid: totalPaid,
           balance: balance,

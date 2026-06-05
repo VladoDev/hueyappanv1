@@ -6,7 +6,7 @@ import '../../domain/entities/payment_transaction_entity.dart';
 abstract class PaymentsRepository {
   Stream<List<PaymentConceptEntity>> watchConcepts();
   Stream<List<ConceptItemEntity>> watchConceptItems(String conceptId);
-  Stream<List<HousingPaymentEntity>> watchNeighborPayments(String housingUnit);
+  Stream<List<HousingPaymentEntity>> watchNeighborPayments(String lot, String house);
   Stream<List<HousingPaymentEntity>> watchConceptPayments(String conceptId);
   Stream<List<PaymentTransactionEntity>> watchPaymentTransactions(String housingPaymentId);
 

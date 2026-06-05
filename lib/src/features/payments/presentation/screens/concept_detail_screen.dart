@@ -285,7 +285,7 @@ class _PaymentListRow extends ConsumerWidget {
         children: [
           Expanded(
             child: Text(
-              payment.housingUnit,
+              'Lote ${payment.lot}-${payment.house}',
               style: VecinalTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.bold),
               softWrap: true,
             ),

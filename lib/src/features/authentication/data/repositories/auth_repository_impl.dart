@@ -154,7 +154,8 @@ class AuthRepositoryImpl implements AuthRepository {
           final paymentQuery = await FirebaseFirestore.instance
               .collection('housing_payments')
               .where('conceptId', isEqualTo: conceptId)
-              .where('housingUnit', isEqualTo: housingUnit)
+              .where('lot', isEqualTo: lot)
+              .where('house', isEqualTo: house)
               .limit(1)
               .get();
 
@@ -164,7 +165,8 @@ class AuthRepositoryImpl implements AuthRepository {
               'id': paymentId,
               'conceptId': conceptId,
               'residentUid': uid,
-              'housingUnit': housingUnit,
+              'lot': lot,
+              'house': house,
               'totalDue': amountPerUnit,
               'amountPaid': 0.0,
               'balance': amountPerUnit,

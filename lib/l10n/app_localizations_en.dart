@@ -352,4 +352,171 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get close => 'Close';
+
+  @override
+  String get paymentsTitle => 'Community Payments';
+
+  @override
+  String get paymentsHistory => 'Payment History';
+
+  @override
+  String get paymentsPending => 'Pending Dues';
+
+  @override
+  String get transferDetails => 'Transfer Details';
+
+  @override
+  String get bankNameLabel => 'Bank';
+
+  @override
+  String get clabeLabel => 'CLABE';
+
+  @override
+  String get beneficiaryLabel => 'Beneficiary';
+
+  @override
+  String get copySuccess => 'CLABE copied to clipboard';
+
+  @override
+  String get partialPaymentTag => 'Partial Payment';
+
+  @override
+  String get pendingPaymentTag => 'Pending';
+
+  @override
+  String get paidPaymentTag => 'Paid';
+
+  @override
+  String get conceptDetails => 'Concept Details';
+
+  @override
+  String get conceptBreakdown => 'Charge Breakdown';
+
+  @override
+  String get adminPanel => 'Administration Panel';
+
+  @override
+  String get createConcept => 'Create Payment Concept';
+
+  @override
+  String get editConcept => 'Edit Payment Concept';
+
+  @override
+  String get deleteConcept => 'Delete Concept';
+
+  @override
+  String get conceptTitleLabel => 'Concept Name';
+
+  @override
+  String get conceptDescLabel => 'Description (optional)';
+
+  @override
+  String get conceptTotalCost => 'Total Cost';
+
+  @override
+  String get conceptTotalUnits => 'Number of Houses';
+
+  @override
+  String get amountPerHouseLabel => 'Amount per House';
+
+  @override
+  String get subItemsLabel => 'Details / Breakdown';
+
+  @override
+  String get addSubItem => 'Add detail';
+
+  @override
+  String get itemLabel => 'Description';
+
+  @override
+  String get itemAmount => 'Cost (optional)';
+
+  @override
+  String get editConceptWarning =>
+      'Note: Editing an existing concept will NOT automatically recalculate already generated dues to avoid altering recorded payments.';
+
+  @override
+  String get recordedExpenseLabel => 'Recorded Real Expense';
+
+  @override
+  String get availableBalanceLabel => 'Available Balance';
+
+  @override
+  String get totalCollectedLabel => 'Total Collected';
+
+  @override
+  String get totalPendingLabel => 'Total Pending';
+
+  @override
+  String get updateExpense => 'Record Real Expense';
+
+  @override
+  String get paidHouses => 'Paid Houses';
+
+  @override
+  String get pendingHouses => 'Pending Houses';
+
+  @override
+  String get registerPayment => 'Register Payment';
+
+  @override
+  String get amountReceivedLabel => 'Payment to main fee';
+
+  @override
+  String get referenceLabel => 'Reference / Receipt (optional)';
+
+  @override
+  String get notesLabel => 'Notes (optional)';
+
+  @override
+  String get partialAction => 'Partial Payment';
+
+  @override
+  String get completeAction => 'Complete Payment';
+
+  @override
+  String get save => 'Save';
+
+  @override
+  String get deleteConfirm =>
+      'Are you sure you want to delete this payment concept? This will delete the concept and all associated housing dues.';
+
+  @override
+  String get delete => 'Delete';
+
+  @override
+  String get fieldRequired => 'Required field';
+
+  @override
+  String get invalidAmount => 'Invalid amount';
+
+  @override
+  String get activeStatus => 'Active';
+
+  @override
+  String get closedStatus => 'Closed';
+
+  @override
+  String get cancelledStatus => 'Cancelled';
+
+  @override
+  String get noPaymentsFound => 'No payments found';
+
+  @override
+  String get noPendingPayments => 'You have no pending dues 🎉';
+
+  @override
+  String get bankTransferReference => 'Transfer reference';
+
+  @override
+  String get referenceCopySuccess => 'Reference copied to clipboard';
+
+  @override
+  String get extraAmountLabel => 'Extra Amount';
+
+  @override
+  String get extraAmountInput => 'Extra amount (e.g. keys, controls, etc.)';
+
+  @override
+  String get extraPaid => 'Extra paid';
 }

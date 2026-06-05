@@ -188,10 +188,7 @@
     }
   },
   "adminOtpDialogInstruction": "Verify the neighbor's phone number and share this code with them.",
-  "close": "Close"
-
-  "roleAdmin": "Admin",
-  "roleVecino": "Neighbor",
+  "close": "Close",
   "paymentsTitle": "Community Payments",
   "paymentsHistory": "Payment History",
   "paymentsPending": "Pending Dues",

@@ -158,13 +158,14 @@ class AuthFirebaseDatasource {
     }
   }
 
-  Future<void> triggerEmergencyAlarm(String uid, String name, String housingUnit) async {
+  Future<void> triggerEmergencyAlarm(String uid, String name, String lot, String house) async {
     try {
       // 1. Write the emergency event to Firestore
       await _firestore.collection('emergencies').add({
         'triggeredBy': uid,
         'triggeredByName': name,
-        'triggeredByHousingUnit': housingUnit,
+        'triggeredByLot': lot,
+        'triggeredByHouse': house,
         'timestamp': FieldValue.serverTimestamp(),
         'status': 'active',
       });
@@ -184,7 +185,7 @@ class AuthFirebaseDatasource {
         if (configDoc.exists && configDoc.data() != null) {
           final serverKey = configDoc.data()!['serverKey'] as String?;
           if (serverKey != null && serverKey.isNotEmpty) {
-            await _sendDirectFcmPushNotification(serverKey, name, housingUnit);
+            await _sendDirectFcmPushNotification(serverKey, name, lot, house);
           }
         }
       } catch (e, stackTrace) {
@@ -206,7 +207,7 @@ class AuthFirebaseDatasource {
     }
   }
 
-  Future<void> _sendDirectFcmPushNotification(String serverKey, String senderName, String housingUnit) async {
+  Future<void> _sendDirectFcmPushNotification(String serverKey, String senderName, String lot, String house) async {
     final url = Uri.parse('https://fcm.googleapis.com/fcm/send');
     final headers = {
       'Content-Type': 'application/json',
@@ -217,7 +218,7 @@ class AuthFirebaseDatasource {
       'priority': 'high',
       'notification': {
         'title': '🚨 ¡ALERTA DE EMERGENCIA! 🚨',
-        'body': 'El residente $senderName del lote $housingUnit ha activado una alarma de emergencia.',
+        'body': 'El residente $senderName del Lote $lot-$house ha activado una alarma de emergencia.',
         'sound': 'default',
       },
       'android': {

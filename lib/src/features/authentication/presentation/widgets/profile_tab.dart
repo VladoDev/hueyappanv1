@@ -147,12 +147,7 @@ class ProfileTab extends ConsumerWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-<<<<<<< HEAD
             Flexible(
-=======
-            Expanded(
-              flex: 2,
->>>>>>> origin/feature/003-roles-usuario
               child: Text(
                 label,
                 style: VecinalTextStyles.bodyMedium.copyWith(
@@ -161,21 +156,11 @@ class ProfileTab extends ConsumerWidget {
                 ),
               ),
             ),
-<<<<<<< HEAD
             const SizedBox(width: 12),
             Flexible(
               child: Text(
                 value,
                 textAlign: TextAlign.end,
-=======
-            const SizedBox(width: 8),
-            Expanded(
-              flex: 3,
-              child: Text(
-                value,
-                textAlign: TextAlign.end,
-                softWrap: true,
->>>>>>> origin/feature/003-roles-usuario
                 style: VecinalTextStyles.bodyMedium.copyWith(
                   fontWeight: FontWeight.bold,
                   color: vc.textPrimary,

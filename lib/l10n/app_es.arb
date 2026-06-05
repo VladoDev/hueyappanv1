@@ -188,8 +188,7 @@
     }
   },
   "adminOtpDialogInstruction": "Verifica el teléfono del vecino y comunícale este código.",
-  "close": "Cerrar"
-
+  "close": "Cerrar",
   "paymentsTitle": "Pagos de la Privada",
   "paymentsHistory": "Historial de Pagos",
   "paymentsPending": "Adeudos Pendientes",

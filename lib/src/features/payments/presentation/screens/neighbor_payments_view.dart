@@ -9,19 +9,21 @@ import '../providers/payments_provider.dart';
 import '../../../authentication/presentation/providers/auth_provider.dart';
 
 class NeighborPaymentsView extends ConsumerWidget {
-  final String housingUnit;
+  final String lot;
+  final String house;
 
   const NeighborPaymentsView({
     super.key,
-    required this.housingUnit,
+    required this.lot,
+    required this.house,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final vc = context.vecinalColors;
     final l10n = AppLocalizations.of(context)!;
-    final paymentsAsync = ref.watch(neighborPaymentsStreamProvider(housingUnit));
-    final transactionsAsync = ref.watch(neighborTransactionsStreamProvider(housingUnit));
+    final paymentsAsync = ref.watch(neighborPaymentsStreamProvider((lot: lot, house: house)));
+    final transactionsAsync = ref.watch(neighborTransactionsStreamProvider((lot: lot, house: house)));
 
     return Scaffold(
       appBar: AppBar(
@@ -144,7 +146,7 @@ class NeighborPaymentsView extends ConsumerWidget {
     final vc = context.vecinalColors;
     final l10n = AppLocalizations.of(context)!;
     const clabe = '0123 4567 8901 2345 67';
-    final reference = l10n.housingUnitValue(housingUnit);
+    final reference = l10n.housingUnitValue(lot, house);
 
     void copyToClipboard(String text, String successMsg) {
       Clipboard.setData(ClipboardData(text: text));
