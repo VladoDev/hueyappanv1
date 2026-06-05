@@ -73,6 +73,7 @@ class AuthFirebaseDatasource {
         alert: true,
         badge: true,
         sound: true,
+        criticalAlert: true,
       );
       debugPrint('🔔 [Notifications] Permission status: ${settings.authorizationStatus}');
 
@@ -91,7 +92,8 @@ class AuthFirebaseDatasource {
 
       // Subscribe to emergencies topic
       await _messaging.subscribeToTopic('emergencies');
-      debugPrint('🔔 [Notifications] Subscribed to topic: emergencies');
+      await _messaging.subscribeToTopic('payments');
+      debugPrint('🔔 [Notifications] Subscribed to topic: emergencies and payments');
 
       await _firestore
           .collection('residents')
@@ -121,6 +123,7 @@ class AuthFirebaseDatasource {
 
       // Unsubscribe from emergencies topic
       await _messaging.unsubscribeFromTopic('emergencies');
+      await _messaging.unsubscribeFromTopic('payments');
 
       await _firestore
           .collection('residents')
@@ -155,12 +158,13 @@ class AuthFirebaseDatasource {
     }
   }
 
-  Future<void> triggerEmergencyAlarm(String uid, String name) async {
+  Future<void> triggerEmergencyAlarm(String uid, String name, String housingUnit) async {
     try {
       // 1. Write the emergency event to Firestore
       await _firestore.collection('emergencies').add({
         'triggeredBy': uid,
         'triggeredByName': name,
+        'triggeredByHousingUnit': housingUnit,
         'timestamp': FieldValue.serverTimestamp(),
         'status': 'active',
       });
@@ -180,7 +184,7 @@ class AuthFirebaseDatasource {
         if (configDoc.exists && configDoc.data() != null) {
           final serverKey = configDoc.data()!['serverKey'] as String?;
           if (serverKey != null && serverKey.isNotEmpty) {
-            await _sendDirectFcmPushNotification(serverKey, name);
+            await _sendDirectFcmPushNotification(serverKey, name, housingUnit);
           }
         }
       } catch (e, stackTrace) {
@@ -202,7 +206,7 @@ class AuthFirebaseDatasource {
     }
   }
 
-  Future<void> _sendDirectFcmPushNotification(String serverKey, String senderName) async {
+  Future<void> _sendDirectFcmPushNotification(String serverKey, String senderName, String housingUnit) async {
     final url = Uri.parse('https://fcm.googleapis.com/fcm/send');
     final headers = {
       'Content-Type': 'application/json',
@@ -213,7 +217,7 @@ class AuthFirebaseDatasource {
       'priority': 'high',
       'notification': {
         'title': '🚨 ¡ALERTA DE EMERGENCIA! 🚨',
-        'body': 'El residente $senderName ha activado una alarma de emergencia.',
+        'body': 'El residente $senderName del lote $housingUnit ha activado una alarma de emergencia.',
         'sound': 'default',
       },
       'android': {
@@ -226,8 +230,12 @@ class AuthFirebaseDatasource {
       'apns': {
         'payload': {
           'aps': {
-            'sound': 'default',
-            'interruption-level': 'time-sensitive',
+            'sound': {
+              'critical': 1,
+              'name': 'default',
+              'volume': 1.0,
+            },
+            'interruption-level': 'critical',
           },
         },
       },

@@ -13,12 +13,13 @@ exports.broadcastEmergencyAlert = onDocumentCreated("emergencies/{docId}", async
   if (!data) return null;
 
   const triggeredByName = data.triggeredByName || "Un residente";
+  const triggeredByHousingUnit = data.triggeredByHousingUnit || "desconocido";
 
   const payload = {
     topic: "emergencies",
     notification: {
       title: "🚨 ¡ALERTA DE EMERGENCIA! 🚨",
-      body: `El residente ${triggeredByName} ha activado una alarma de emergencia en la comunidad.`,
+      body: `El residente ${triggeredByName} del lote ${triggeredByHousingUnit} ha activado una alarma de emergencia en la comunidad.`,
     },
     android: {
       priority: "high",
@@ -30,8 +31,12 @@ exports.broadcastEmergencyAlert = onDocumentCreated("emergencies/{docId}", async
     apns: {
       payload: {
         aps: {
-          sound: "default",
-          "interruption-level": "time-sensitive",
+          sound: {
+            critical: 1,
+            name: "default",
+            volume: 1.0,
+          },
+          "interruption-level": "critical",
         },
       },
     },

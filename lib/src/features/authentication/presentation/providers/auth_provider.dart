@@ -38,6 +38,10 @@ class AuthController extends Notifier<AsyncValue<ResidentEntity?>> {
   Future<bool> login(String email, String password) async {
     state = const AsyncValue.loading();
     try {
+      // Invalidate providers before logging in to guarantee clean state
+      ref.invalidate(authStateProvider);
+      ref.invalidate(firebaseUserProvider);
+      
       final loginUsecase = ref.read(loginWithEmailUsecaseProvider);
       final user = await loginUsecase.execute(email, password);
       if (ref.mounted) {
@@ -94,6 +98,9 @@ class AuthController extends Notifier<AsyncValue<ResidentEntity?>> {
       await repository.logout();
       if (ref.mounted) {
         state = const AsyncValue.data(null);
+        // Invalidate providers on logout to clear session profile
+        ref.invalidate(authStateProvider);
+        ref.invalidate(firebaseUserProvider);
       }
     } catch (e, stack) {
       if (ref.mounted) {

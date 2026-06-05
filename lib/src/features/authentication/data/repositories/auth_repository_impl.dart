@@ -1,5 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../domain/entities/resident_entity.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../datasources/auth_firebase_datasource.dart';
@@ -138,7 +140,47 @@ class AuthRepositoryImpl implements AuthRepository {
       // 4. Save to Firestore
       await _dataSource.saveResidentProfile(uid, profile);
 
-      // 5. Register device token for push notifications
+      // 5. Initialize payment records for existing concepts
+      try {
+        final conceptsSnapshot = await FirebaseFirestore.instance.collection('concepts').get();
+        for (final doc in conceptsSnapshot.docs) {
+          final conceptId = doc.id;
+          final status = doc.data()['status'] as String? ?? 'active';
+          if (status == 'cancelled') continue;
+
+          final amountPerUnit = (doc.data()['amountPerUnit'] as num?)?.toDouble() ?? 0.0;
+
+          // Check if a payment record already exists for this housing unit
+          final paymentQuery = await FirebaseFirestore.instance
+              .collection('housing_payments')
+              .where('conceptId', isEqualTo: conceptId)
+              .where('housingUnit', isEqualTo: housingUnit)
+              .limit(1)
+              .get();
+
+          if (paymentQuery.docs.isEmpty) {
+            final paymentId = FirebaseFirestore.instance.collection('housing_payments').doc().id;
+            await FirebaseFirestore.instance.collection('housing_payments').doc(paymentId).set({
+              'id': paymentId,
+              'conceptId': conceptId,
+              'residentUid': uid,
+              'housingUnit': housingUnit,
+              'totalDue': amountPerUnit,
+              'amountPaid': 0.0,
+              'balance': amountPerUnit,
+              'paymentStatus': 'pending',
+              'extraAmount': 0.0,
+              'paidAt': null,
+              'notes': null,
+            });
+          }
+        }
+      } catch (e) {
+        // Non-blocking error initialization log
+        debugPrint('⚠️ Error initializing existing concept payments for new resident: $e');
+      }
+
+      // 6. Register device token for push notifications
       await _dataSource.registerDeviceToken(uid);
 
       // Track successful sign up in Analytics and configure Crashlytics user identifier
