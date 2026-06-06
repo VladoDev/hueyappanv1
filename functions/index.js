@@ -13,13 +13,14 @@ exports.broadcastEmergencyAlert = onDocumentCreated("emergencies/{docId}", async
   if (!data) return null;
 
   const triggeredByName = data.triggeredByName || "Un residente";
-  const triggeredByHousingUnit = data.triggeredByHousingUnit || "desconocido";
+  const triggeredByLot = data.triggeredByLot || "desconocido";
+  const triggeredByHouse = data.triggeredByHouse || "";
 
   const payload = {
     topic: "emergencies",
     notification: {
       title: "🚨 ¡ALERTA DE EMERGENCIA! 🚨",
-      body: `El residente ${triggeredByName} del lote ${triggeredByHousingUnit} ha activado una alarma de emergencia en la comunidad.`,
+      body: `El residente ${triggeredByName} del lote ${triggeredByLot}-${triggeredByHouse} ha activado una alarma de emergencia en la comunidad.`,
     },
     android: {
       priority: "high",

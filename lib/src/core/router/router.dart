@@ -12,6 +12,7 @@ import '../../features/authentication/presentation/widgets/announcements_tab.dar
 import '../../features/payments/presentation/screens/payments_tab_screen.dart';
 import '../../features/payments/presentation/screens/concept_form_screen.dart';
 import '../../features/payments/presentation/screens/concept_detail_screen.dart';
+import '../../features/payments/presentation/screens/concept_payment_map_screen.dart';
 import '../../features/authentication/presentation/widgets/profile_tab.dart';
 import '../../features/contacts/presentation/screens/contacts_tab.dart';
 import '../../features/notifications/presentation/screens/notifications_screen.dart';
@@ -133,6 +134,13 @@ final routerProvider = Provider<GoRouter>((ref) {
                     builder: (context, state) {
                       final id = state.pathParameters['id']!;
                       return ConceptDetailScreen(conceptId: id);
+                    },
+                  ),
+                  GoRoute(
+                    path: 'map/:id',
+                    builder: (context, state) {
+                      final id = state.pathParameters['id']!;
+                      return ConceptPaymentMapScreen(conceptId: id);
                     },
                   ),
                 ],

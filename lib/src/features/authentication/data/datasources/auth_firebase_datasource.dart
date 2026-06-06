@@ -179,24 +179,10 @@ class AuthFirebaseDatasource {
         },
       );
 
-      // 2. Try to fetch FCM legacy server key from Firestore config to send push notifications
-      try {
-        final configDoc = await _firestore.collection('config').doc('fcm').get();
-        if (configDoc.exists && configDoc.data() != null) {
-          final serverKey = configDoc.data()!['serverKey'] as String?;
-          if (serverKey != null && serverKey.isNotEmpty) {
-            await _sendDirectFcmPushNotification(serverKey, name, lot, house);
-          }
-        }
-      } catch (e, stackTrace) {
-        debugPrint('FCM config not found or failed to read. Skipping direct push notification: $e');
-        // Record non-fatal error in Crashlytics but do not block client
-        await FirebaseCrashlytics.instance.recordError(
-          e,
-          stackTrace,
-          reason: 'FCM direct push notification fallback failed',
-        );
-      }
+      // Note: We used to send a direct legacy FCM push here as a fallback,
+      // but legacy FCM HTTP API does not support APNs critical flags (it ignores the 'apns' root object).
+      // We now rely exclusively on the Firebase Cloud Function 'broadcastEmergencyAlert'
+      // which uses the Firebase Admin SDK (FCM HTTP v1 API) to properly format and send critical alerts.
     } catch (e, stackTrace) {
       await FirebaseCrashlytics.instance.recordError(
         e,
@@ -207,49 +193,7 @@ class AuthFirebaseDatasource {
     }
   }
 
-  Future<void> _sendDirectFcmPushNotification(String serverKey, String senderName, String lot, String house) async {
-    final url = Uri.parse('https://fcm.googleapis.com/fcm/send');
-    final headers = {
-      'Content-Type': 'application/json',
-      'Authorization': 'key=$serverKey',
-    };
-    final body = {
-      'to': '/topics/emergencies',
-      'priority': 'high',
-      'notification': {
-        'title': '🚨 ¡ALERTA DE EMERGENCIA! 🚨',
-        'body': 'El residente $senderName del Lote $lot-$house ha activado una alarma de emergencia.',
-        'sound': 'default',
-      },
-      'android': {
-        'priority': 'high',
-        'notification': {
-          'sound': 'default',
-          'channel_id': 'emergency_channel',
-        },
-      },
-      'apns': {
-        'payload': {
-          'aps': {
-            'sound': {
-              'critical': 1,
-              'name': 'default',
-              'volume': 1.0,
-            },
-            'interruption-level': 'critical',
-          },
-        },
-      },
-    };
 
-    try {
-      final response = await http.post(url, headers: headers, body: json.encode(body));
-      debugPrint('Direct FCM push notification status: ${response.statusCode}');
-      debugPrint('Direct FCM response: ${response.body}');
-    } catch (e) {
-      debugPrint('Failed to send direct FCM push notification: $e');
-    }
-  }
 
   Stream<Map<String, dynamic>?> watchEmergencies() {
     return _firestore

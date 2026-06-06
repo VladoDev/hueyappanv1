@@ -27,8 +27,13 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   String? _selectedHouse;
   String? _selectedResidentType;
 
-  final List<String> _lots = List.generate(41, (i) => (120 + i).toString());
-  final List<String> _houses = ['A', 'B', 'C'];
+  final List<String> _lots = List.generate(22, (i) => (134 + i).toString());
+  List<String> get _houses {
+    if (_selectedLot == '144' || _selectedLot == '145') {
+      return ['A', 'B', 'C'];
+    }
+    return ['A', 'B'];
+  }
   final List<String> _residentTypes = ['Propietario', 'Inquilino'];
 
   bool _isPreAuthenticated = false;
@@ -225,20 +230,27 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           children: [
             Expanded(
               child: DropdownButtonFormField<String>(
-                initialValue: _selectedLot,
+                value: _selectedLot,
                 decoration: InputDecoration(
                   labelText: l10n.lotLabel,
                   prefixIcon: Icon(Icons.home_outlined, color: vc.primaryDefault),
                 ),
                 items: _lots.map((l) => DropdownMenuItem(value: l, child: Text(l))).toList(),
-                onChanged: isLoading ? null : (val) => setState(() => _selectedLot = val),
+                onChanged: isLoading ? null : (val) {
+                  setState(() {
+                    _selectedLot = val;
+                    if (_selectedHouse != null && !_houses.contains(_selectedHouse)) {
+                      _selectedHouse = null;
+                    }
+                  });
+                },
                 validator: (val) => val == null ? l10n.requiredField : null,
               ),
             ),
             const SizedBox(width: 12),
             Expanded(
               child: DropdownButtonFormField<String>(
-                initialValue: _selectedHouse,
+                value: _selectedHouse,
                 decoration: InputDecoration(
                   labelText: l10n.houseLabel,
                 ),
@@ -328,8 +340,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     return Column(
       children: [
         RecaptchaV2(
-          apiKey: "6Lf_uQ0tAAAAADJkfaGYZVf-1xMF_T3FG1Zhe6ox",
-          apiSecret: "6Lf_uQ0tAAAAAB9vWoR8FXM-5-mfZFCufjAkRiC2",
+          apiKey: "6Lemtw4tAAAAACeY-96VPirAxI6EcUTgwW8quFXQ",
+          apiSecret: "6Lemtw4tAAAAAErhymCWcuWsuxCqAXtyzHGKNdkV",
           controller: recaptchaV2Controller,
           onVerifiedError: (err) {
             debugPrint('Recaptcha error: $err');
