@@ -69,6 +69,7 @@ class NeighborPaymentsView extends ConsumerWidget {
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      const SizedBox(height: 24),
                       if (pendingConfirmations.isNotEmpty) ...[
                         Text(
                           'Confirmaciones Pendientes',
