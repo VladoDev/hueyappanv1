@@ -858,6 +858,7 @@ ThemeData vecinalLightTheme() {
 
     // ── AppBar
     appBarTheme: AppBarTheme(
+      centerTitle:        true,
       backgroundColor:    c.surfacePrimary,
       foregroundColor:    c.textPrimary,
       elevation:          0,
@@ -1237,6 +1238,7 @@ ThemeData vecinalDarkTheme() {
     scaffoldBackgroundColor: c.surfaceTertiary,
 
     appBarTheme: AppBarTheme(
+      centerTitle:        true,
       backgroundColor:    c.surfacePrimary,
       foregroundColor:    c.textPrimary,
       elevation:          0,

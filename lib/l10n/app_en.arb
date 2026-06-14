@@ -173,16 +173,13 @@
       }
     }
   },
-  "adminOtpDialogBody": "Verification requested by {name} (Lot {lot}-{house}).",
+  "adminOtpDialogBody": "Verification requested by {name}{unitInfo}.",
   "@adminOtpDialogBody": {
     "placeholders": {
       "name": {
         "type": "String"
       },
-      "lot": {
-        "type": "String"
-      },
-      "house": {
+      "unitInfo": {
         "type": "String"
       }
     }

@@ -725,8 +725,8 @@ abstract class AppLocalizations {
   /// No description provided for @adminOtpDialogBody.
   ///
   /// In en, this message translates to:
-  /// **'Verification requested by {name} (Lot {lot}-{house}).'**
-  String adminOtpDialogBody(String name, String lot, String house);
+  /// **'Verification requested by {name}{unitInfo}.'**
+  String adminOtpDialogBody(String name, String unitInfo);
 
   /// No description provided for @adminOtpDialogInstruction.
   ///
