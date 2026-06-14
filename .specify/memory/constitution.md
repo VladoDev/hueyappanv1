@@ -20,6 +20,10 @@ El proyecto se estructurará siguiendo los principios de **Clean Architecture** 
 | **Domain** | Contiene la lógica de negocio pura y las entidades abstractas. Es totalmente independiente de librerías externas o frameworks de UI. | Entities, Use Cases, Repositories Interfaces. |
 | **Presentation** | Manejo de la interfaz de usuario, renderizado de pantallas y gestión de estados locales a través de controladores visuales. | Widgets, Screens, State Notifiers / Providers. |
 
+Adicionalmente, se imponen las siguientes reglas obligatorias para cada feature:
+* **Consistencia Visual (Tematización):** Cada feature debe adoptar y seguir de forma obligatoria el sistema de temas preestablecido en la aplicación (`vecinalLightTheme()` y `vecinalDarkTheme()`). Queda estrictamente prohibido utilizar colores estáticos personalizados u otros estilos que rompan con la coherencia visual.
+* **Telemetría e Instrumentación (Firebase Analytics):** En cada feature desarrollado, es obligatorio integrar eventos de medición mediante **Firebase Analytics** para rastrear vistas de pantalla y las interacciones principales del usuario.
+
 ### 4. Gestión de Estado e Inyección de Dependencias
 * **Prohibición de State Local Anidado:** Se prohíbe explícitamente el uso de `setState` en los widgets de la aplicación para lógicas de estado compartido o de negocio. Todo el estado de la aplicación debe ser explícito, reactivo y centralizado.
 * **Estandarización con Riverpod:** Se usará exclusivamente **Riverpod** tanto para la gestión de estados globales y locales como para la inyección de dependencias (DI).
@@ -32,11 +36,15 @@ Con el fin de mitigar la complejidad ciclomática y asegurar el cumplimiento del
 * **Archivos de Código (`.dart`):** Ningún archivo fuente podrá exceder las **300 líneas de código** en su totalidad.
 
 ### 6. Estrategia de Control de Versiones (Git Branching)
-El desarrollo se realizará mediante un esquema ordenado de ramificaciones basado en características. Queda estrictamente prohibido realizar commits directos a la rama principal (`main` o `master`). La nomenclatura de las ramas se define según el caso de uso:
-* Para el desarrollo de nuevas pantallas, servicios o funcionalidades: `feature/nombre-del-feature`
-* Para la resolución de errores, fallos técnicos o regresiones detectadas: `bugfix/nombre-del-bug`
+El desarrollo se realizará mediante un esquema ordenado de ramificaciones basado en características. Todo nuevo feature o bugfix debe crearse a partir de la rama `dev`. Queda estrictamente prohibido realizar commits directos a la rama principal (`main` o `master`), y tampoco se permite crear ramas de bugfix directamente desde `main`. La única forma de actualizar la rama `main` es mediante un Pull Request (PR) desde la rama `dev` hacia `main`.
 
-Todo el código deberá integrarse mediante Pull Requests (PR) que requieran revisión de código y validación automatizada.
+Cada vez que se cree un nuevo feature o se resuelva un error, se creará una nueva rama con la siguiente nomenclatura según el caso de uso:
+* Para el desarrollo de nuevas pantallas, servicios o funcionalidades: `feature/###-nombre-del-feature`
+* Para la resolución de errores, fallos técnicos o regresiones detectadas: `bugfix/###-nombre-del-bug`
+
+Donde `###` representa un identificador numérico secuencial de tres dígitos (por ejemplo, `001` o `002`).
+
+Todo el código deberá integrarse mediante Pull Requests (PR) hacia `dev` que requieran revisión de código y validación automatizada.
 
 ### 7. Política de Calidad y Pruebas (Testing Policy)
 La estabilidad del software es prioritaria dada su naturaleza comunitaria. Por lo tanto:
@@ -51,3 +59,12 @@ A pesar de ser una aplicación local, la arquitectura debe estar preparada globa
 * Portugués (pt)
 * Français (fr)
 * Italiano (it)
+
+> **Regla de Localización Obligatoria:** Cada texto visible para el usuario final en la interfaz gráfica (UI) deberá pasar obligatoriamente por el sistema de localización e internacionalización (`intl` o archivos ARB). Queda estrictamente prohibido incluir cadenas de texto estáticas (hardcoded) en los widgets.
+
+### 9. Convenciones de Formato de Datos
+Para garantizar consistencia en toda la aplicación (UI, notificaciones push, base de datos y Cloud Functions), se establecen los siguientes formatos estándar:
+
+* **Identificación de Lote:** La identificación de la unidad de vivienda se almacena en dos campos independientes en Firestore: `lot` (número, ej. "148") y `house` (letra/identificador, ej. "A"). Cuando se muestra al usuario en la interfaz, se combinan con la palabra localizada "Lote" mediante el sistema de i18n (ejemplo visual: `Lote 148-A`).
+* **Nombre del Residente:** Se almacena como nombre completo en un solo campo `name` con formato `{nombre} {apellidos}`.
+* **Teléfono:** Se almacena como cadena de 10 dígitos sin prefijo de país en el campo `phone`.

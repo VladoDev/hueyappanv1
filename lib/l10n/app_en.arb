@@ -1,0 +1,254 @@
+{
+  "@@locale": "en",
+  "appName": "HueyAPPan",
+  "loginPortalSubtitle": "Convento Hueyapan Resident Portal",
+  "emailLabel": "Email Address",
+  "emailRequired": "Email is required",
+  "emailInvalid": "Please enter a valid email",
+  "passwordLabel": "Password",
+  "passwordRequired": "Password is required",
+  "passwordTooShort": "Password must be at least 6 characters",
+  "loginButton": "Access Portal",
+  "registerLink": "Don't have an account? Register here",
+
+  "registerHeaderTitle": "Resident Registration",
+  "firstNameLabel": "First Name",
+  "requiredField": "Required",
+  "lastNameLabel": "Last Name",
+  "lotLabel": "Lot",
+  "houseLabel": "House",
+  "residentTypeLabel": "Resident Type",
+  "propietarioLabel": "Owner",
+  "inquilinoLabel": "Tenant",
+  "phoneLabel": "Mobile Phone",
+  "phoneRequired": "Phone is required",
+  "phoneLengthInvalid": "Must be exactly 10 digits",
+  "emailRequiredRegister": "Email is required",
+  "emailInvalidRegister": "Please enter a valid email",
+  "passwordRequiredRegister": "Password is required",
+  "passwordTooShortRegister": "Minimum 6 characters",
+  "registerButton": "Register",
+
+  "navHome": "Home",
+  "navNews": "News",
+  "navPayments": "Payments",
+  "navProfile": "Profile",
+  "navNotifications": "Notifications",
+  "noNotifications": "You have no notifications",
+
+  "emergencyAlertTitle": "Emergency Alert",
+  "emergencyAlertConfirm": "Are you sure you want to trigger the emergency alert?\n\nThis will send a high-priority push notification with sound to all community residents.",
+  "cancel": "Cancel",
+  "activateAlarm": "Activate Alarm",
+  "alarmActivatedSuccess": "Emergency alert activated successfully!",
+  "alarmActivatedError": "Error activating alarm: {error}",
+  "@alarmActivatedError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+
+  "emergencyOverlayTitle": "EMERGENCY ALERT!",
+  "emergencyOverlayBody": "Resident {senderName} has triggered an emergency alert in the community.",
+  "@emergencyOverlayBody": {
+    "placeholders": {
+      "senderName": {
+        "type": "String"
+      }
+    }
+  },
+  "silenceAlarm": "Silence Alarm",
+
+  "welcomeBack": "Welcome back,",
+  "recentActivity": "Recent Activity",
+  "activityMaintenance": "Emergency system maintenance scheduled for next Saturday.",
+  "activityMaintenanceTime": "1h ago",
+  "activityAssembly": "Monthly resident assembly meeting minutes are uploaded.",
+  "activityAssemblyTime": "1d ago",
+  "homeFeatureTitle": "Neighborhood Overview",
+  "homeFeatureSubtitle": "Convento Hueyapan Safe Community",
+  "homeFeatureBody": "All systems operational. Security is monitoring access 24/7.",
+
+  "myProfile": "My Profile",
+  "accountInformation": "Account Information",
+  "housingUnitLabel": "Lot",
+  "housingUnitValue": "{lot}-{house}",
+  "@housingUnitValue": {
+    "placeholders": {
+      "lot": {
+        "type": "String"
+      },
+      "house": {
+        "type": "String"
+      }
+    }
+  },
+  "residentStatusLabel": "Resident Status",
+  "signOut": "Sign Out",
+
+  "maintenanceFees": "My Payments",
+  "paymentHistory": "Payment History",
+  "amountPaid": "Amount Paid",
+  "amountPaidValue": "${amount} USD",
+  "@amountPaidValue": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "paidStatus": "PAID",
+  "mayDues": "May 2026 Dues",
+  "aprilFee": "April 2026 Maintenance Fee",
+  "aprilFeeDate": "Paid on Apr 04, 2026",
+  "marchFee": "March 2026 Maintenance Fee",
+  "marchFeeDate": "Paid on Mar 02, 2026",
+
+  "communityNews": "Community News",
+  "news1Title": "New Access Control Guidelines",
+  "news1Body": "Please ensure your guest register codes are generated via the portal 24 hours prior to their arrival. RFID tags are required for vehicle access.",
+  "news1Date": "May 28, 2026",
+  "news1Author": "Security Committee",
+  "news2Title": "Annual Swimming Pool Opening",
+  "news2Body": "The neighborhood swimming pool will open for the season starting this Friday. Pool hours are 8:00 AM - 10:00 PM daily. Please review the safety rules posted at the entry.",
+  "news2Date": "May 24, 2026",
+  "news2Author": "Administration",
+  "navContacts": "Contacts",
+  "contactsTitle": "Contact Numbers",
+  "searchContacts": "Search contacts...",
+  "noContactsFound": "No contacts found",
+  "favoritesOnly": "Favorites",
+  "allContacts": "All",
+  "securityCategory": "Security",
+  "adminCategory": "Admin",
+  "servicesCategory": "Services",
+  "emergencyCategory": "Emergency",
+  "callConfirmTitle": "Call Contact",
+  "callConfirmBody": "Do you want to make a call to {name} at {number}?",
+  "@callConfirmBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "callAction": "Call",
+  "roleLabel": "Role",
+  "roleAdmin": "Administrator",
+  "roleVecino": "Neighbor",
+  "recaptchaRequired": "Please verify that you are not a robot.",
+  "verifyPhoneRequiredTitle": "Verification Required",
+  "verifyPhoneRequiredBody": "In order to send Critical Alerts, you must verify your phone number.",
+  "requestVerification": "Request Verification",
+  "enterOtp": "Enter OTP code",
+  "verifyOtp": "Verify Code",
+  "otpRequestedSuccess": "Request sent to administrators.",
+  "otpVerifiedSuccess": "Phone successfully verified!",
+  "otpVerificationFailed": "The code is incorrect or expired.",
+  "otpAdminNotificationTitle": "Verification Request",
+  "otpAdminNotificationBody": "Neighbor {name} (Lot {lot}-{house}) requested OTP verification.",
+  "@otpAdminNotificationBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "lot": {
+        "type": "String"
+      },
+      "house": {
+        "type": "String"
+      }
+    }
+  },
+  "adminOtpDialogTitle": "OTP Code for {name}",
+  "@adminOtpDialogTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "adminOtpDialogBody": "Verification requested by {name}{unitInfo}.",
+  "@adminOtpDialogBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "unitInfo": {
+        "type": "String"
+      }
+    }
+  },
+  "adminOtpDialogInstruction": "Verify the neighbor's phone number and share this code with them.",
+  "close": "Close",
+  "paymentsTitle": "Community Payments",
+  "paymentsHistory": "Payment History",
+  "paymentsPending": "Pending Dues",
+  "transferDetails": "Transfer Details",
+  "bankNameLabel": "Bank",
+  "clabeLabel": "CLABE",
+  "beneficiaryLabel": "Beneficiary",
+  "copySuccess": "CLABE copied to clipboard",
+  "partialPaymentTag": "Partial Payment",
+  "pendingPaymentTag": "Pending",
+  "paidPaymentTag": "Paid",
+  "conceptDetails": "Concept Details",
+  "conceptBreakdown": "Charge Breakdown",
+  "adminPanel": "Administration Panel",
+  "createConcept": "Create Payment Concept",
+  "editConcept": "Edit Payment Concept",
+  "deleteConcept": "Delete Concept",
+  "conceptTitleLabel": "Concept Name",
+  "conceptDescLabel": "Description (optional)",
+  "conceptTotalCost": "Total Cost",
+  "conceptTotalUnits": "Number of Houses",
+  "amountPerHouseLabel": "Amount per House",
+  "subItemsLabel": "Details / Breakdown",
+  "addSubItem": "Add detail",
+  "itemLabel": "Description",
+  "itemAmount": "Cost (optional)",
+  "editConceptWarning": "Note: Editing an existing concept will NOT automatically recalculate already generated dues to avoid altering recorded payments.",
+  "recordedExpenseLabel": "Recorded Real Expense",
+  "availableBalanceLabel": "Available Balance",
+  "totalCollectedLabel": "Total Collected",
+  "totalPendingLabel": "Total Pending",
+  "updateExpense": "Record Real Expense",
+  "paidHouses": "Paid Houses",
+  "pendingHouses": "Pending Houses",
+  "registerPayment": "Register Payment",
+  "amountReceivedLabel": "Payment to main fee",
+  "referenceLabel": "Reference / Receipt (optional)",
+  "notesLabel": "Notes (optional)",
+  "partialAction": "Partial Payment",
+  "completeAction": "Complete Payment",
+  "save": "Save",
+  "deleteConfirm": "Are you sure you want to delete this payment concept? This will delete the concept and all associated housing dues.",
+  "delete": "Delete",
+  "fieldRequired": "Required field",
+  "invalidAmount": "Invalid amount",
+  "activeStatus": "Active",
+  "closedStatus": "Closed",
+  "cancelledStatus": "Cancelled",
+  "noPaymentsFound": "No payments found",
+  "noPendingPayments": "You have no pending dues 🎉",
+  "bankTransferReference": "Transfer reference",
+  "referenceCopySuccess": "Reference copied to clipboard",
+  "extraAmountLabel": "Extra Amount",
+  "extraAmountInput": "Extra amount (e.g. keys, controls, etc.)",
+  "extraPaid": "Extra paid",
+  "waterStatusTitle": "Water Supply",
+  "waterStatusAvailable": "Water available today",
+  "waterStatusUnavailable": "No water supply today",
+  "waterStatusMaintenance": "Maintenance in progress",
+  "waterStatusAdminTitle": "Water Control (Admin)",
+  "waterStatusAuto": "Automatic (1 day yes, 1 no)",
+  "waterStatusForceAvailable": "Force: Available",
+  "waterStatusForceUnavailable": "Force: Unavailable",
+  "waterStatusForceMaintenance": "Force: Maintenance"
+
+}

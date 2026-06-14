@@ -1,0 +1,254 @@
+{
+  "@@locale": "es",
+  "appName": "HueyAPPan",
+  "loginPortalSubtitle": "Portal de Residentes Convento Hueyapan",
+  "emailLabel": "Correo Electrónico",
+  "emailRequired": "El correo es requerido",
+  "emailInvalid": "Ingresa un correo válido",
+  "passwordLabel": "Contraseña",
+  "passwordRequired": "La contraseña es requerida",
+  "passwordTooShort": "La contraseña debe tener al menos 6 caracteres",
+  "loginButton": "Acceder al Portal",
+  "registerLink": "¿No tienes cuenta? Regístrate aquí",
+
+  "registerHeaderTitle": "Registro de Residente",
+  "firstNameLabel": "Nombre",
+  "requiredField": "Requerido",
+  "lastNameLabel": "Apellidos",
+  "lotLabel": "Lote",
+  "houseLabel": "Casa",
+  "residentTypeLabel": "Tipo de Residente",
+  "propietarioLabel": "Propietario",
+  "inquilinoLabel": "Inquilino",
+  "phoneLabel": "Teléfono Móvil",
+  "phoneRequired": "El teléfono es requerido",
+  "phoneLengthInvalid": "Debe tener exactamente 10 dígitos",
+  "emailRequiredRegister": "El correo es requerido",
+  "emailInvalidRegister": "Ingresa un correo válido",
+  "passwordRequiredRegister": "La contraseña es requerida",
+  "passwordTooShortRegister": "Mínimo 6 caracteres",
+  "registerButton": "Registrarse",
+
+  "navHome": "Inicio",
+  "navNews": "Noticias",
+  "navPayments": "Pagos",
+  "navProfile": "Perfil",
+  "navNotifications": "Notificaciones",
+  "noNotifications": "No tienes notificaciones",
+
+  "emergencyAlertTitle": "Alerta de Emergencia",
+  "emergencyAlertConfirm": "¿Estás seguro de que deseas activar la alerta de emergencia?\n\nEsta acción enviará una notificación de alerta crítica con sonido a todos los residentes de la comunidad.",
+  "cancel": "Cancelar",
+  "activateAlarm": "Activar Alarma",
+  "alarmActivatedSuccess": "¡Alerta de emergencia activada con éxito!",
+  "alarmActivatedError": "Error al activar la alarma: {error}",
+  "@alarmActivatedError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+
+  "emergencyOverlayTitle": "¡ALERTA DE EMERGENCIA!",
+  "emergencyOverlayBody": "El residente {senderName} ha activado una alerta de emergencia en la comunidad.",
+  "@emergencyOverlayBody": {
+    "placeholders": {
+      "senderName": {
+        "type": "String"
+      }
+    }
+  },
+  "silenceAlarm": "Silenciar Alarma",
+
+  "welcomeBack": "Bienvenido de nuevo,",
+  "recentActivity": "Actividad Reciente",
+  "activityMaintenance": "Mantenimiento del sistema de emergencias programado para el próximo sábado.",
+  "activityMaintenanceTime": "Hace 1h",
+  "activityAssembly": "Las minutas de la asamblea mensual de residentes han sido subidas.",
+  "activityAssemblyTime": "Hace 1d",
+  "homeFeatureTitle": "Resumen de la Comunidad",
+  "homeFeatureSubtitle": "Comunidad Segura Convento Hueyapan",
+  "homeFeatureBody": "Todos los sistemas operativos. Seguridad monitoreando los accesos 24/7.",
+
+  "myProfile": "Mi Perfil",
+  "accountInformation": "Información de la Cuenta",
+  "housingUnitLabel": "Lote",
+  "housingUnitValue": "{lot}-{house}",
+  "@housingUnitValue": {
+    "placeholders": {
+      "lot": {
+        "type": "String"
+      },
+      "house": {
+        "type": "String"
+      }
+    }
+  },
+  "residentStatusLabel": "Estado de Residente",
+  "signOut": "Cerrar Sesión",
+
+  "maintenanceFees": "Mis Pagos",
+  "paymentHistory": "Historial de Pagos",
+  "amountPaid": "Monto Pagado",
+  "amountPaidValue": "${amount} USD",
+  "@amountPaidValue": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "paidStatus": "PAGADO",
+  "mayDues": "Cuotas de Mayo 2026",
+  "aprilFee": "Cuota de Mantenimiento de Abril 2026",
+  "aprilFeeDate": "Pagado el 04 de abr, 2026",
+  "marchFee": "Cuota de Mantenimiento de Marzo 2026",
+  "marchFeeDate": "Pagado el 02 de mar, 2026",
+
+  "communityNews": "Noticias de la Comunidad",
+  "news1Title": "Nuevas Pautas de Control de Acceso",
+  "news1Body": "Por favor, asegúrese de que los códigos de registro de invitados se generen a través del portal 24 horas antes de su llegada. Se requieren etiquetas RFID para el acceso vehicular.",
+  "news1Date": "28 de mayo, 2026",
+  "news1Author": "Comité de Seguridad",
+  "news2Title": "Apertura Anual de la Alberca",
+  "news2Body": "La alberca del vecindario abrirá para la temporada a partir de este viernes. El horario de la alberca es de 8:00 AM a 10:00 PM todos los días. Por favor, revise las reglas de seguridad publicadas en la entrada.",
+  "news2Date": "24 de mayo, 2026",
+  "news2Author": "Administración",
+  "navContacts": "Contactos",
+  "contactsTitle": "Números de Contacto",
+  "searchContacts": "Buscar contactos...",
+  "noContactsFound": "No se encontraron contactos",
+  "favoritesOnly": "Favoritos",
+  "allContacts": "Todos",
+  "securityCategory": "Seguridad",
+  "adminCategory": "Admin",
+  "servicesCategory": "Servicios",
+  "emergencyCategory": "Emergencia",
+  "callConfirmTitle": "Llamar Contacto",
+  "callConfirmBody": "¿Deseas realizar una llamada a {name} al {number}?",
+  "@callConfirmBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "callAction": "Llamar",
+  "roleLabel": "Rol",
+  "roleAdmin": "Administrador",
+  "roleVecino": "Vecino",
+  "recaptchaRequired": "Por favor verifica que no eres un robot.",
+  "verifyPhoneRequiredTitle": "Verificación Requerida",
+  "verifyPhoneRequiredBody": "Para poder enviar Alertas Críticas, necesitas verificar tu número de teléfono.",
+  "requestVerification": "Solicitar Verificación",
+  "enterOtp": "Ingresa el código OTP",
+  "verifyOtp": "Verificar Código",
+  "otpRequestedSuccess": "Solicitud enviada a los administradores.",
+  "otpVerifiedSuccess": "¡Teléfono verificado correctamente!",
+  "otpVerificationFailed": "El código es incorrecto o ha expirado.",
+  "otpAdminNotificationTitle": "Solicitud de Verificación",
+  "otpAdminNotificationBody": "El vecino {name} (Lote {lot}-{house}) ha solicitado verificación OTP.",
+  "@otpAdminNotificationBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "lot": {
+        "type": "String"
+      },
+      "house": {
+        "type": "String"
+      }
+    }
+  },
+  "adminOtpDialogTitle": "Código OTP para {name}",
+  "@adminOtpDialogTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "adminOtpDialogBody": "Verificación solicitada por {name}{unitInfo}.",
+  "@adminOtpDialogBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "unitInfo": {
+        "type": "String"
+      }
+    }
+  },
+  "adminOtpDialogInstruction": "Verifica el teléfono del vecino y comunícale este código.",
+  "close": "Cerrar",
+  "paymentsTitle": "Pagos de la Privada",
+  "paymentsHistory": "Historial de Pagos",
+  "paymentsPending": "Adeudos Pendientes",
+  "transferDetails": "Datos de Transferencia",
+  "bankNameLabel": "Banco",
+  "clabeLabel": "CLABE",
+  "beneficiaryLabel": "Beneficiario",
+  "copySuccess": "CLABE copiada al portapapeles",
+  "partialPaymentTag": "Pago Parcial",
+  "pendingPaymentTag": "Pendiente",
+  "paidPaymentTag": "Liquidado",
+  "conceptDetails": "Detalles del Concepto",
+  "conceptBreakdown": "Desglose de Cobro",
+  "adminPanel": "Panel de Administración",
+  "createConcept": "Crear Concepto de Pago",
+  "editConcept": "Editar Concepto de Pago",
+  "deleteConcept": "Eliminar Concepto",
+  "conceptTitleLabel": "Nombre del Concepto",
+  "conceptDescLabel": "Descripción (opcional)",
+  "conceptTotalCost": "Costo Total",
+  "conceptTotalUnits": "Número de Casas",
+  "amountPerHouseLabel": "Monto por Casa",
+  "subItemsLabel": "Detalles / Desglose",
+  "addSubItem": "Agregar detalle",
+  "itemLabel": "Descripción",
+  "itemAmount": "Costo (opcional)",
+  "editConceptWarning": "Nota: Editar un concepto existente NO recalculará automáticamente los adeudos ya generados para no alterar pagos registrados.",
+  "recordedExpenseLabel": "Gasto Real Registrado",
+  "availableBalanceLabel": "Saldo Disponible",
+  "totalCollectedLabel": "Total Recaudado",
+  "totalPendingLabel": "Total Pendiente",
+  "updateExpense": "Registrar Gasto Real",
+  "paidHouses": "Casas que ya pagaron",
+  "pendingHouses": "Casas pendientes",
+  "registerPayment": "Registrar Pago",
+  "amountReceivedLabel": "Abono a la cuota principal",
+  "referenceLabel": "Referencia / Comprobante (opcional)",
+  "notesLabel": "Notas (opcional)",
+  "partialAction": "Pago Parcial",
+  "completeAction": "Pago Completo",
+  "save": "Guardar",
+  "deleteConfirm": "¿Estás seguro de que deseas eliminar este concepto de pago? Esta acción eliminará el concepto y todos los adeudos de las casas.",
+  "delete": "Eliminar",
+  "fieldRequired": "Campo requerido",
+  "invalidAmount": "Monto no válido",
+  "activeStatus": "Activo",
+  "closedStatus": "Cerrado",
+  "cancelledStatus": "Cancelado",
+  "noPaymentsFound": "No se encontraron pagos",
+  "noPendingPayments": "No tienes adeudos pendientes 🎉",
+  "bankTransferReference": "Referencia bancaria",
+  "referenceCopySuccess": "Referencia copiada al portapapeles",
+  "extraAmountLabel": "Monto Extra",
+  "extraAmountInput": "Monto extra (ej. llaves, controles, etc.)",
+  "extraPaid": "Extra pagado",
+  "waterStatusTitle": "Suministro de Agua",
+  "waterStatusAvailable": "Agua disponible hoy",
+  "waterStatusUnavailable": "Sin suministro hoy",
+  "waterStatusMaintenance": "Mantenimiento en curso",
+  "waterStatusAdminTitle": "Control de Agua (Admin)",
+  "waterStatusAuto": "Automático (1 día sí, 1 no)",
+  "waterStatusForceAvailable": "Forzar: Disponible",
+  "waterStatusForceUnavailable": "Forzar: Sin suministro",
+  "waterStatusForceMaintenance": "Forzar: Mantenimiento"
+
+}
