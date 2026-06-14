@@ -192,7 +192,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get signOut => 'Cerrar Sesión';
 
   @override
-  String get maintenanceFees => 'Cuotas de Mantenimiento';
+  String get maintenanceFees => 'Mis Pagos';
 
   @override
   String get paymentHistory => 'Historial de Pagos';

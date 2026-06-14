@@ -88,7 +88,7 @@
   "residentStatusLabel": "Estado de Residente",
   "signOut": "Cerrar Sesión",
 
-  "maintenanceFees": "Cuotas de Mantenimiento",
+  "maintenanceFees": "Mis Pagos",
   "paymentHistory": "Historial de Pagos",
   "amountPaid": "Monto Pagado",
   "amountPaidValue": "${amount} USD",

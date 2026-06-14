@@ -7,13 +7,73 @@ import '../../domain/entities/payment_concept_entity.dart';
 import '../providers/payments_provider.dart';
 
 class AdminPaymentsView extends ConsumerWidget {
-  const AdminPaymentsView({super.key});
+  final bool isEmbedded;
+  
+  const AdminPaymentsView({
+    super.key,
+    this.isEmbedded = false,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final vc = context.vecinalColors;
     final l10n = AppLocalizations.of(context)!;
     final conceptsAsync = ref.watch(conceptsStreamProvider);
+
+    final bodyContent = conceptsAsync.when(
+      data: (concepts) {
+        if (concepts.isEmpty) {
+          return Center(
+            child: Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.payment_outlined, size: 64, color: vc.textHint),
+                  const SizedBox(height: 16),
+                  Text(
+                    'No hay conceptos de pago creados aún.',
+                    style: VecinalTextStyles.headlineSmall.copyWith(color: vc.textSecondary),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 24),
+                  ElevatedButton.icon(
+                    onPressed: () => context.push('/payments/new'),
+                    icon: const Icon(Icons.add),
+                    label: Text(l10n.createConcept),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: vc.primaryDefault,
+                      foregroundColor: vc.textOnPrimary,
+                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(VecinalRadius.md)),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+
+        return ListView.builder(
+          padding: EdgeInsets.only(
+            left: VecinalSpacing.xl,
+            right: VecinalSpacing.xl,
+            top: VecinalSpacing.xl,
+            bottom: isEmbedded ? 24 : 100,
+          ),
+          itemCount: concepts.length,
+          itemBuilder: (context, index) {
+            return _ConceptCard(concept: concepts[index]);
+          },
+        );
+      },
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (err, stack) => Center(child: Text('Error: $err')),
+    );
+
+    if (isEmbedded) {
+      return bodyContent;
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -32,56 +92,7 @@ class AdminPaymentsView extends ConsumerWidget {
           ),
         ],
       ),
-      body: conceptsAsync.when(
-        data: (concepts) {
-          if (concepts.isEmpty) {
-            return Center(
-              child: Padding(
-                padding: const EdgeInsets.all(24.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.payment_outlined, size: 64, color: vc.textHint),
-                    const SizedBox(height: 16),
-                    Text(
-                      'No hay conceptos de pago creados aún.',
-                      style: VecinalTextStyles.headlineSmall.copyWith(color: vc.textSecondary),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 24),
-                    ElevatedButton.icon(
-                      onPressed: () => context.push('/payments/new'),
-                      icon: const Icon(Icons.add),
-                      label: Text(l10n.createConcept),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: vc.primaryDefault,
-                        foregroundColor: vc.textOnPrimary,
-                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(VecinalRadius.md)),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          }
-
-          return ListView.builder(
-            padding: const EdgeInsets.only(
-              left: VecinalSpacing.xl,
-              right: VecinalSpacing.xl,
-              top: VecinalSpacing.xl,
-              bottom: 100,
-            ),
-            itemCount: concepts.length,
-            itemBuilder: (context, index) {
-              return _ConceptCard(concept: concepts[index]);
-            },
-          );
-        },
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (err, stack) => Center(child: Text('Error: $err')),
-      ),
+      body: bodyContent,
     );
   }
 }

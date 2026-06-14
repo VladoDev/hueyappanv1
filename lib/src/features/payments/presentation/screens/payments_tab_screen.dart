@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../authentication/presentation/providers/auth_provider.dart';
 import 'neighbor_payments_view.dart';
-import 'admin_payments_view.dart';
+import 'admin_payments_wrapper.dart';
 
 class PaymentsTabScreen extends ConsumerWidget {
   const PaymentsTabScreen({super.key});
@@ -21,7 +21,7 @@ class PaymentsTabScreen extends ConsumerWidget {
     }
 
     if (user.isAdmin) {
-      return const AdminPaymentsView();
+      return AdminPaymentsWrapperScreen(lot: user.lot, house: user.house);
     } else {
       return NeighborPaymentsView(lot: user.lot,
         house: user.house);

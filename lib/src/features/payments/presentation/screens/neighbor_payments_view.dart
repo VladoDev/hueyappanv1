@@ -11,11 +11,13 @@ import '../../../authentication/presentation/providers/auth_provider.dart';
 class NeighborPaymentsView extends ConsumerWidget {
   final String lot;
   final String house;
+  final bool isEmbedded;
 
   const NeighborPaymentsView({
     super.key,
     required this.lot,
     required this.house,
+    this.isEmbedded = false,
   });
 
   @override
@@ -24,6 +26,88 @@ class NeighborPaymentsView extends ConsumerWidget {
     final l10n = AppLocalizations.of(context)!;
     final paymentsAsync = ref.watch(neighborPaymentsStreamProvider((lot: lot, house: house)));
     final transactionsAsync = ref.watch(neighborTransactionsStreamProvider((lot: lot, house: house)));
+
+    final bodyContent = paymentsAsync.when(
+      data: (payments) {
+        final pending = payments.where((p) => p.paymentStatus != 'paid').toList();
+
+        return ListView(
+          padding: EdgeInsets.only(
+            left: VecinalSpacing.xl,
+            right: VecinalSpacing.xl,
+            top: VecinalSpacing.base,
+            bottom: isEmbedded ? 24 : 100,
+          ),
+          children: [
+            _buildTransferCard(context),
+            const SizedBox(height: 24),
+            Text(
+              l10n.paymentsPending,
+              style: VecinalTextStyles.headlineMedium.copyWith(
+                fontWeight: FontWeight.bold,
+                color: vc.textPrimary,
+              ),
+            ),
+            const SizedBox(height: 12),
+            if (pending.isEmpty)
+              _buildEmptyState(l10n.noPendingPayments, Icons.check_circle_outline, vc)
+            else
+              ...pending.map((p) => _NeighborPaymentCard(payment: p)),
+            transactionsAsync.when(
+              data: (transactions) {
+                final pendingConfirmations = transactions.where((t) => !t.isConfirmed).toList();
+                final confirmedHistory = transactions.where((t) => t.isConfirmed).toList();
+
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 24),
+                    if (pendingConfirmations.isNotEmpty) ...[
+                      Text(
+                        'Confirmaciones Pendientes',
+                        style: VecinalTextStyles.headlineMedium.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: vc.textPrimary,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      ...pendingConfirmations.map((t) => _NeighborPendingConfirmationCard(transaction: t)),
+                      const SizedBox(height: 24),
+                    ],
+                    Text(
+                      l10n.paymentsHistory,
+                      style: VecinalTextStyles.headlineMedium.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: vc.textPrimary,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    if (confirmedHistory.isEmpty)
+                      _buildEmptyState(l10n.noPaymentsFound, Icons.history_outlined, vc)
+                    else
+                      ...confirmedHistory.map((t) => _NeighborHistoryCard(transaction: t)),
+                  ],
+                );
+              },
+              loading: () => const Center(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 24.0),
+                  child: CircularProgressIndicator(),
+                ),
+              ),
+              error: (err, stack) => Center(child: Text('Error: $err')),
+            ),
+            const SizedBox(height: 32),
+          ],
+        );
+      },
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (err, stack) => Center(child: Text('Error: $err')),
+    );
+
+    if (isEmbedded) {
+      return bodyContent;
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -35,83 +119,7 @@ class NeighborPaymentsView extends ConsumerWidget {
           ),
         ),
       ),
-      body: paymentsAsync.when(
-        data: (payments) {
-          final pending = payments.where((p) => p.paymentStatus != 'paid').toList();
-
-          return ListView(
-            padding: const EdgeInsets.only(
-              left: VecinalSpacing.xl,
-              right: VecinalSpacing.xl,
-              top: VecinalSpacing.base,
-              bottom: 100,
-            ),
-            children: [
-              _buildTransferCard(context),
-              const SizedBox(height: 24),
-              Text(
-                l10n.paymentsPending,
-                style: VecinalTextStyles.headlineMedium.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: vc.textPrimary,
-                ),
-              ),
-              const SizedBox(height: 12),
-              if (pending.isEmpty)
-                _buildEmptyState(l10n.noPendingPayments, Icons.check_circle_outline, vc)
-              else
-                ...pending.map((p) => _NeighborPaymentCard(payment: p)),
-              transactionsAsync.when(
-                data: (transactions) {
-                  final pendingConfirmations = transactions.where((t) => !t.isConfirmed).toList();
-                  final confirmedHistory = transactions.where((t) => t.isConfirmed).toList();
-
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 24),
-                      if (pendingConfirmations.isNotEmpty) ...[
-                        Text(
-                          'Confirmaciones Pendientes',
-                          style: VecinalTextStyles.headlineMedium.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: vc.textPrimary,
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        ...pendingConfirmations.map((t) => _NeighborPendingConfirmationCard(transaction: t)),
-                        const SizedBox(height: 24),
-                      ],
-                      Text(
-                        l10n.paymentsHistory,
-                        style: VecinalTextStyles.headlineMedium.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: vc.textPrimary,
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      if (confirmedHistory.isEmpty)
-                        _buildEmptyState(l10n.noPaymentsFound, Icons.history_outlined, vc)
-                      else
-                        ...confirmedHistory.map((t) => _NeighborHistoryCard(transaction: t)),
-                    ],
-                  );
-                },
-                loading: () => const Center(
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(vertical: 24.0),
-                    child: CircularProgressIndicator(),
-                  ),
-                ),
-                error: (err, stack) => Center(child: Text('Error: $err')),
-              ),
-              const SizedBox(height: 32),
-            ],
-          );
-        },
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (err, stack) => Center(child: Text('Error: $err')),
-      ),
+      body: bodyContent,
     );
   }
 
