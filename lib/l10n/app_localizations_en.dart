@@ -190,7 +190,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get signOut => 'Sign Out';
 
   @override
-  String get maintenanceFees => 'Maintenance Fees';
+  String get maintenanceFees => 'My Payments';
 
   @override
   String get paymentHistory => 'Payment History';

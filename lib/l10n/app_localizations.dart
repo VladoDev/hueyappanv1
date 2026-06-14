@@ -443,7 +443,7 @@ abstract class AppLocalizations {
   /// No description provided for @maintenanceFees.
   ///
   /// In en, this message translates to:
-  /// **'Maintenance Fees'**
+  /// **'My Payments'**
   String get maintenanceFees;
 
   /// No description provided for @paymentHistory.

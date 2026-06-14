@@ -88,7 +88,7 @@
   "residentStatusLabel": "Resident Status",
   "signOut": "Sign Out",
 
-  "maintenanceFees": "Maintenance Fees",
+  "maintenanceFees": "My Payments",
   "paymentHistory": "Payment History",
   "amountPaid": "Amount Paid",
   "amountPaidValue": "${amount} USD",
