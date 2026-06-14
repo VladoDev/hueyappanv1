@@ -240,6 +240,15 @@
   "referenceCopySuccess": "Referencia copiada al portapapeles",
   "extraAmountLabel": "Monto Extra",
   "extraAmountInput": "Monto extra (ej. llaves, controles, etc.)",
-  "extraPaid": "Extra pagado"
+  "extraPaid": "Extra pagado",
+  "waterStatusTitle": "Suministro de Agua",
+  "waterStatusAvailable": "Agua disponible hoy",
+  "waterStatusUnavailable": "Sin suministro hoy",
+  "waterStatusMaintenance": "Mantenimiento en curso",
+  "waterStatusAdminTitle": "Control de Agua (Admin)",
+  "waterStatusAuto": "Automático (1 día sí, 1 no)",
+  "waterStatusForceAvailable": "Forzar: Disponible",
+  "waterStatusForceUnavailable": "Forzar: Sin suministro",
+  "waterStatusForceMaintenance": "Forzar: Mantenimiento"
 
 }

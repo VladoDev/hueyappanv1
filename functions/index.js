@@ -186,3 +186,64 @@ exports.verifyPhoneOtp = onDocumentUpdated("phone_verifications/{uid}", async (e
   }
 });
 
+exports.notifyWaterMaintenance = onDocumentUpdated("community_settings/water_status", async (event) => {
+  const newValue = event.data.after.data();
+  const previousValue = event.data.before.data();
+
+  if (!newValue || newValue.status !== 'maintenance') return null;
+  if (previousValue && previousValue.status === 'maintenance') return null;
+
+  const db = getFirestore();
+  const residentsSnapshot = await db.collection("residents").get();
+  
+  const tokens = [];
+  for (const doc of residentsSnapshot.docs) {
+    const devicesSnapshot = await doc.ref.collection("devices").where("isActive", "==", true).get();
+    devicesSnapshot.forEach(device => {
+      if (device.data().token) {
+        tokens.push(device.data().token);
+      }
+    });
+  }
+
+  if (tokens.length === 0) {
+    console.log("No active devices found for water maintenance notification.");
+    return null;
+  }
+
+  const payload = {
+    tokens: tokens,
+    notification: {
+      title: "Mantenimiento del Sistema de Agua",
+      body: "Se está realizando mantenimiento en la tubería principal. El servicio estará interrumpido temporalmente.",
+    },
+    data: {
+      type: "water_maintenance",
+    }
+  };
+
+  try {
+    const response = await getMessaging().sendEachForMulticast(payload);
+    console.log("Notificación de mantenimiento de agua enviada:", response);
+    
+    // Save the notification for each user so it appears in their notifications list
+    for (const doc of residentsSnapshot.docs) {
+      const uid = doc.id;
+      try {
+        await db.collection("residents").doc(uid).collection("notifications").add({
+          title: "Mantenimiento del Sistema de Agua",
+          body: "Se está realizando mantenimiento en la tubería principal. El servicio estará interrumpido temporalmente.",
+          type: "water_maintenance",
+          data: { type: "water_maintenance" },
+          createdAt: new Date(),
+          isRead: false
+        });
+      } catch (e) {
+        console.error(`Error guardando notificación de agua para ${uid}:`, e);
+      }
+    }
+  } catch (error) {
+    console.error("Error al enviar la notificación de mantenimiento de agua:", error);
+  }
+});
+

@@ -41,6 +41,9 @@ class _MainShellScreenState extends ConsumerState<MainShellScreen> {
       
       if (message.data['type'] == 'otp_verification') {
         _handleIncomingMessage(message);
+      } else if (message.data['type'] == 'water_maintenance') {
+        // Ignorar en foreground, ya que tienen la UI del ícono de agua
+        return;
       } else {
         final title = message.notification?.title ?? 'Notificación';
         final body = message.notification?.body;
