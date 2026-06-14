@@ -342,8 +342,8 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String adminOtpDialogBody(String name, String lot, String house) {
-    return 'Verification requested by $name (Lot $lot-$house).';
+  String adminOtpDialogBody(String name, String unitInfo) {
+    return 'Verification requested by $name$unitInfo.';
   }
 
   @override

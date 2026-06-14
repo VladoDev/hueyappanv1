@@ -175,74 +175,93 @@ class _NotificationCard extends ConsumerWidget {
 
   void _showOtpDialog(BuildContext context, NotificationEntity notification, VecinalSemanticColors vc, AppLocalizations l10n) {
     final name = notification.data['requesterName'] ?? '';
-    final lot = notification.data['requesterLot'] ?? '';
-    final house = notification.data['requesterHouse'] ?? '';
+    final lot = notification.data['requesterLot'] ?? notification.data['lot'] ?? '';
+    final house = notification.data['requesterHouse'] ?? notification.data['house'] ?? '';
     final otp = notification.data['otp'] ?? '';
     final phone = notification.data['requesterPhone'] ?? '';
+
+    String unitInfo = '';
+    if (lot.isNotEmpty || house.isNotEmpty) {
+      unitInfo = ' (Lote $lot-$house)';
+    }
 
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          titlePadding: const EdgeInsets.only(left: 24, right: 24, top: 24, bottom: 16),
+          contentPadding: const EdgeInsets.only(left: 24, right: 24, bottom: 24),
           title: Text(
             l10n.adminOtpDialogTitle(name),
-            style: TextStyle(color: vc.textPrimary, fontWeight: FontWeight.bold),
+            style: TextStyle(color: vc.textPrimary, fontWeight: FontWeight.bold, fontSize: 20),
+            textAlign: TextAlign.center,
           ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                l10n.adminOtpDialogBody(name, lot, house),
+                l10n.adminOtpDialogBody(name, unitInfo),
                 style: TextStyle(color: vc.textSecondary, fontSize: 14),
+                textAlign: TextAlign.center,
               ),
               if (phone.isNotEmpty) ...[
-                const SizedBox(height: 12),
-                Row(
-                  children: [
-                    Icon(Icons.phone, size: 18, color: vc.primaryDefault),
-                    const SizedBox(width: 8),
-                    Text(
-                      phone,
-                      style: TextStyle(
-                        color: vc.textPrimary,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
+                const SizedBox(height: 16),
+                Container(
+                  padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                  decoration: BoxDecoration(
+                    color: vc.surfaceSecondary,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.phone, size: 18, color: vc.primaryDefault),
+                      const SizedBox(width: 8),
+                      Text(
+                        phone,
+                        style: TextStyle(
+                          color: vc.textPrimary,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ],
-              const SizedBox(height: 20),
+              const SizedBox(height: 24),
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.symmetric(vertical: 16),
+                padding: const EdgeInsets.symmetric(vertical: 20),
                 decoration: BoxDecoration(
                   color: vc.primaryContainer,
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(16),
                 ),
                 child: Text(
                   otp,
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: 32,
+                    fontSize: 36,
                     fontWeight: FontWeight.bold,
-                    letterSpacing: 8,
+                    letterSpacing: 12,
                     color: vc.primaryDefault,
                   ),
                 ),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 24),
               Text(
                 l10n.adminOtpDialogInstruction,
                 textAlign: TextAlign.center,
-                style: TextStyle(color: vc.textSecondary, fontSize: 12),
+                style: TextStyle(color: vc.textSecondary, fontSize: 13, height: 1.4),
               ),
             ],
           ),
+          actionsPadding: const EdgeInsets.only(right: 24, bottom: 16),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text(l10n.close),
+              child: Text(l10n.close, style: const TextStyle(fontWeight: FontWeight.bold)),
             ),
           ],
         );
