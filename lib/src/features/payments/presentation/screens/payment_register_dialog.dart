@@ -128,7 +128,7 @@ class _PaymentRegisterDialogState extends ConsumerState<PaymentRegisterDialog> {
 
     return AlertDialog(
       title: Text(
-        '${l10n.registerPayment} - ${widget.payment.housingUnit}',
+        '${l10n.registerPayment} - ${widget.payment.lot}-${widget.payment.house}',
         style: const TextStyle(fontWeight: FontWeight.bold),
       ),
       content: Form(

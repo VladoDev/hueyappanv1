@@ -93,8 +93,8 @@ final conceptItemsStreamProvider = StreamProvider.family<List<ConceptItemEntity>
   return repo.watchConceptItems(conceptId);
 });
 
-final neighborPaymentsStreamProvider = StreamProvider.family<List<HousingPaymentEntity>, String>((ref, housingUnit) {
-  return ref.watch(watchNeighborPaymentsUsecaseProvider).execute(housingUnit);
+final neighborPaymentsStreamProvider = StreamProvider.family<List<HousingPaymentEntity>, ({String lot, String house})>((ref, arg) {
+  return ref.watch(watchNeighborPaymentsUsecaseProvider).execute(arg.lot, arg.house);
 });
 
 final conceptPaymentsStreamProvider = StreamProvider.family<List<HousingPaymentEntity>, String>((ref, conceptId) {
@@ -105,8 +105,8 @@ final paymentTransactionsStreamProvider = StreamProvider.family<List<PaymentTran
   return ref.watch(watchPaymentTransactionsUsecaseProvider).execute(paymentId);
 });
 
-final neighborTransactionsStreamProvider = StreamProvider.family<List<PaymentTransactionEntity>, String>((ref, housingUnit) {
-  final paymentsAsync = ref.watch(neighborPaymentsStreamProvider(housingUnit));
+final neighborTransactionsStreamProvider = StreamProvider.family<List<PaymentTransactionEntity>, ({String lot, String house})>((ref, arg) {
+  final paymentsAsync = ref.watch(neighborPaymentsStreamProvider(arg));
   final conceptsAsync = ref.watch(conceptsStreamProvider);
   
   final concepts = conceptsAsync.value ?? [];
@@ -144,7 +144,8 @@ final neighborTransactionsStreamProvider = StreamProvider.family<List<PaymentTra
               createdAt: tx.createdAt,
               createdBy: tx.createdBy,
               notes: tx.notes,
-              housingUnit: tx.housingUnit ?? payment.housingUnit,
+              lot: tx.lot ?? payment.lot,
+                house: tx.house ?? payment.house,
               conceptTitle: tx.conceptTitle ?? conceptTitle,
               conceptId: tx.conceptId ?? payment.conceptId,
               isConfirmed: tx.isConfirmed,

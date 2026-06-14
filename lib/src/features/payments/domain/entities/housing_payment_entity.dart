@@ -2,7 +2,8 @@ class HousingPaymentEntity {
   final String id;
   final String conceptId;
   final String residentUid;
-  final String housingUnit;
+  final String lot;
+  final String house;
   final double totalDue;
   final double amountPaid;
   final double balance;
@@ -16,7 +17,8 @@ class HousingPaymentEntity {
     required this.id,
     required this.conceptId,
     required this.residentUid,
-    required this.housingUnit,
+    required this.lot,
+    required this.house,
     required this.totalDue,
     required this.amountPaid,
     required this.balance,
@@ -35,7 +37,8 @@ class HousingPaymentEntity {
           id == other.id &&
           conceptId == other.conceptId &&
           residentUid == other.residentUid &&
-          housingUnit == other.housingUnit &&
+          lot == other.lot &&
+          house == other.house &&
           totalDue == other.totalDue &&
           amountPaid == other.amountPaid &&
           balance == other.balance &&
@@ -50,7 +53,8 @@ class HousingPaymentEntity {
       id.hashCode ^
       conceptId.hashCode ^
       residentUid.hashCode ^
-      housingUnit.hashCode ^
+      lot.hashCode ^
+      house.hashCode ^
       totalDue.hashCode ^
       amountPaid.hashCode ^
       balance.hashCode ^

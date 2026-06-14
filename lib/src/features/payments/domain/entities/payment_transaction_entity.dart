@@ -7,7 +7,8 @@ class PaymentTransactionEntity {
   final DateTime createdAt;
   final String createdBy;
   final String? notes;
-  final String? housingUnit;
+  final String? lot;
+  final String? house;
   final String? conceptTitle;
   final String? conceptId;
   final bool isConfirmed;
@@ -22,7 +23,8 @@ class PaymentTransactionEntity {
     required this.createdAt,
     required this.createdBy,
     this.notes,
-    this.housingUnit,
+    this.lot,
+    this.house,
     this.conceptTitle,
     this.conceptId,
     this.isConfirmed = true,
@@ -42,7 +44,7 @@ class PaymentTransactionEntity {
           createdAt == other.createdAt &&
           createdBy == other.createdBy &&
           notes == other.notes &&
-          housingUnit == other.housingUnit &&
+          lot == other.lot && house == other.house &&
           conceptTitle == other.conceptTitle &&
           conceptId == other.conceptId &&
           isConfirmed == other.isConfirmed &&
@@ -58,7 +60,7 @@ class PaymentTransactionEntity {
       createdAt.hashCode ^
       createdBy.hashCode ^
       notes.hashCode ^
-      housingUnit.hashCode ^
+      lot.hashCode ^ house.hashCode ^
       conceptTitle.hashCode ^
       conceptId.hashCode ^
       isConfirmed.hashCode ^

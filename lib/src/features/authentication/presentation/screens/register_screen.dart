@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hueyappanv1/l10n/app_localizations.dart';
 import 'package:hueyappanv1/src/core/theme/vecinal_theme.dart';
 import '../providers/auth_provider.dart';
+import 'package:flutter_recaptcha_v2_compat/flutter_recaptcha_v2_compat.dart';
 
 class RegisterScreen extends ConsumerStatefulWidget {
   const RegisterScreen({super.key});
@@ -26,11 +27,19 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   String? _selectedHouse;
   String? _selectedResidentType;
 
-  final List<String> _lots = List.generate(41, (i) => (120 + i).toString());
-  final List<String> _houses = ['A', 'B', 'C'];
+  final List<String> _lots = List.generate(22, (i) => (134 + i).toString());
+  List<String> get _houses {
+    if (_selectedLot == '144' || _selectedLot == '145') {
+      return ['A', 'B', 'C'];
+    }
+    return ['A', 'B'];
+  }
   final List<String> _residentTypes = ['Propietario', 'Inquilino'];
 
   bool _isPreAuthenticated = false;
+  
+  final RecaptchaV2Controller recaptchaV2Controller = RecaptchaV2Controller();
+  bool _isRecaptchaVerified = false;
 
   @override
   void initState() {
@@ -54,11 +63,23 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   }
 
   void _submitForm() async {
+    final l10n = AppLocalizations.of(context)!;
+    if (!_isRecaptchaVerified) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.recaptchaRequired),
+          backgroundColor: context.vecinalColors.destructive,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
+
     if (_formKey.currentState!.validate() &&
         _selectedLot != null &&
         _selectedHouse != null &&
         _selectedResidentType != null) {
-      await ref.read(authControllerProvider.notifier).register(
+      final success = await ref.read(authControllerProvider.notifier).register(
             email: _emailController.text,
             password: _passwordController.text,
             firstName: _firstNameController.text,
@@ -68,6 +89,19 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             residentType: _selectedResidentType!,
             phone: _phoneController.text,
           );
+          
+      if (!success && mounted) {
+        // Error will be caught by ref.listen, but we can also log it here if we want
+      }
+    } else {
+      // Form validation failed or dropdowns not selected
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.requiredField),
+          backgroundColor: context.vecinalColors.destructive,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
     }
   }
 
@@ -78,7 +112,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     final vc = context.vecinalColors;
 
     ref.listen<AsyncValue>(authControllerProvider, (previous, next) {
-      if (next is AsyncError) {
+      if (next.hasError) {
         final errorMsg = next.error.toString().replaceAll('Exception: ', '');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -141,6 +175,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                           _buildDropdowns(isLoading, vc),
                           const SizedBox(height: 16),
                           _buildContactFields(isLoading, vc),
+                          const SizedBox(height: 16),
+                          _buildRecaptcha(vc),
                           const SizedBox(height: 24),
                           _buildSubmitButton(isLoading, vc),
                         ],
@@ -194,20 +230,27 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           children: [
             Expanded(
               child: DropdownButtonFormField<String>(
-                initialValue: _selectedLot,
+                value: _selectedLot,
                 decoration: InputDecoration(
                   labelText: l10n.lotLabel,
                   prefixIcon: Icon(Icons.home_outlined, color: vc.primaryDefault),
                 ),
                 items: _lots.map((l) => DropdownMenuItem(value: l, child: Text(l))).toList(),
-                onChanged: isLoading ? null : (val) => setState(() => _selectedLot = val),
+                onChanged: isLoading ? null : (val) {
+                  setState(() {
+                    _selectedLot = val;
+                    if (_selectedHouse != null && !_houses.contains(_selectedHouse)) {
+                      _selectedHouse = null;
+                    }
+                  });
+                },
                 validator: (val) => val == null ? l10n.requiredField : null,
               ),
             ),
             const SizedBox(width: 12),
             Expanded(
               child: DropdownButtonFormField<String>(
-                initialValue: _selectedHouse,
+                value: _selectedHouse,
                 decoration: InputDecoration(
                   labelText: l10n.houseLabel,
                 ),
@@ -287,6 +330,28 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             if (val == null || val.isEmpty) return l10n.passwordRequiredRegister;
             if (val.length < 6) return l10n.passwordTooShortRegister;
             return null;
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildRecaptcha(VecinalSemanticColors vc) {
+    return Column(
+      children: [
+        RecaptchaV2(
+          apiKey: "6Lemtw4tAAAAACeY-96VPirAxI6EcUTgwW8quFXQ",
+          apiSecret: "6Lemtw4tAAAAAErhymCWcuWsuxCqAXtyzHGKNdkV",
+          controller: recaptchaV2Controller,
+          onVerifiedError: (err) {
+            debugPrint('Recaptcha error: $err');
+          },
+          onVerifiedSuccessfully: (success) {
+            setState(() {
+              if (success) {
+                _isRecaptchaVerified = true;
+              }
+            });
           },
         ),
       ],

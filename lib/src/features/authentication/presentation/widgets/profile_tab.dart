@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hueyappanv1/l10n/app_localizations.dart';
 import 'package:hueyappanv1/src/core/theme/vecinal_theme.dart';
 import '../providers/auth_provider.dart';
@@ -7,7 +8,8 @@ import '../providers/auth_provider.dart';
 class ProfileTab extends ConsumerWidget {
   final String name;
   final String email;
-  final String housingUnit;
+  final String lot;
+  final String house;
   final String status;
   final String role;
 
@@ -15,7 +17,8 @@ class ProfileTab extends ConsumerWidget {
     super.key,
     required this.name,
     required this.email,
-    required this.housingUnit,
+    required this.lot,
+    required this.house,
     required this.status,
     required this.role,
   });
@@ -54,7 +57,7 @@ class ProfileTab extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 12),
-          _buildInfoRow(l10n.housingUnitLabel, l10n.housingUnitValue(housingUnit), vc),
+          _buildInfoRow(l10n.housingUnitLabel, l10n.housingUnitValue(lot, house), vc),
           _buildInfoRow(l10n.residentStatusLabel, status, vc),
           _buildInfoRow(l10n.roleLabel, role == 'admin' ? l10n.roleAdmin : l10n.roleVecino, vc),
           const SizedBox(height: 48),
@@ -96,7 +99,20 @@ class ProfileTab extends ConsumerWidget {
     return ElevatedButton.icon(
       onPressed: isLoading
           ? null
-          : () => ref.read(authControllerProvider.notifier).logout(),
+          : () async {
+              try {
+                await ref.read(authRepositoryProvider).logout();
+              } catch (_) {
+                // Ensure we always navigate to login even if logout has partial failures
+              }
+              // Invalidate all auth-related providers to clear cached user data
+              ref.invalidate(authStateProvider);
+              ref.invalidate(firebaseUserProvider);
+              ref.invalidate(authControllerProvider);
+              if (context.mounted) {
+                context.go('/login');
+              }
+            },
       icon: isLoading
           ? SizedBox(
               width: 18,
@@ -131,8 +147,7 @@ class ProfileTab extends ConsumerWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Expanded(
-              flex: 2,
+            Flexible(
               child: Text(
                 label,
                 style: VecinalTextStyles.bodyMedium.copyWith(
@@ -141,13 +156,11 @@ class ProfileTab extends ConsumerWidget {
                 ),
               ),
             ),
-            const SizedBox(width: 8),
-            Expanded(
-              flex: 3,
+            const SizedBox(width: 12),
+            Flexible(
               child: Text(
                 value,
                 textAlign: TextAlign.end,
-                softWrap: true,
                 style: VecinalTextStyles.bodyMedium.copyWith(
                   fontWeight: FontWeight.bold,
                   color: vc.textPrimary,

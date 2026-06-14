@@ -158,13 +158,14 @@ class AuthFirebaseDatasource {
     }
   }
 
-  Future<void> triggerEmergencyAlarm(String uid, String name, String housingUnit) async {
+  Future<void> triggerEmergencyAlarm(String uid, String name, String lot, String house) async {
     try {
       // 1. Write the emergency event to Firestore
       await _firestore.collection('emergencies').add({
         'triggeredBy': uid,
         'triggeredByName': name,
-        'triggeredByHousingUnit': housingUnit,
+        'triggeredByLot': lot,
+        'triggeredByHouse': house,
         'timestamp': FieldValue.serverTimestamp(),
         'status': 'active',
       });
@@ -178,24 +179,10 @@ class AuthFirebaseDatasource {
         },
       );
 
-      // 2. Try to fetch FCM legacy server key from Firestore config to send push notifications
-      try {
-        final configDoc = await _firestore.collection('config').doc('fcm').get();
-        if (configDoc.exists && configDoc.data() != null) {
-          final serverKey = configDoc.data()!['serverKey'] as String?;
-          if (serverKey != null && serverKey.isNotEmpty) {
-            await _sendDirectFcmPushNotification(serverKey, name, housingUnit);
-          }
-        }
-      } catch (e, stackTrace) {
-        debugPrint('FCM config not found or failed to read. Skipping direct push notification: $e');
-        // Record non-fatal error in Crashlytics but do not block client
-        await FirebaseCrashlytics.instance.recordError(
-          e,
-          stackTrace,
-          reason: 'FCM direct push notification fallback failed',
-        );
-      }
+      // Note: We used to send a direct legacy FCM push here as a fallback,
+      // but legacy FCM HTTP API does not support APNs critical flags (it ignores the 'apns' root object).
+      // We now rely exclusively on the Firebase Cloud Function 'broadcastEmergencyAlert'
+      // which uses the Firebase Admin SDK (FCM HTTP v1 API) to properly format and send critical alerts.
     } catch (e, stackTrace) {
       await FirebaseCrashlytics.instance.recordError(
         e,
@@ -206,49 +193,7 @@ class AuthFirebaseDatasource {
     }
   }
 
-  Future<void> _sendDirectFcmPushNotification(String serverKey, String senderName, String housingUnit) async {
-    final url = Uri.parse('https://fcm.googleapis.com/fcm/send');
-    final headers = {
-      'Content-Type': 'application/json',
-      'Authorization': 'key=$serverKey',
-    };
-    final body = {
-      'to': '/topics/emergencies',
-      'priority': 'high',
-      'notification': {
-        'title': '🚨 ¡ALERTA DE EMERGENCIA! 🚨',
-        'body': 'El residente $senderName del lote $housingUnit ha activado una alarma de emergencia.',
-        'sound': 'default',
-      },
-      'android': {
-        'priority': 'high',
-        'notification': {
-          'sound': 'default',
-          'channel_id': 'emergency_channel',
-        },
-      },
-      'apns': {
-        'payload': {
-          'aps': {
-            'sound': {
-              'critical': 1,
-              'name': 'default',
-              'volume': 1.0,
-            },
-            'interruption-level': 'critical',
-          },
-        },
-      },
-    };
 
-    try {
-      final response = await http.post(url, headers: headers, body: json.encode(body));
-      debugPrint('Direct FCM push notification status: ${response.statusCode}');
-      debugPrint('Direct FCM response: ${response.body}');
-    } catch (e) {
-      debugPrint('Failed to send direct FCM push notification: $e');
-    }
-  }
 
   Stream<Map<String, dynamic>?> watchEmergencies() {
     return _firestore
@@ -263,5 +208,60 @@ class AuthFirebaseDatasource {
       data['id'] = doc.id;
       return data;
     });
+  }
+
+  Future<void> requestPhoneVerification(String uid, String phone, String name, String lot, String house) async {
+    await _firestore.collection('phone_verifications').doc(uid).set({
+      'phone': phone,
+      'name': name,
+      'lot': lot,
+      'house': house,
+      'status': 'pending',
+      'createdAt': FieldValue.serverTimestamp(),
+    });
+  }
+
+  Future<bool> verifyPhoneOtp(String uid, String otp) async {
+    try {
+      // Usar HTTPS callable function o llamar al endpoint HTTP de la cloud function 'verifyOtp'
+      // Dado que implementaremos las funciones como http endpoints o callable, asumiremos la URL.
+      // Por simplicidad si no usamos cloud_functions package, podemos guardar el otp ingresado 
+      // en el documento y que una function lo procese, pero es asíncrono.
+      // La mejor opción es escribir a Firestore y escuchar el resultado, o usar un endpoint HTTP.
+      // Para efectos de este código, simularemos la llamada HTTP a la función `verifyOtp`.
+      // En un entorno real de Firebase sin paquete cloud_functions, tendrías la URL de tu function.
+      // Para simplificar, implementaremos la verificación de OTP comprobando el Firestore 
+      // asumiendo que la Cloud Function actualizó el perfil del usuario si es correcto.
+      // Pero como el backend lo haremos como Cloud Function HTTP, escribiremos el request.
+      // Como no conocemos la URL, una alternativa válida es que la app modifique un campo
+      // 'submittedOtp' en el documento phone_verifications, y escuche los cambios.
+      
+      // Enfoque Firestore listener:
+      final docRef = _firestore.collection('phone_verifications').doc(uid);
+      await docRef.update({
+        'submittedOtp': otp,
+        'submittedAt': FieldValue.serverTimestamp(),
+      });
+
+      // Esperar hasta 10 segundos para ver si la Cloud Function lo marca como 'verified'
+      // o 'failed'. 
+      // Alternativa más robusta:
+      int retries = 0;
+      while (retries < 20) {
+        await Future.delayed(const Duration(milliseconds: 500));
+        final snapshot = await docRef.get();
+        final status = snapshot.data()?['status'] as String?;
+        if (status == 'verified') {
+          return true;
+        } else if (status == 'failed') {
+          return false;
+        }
+        retries++;
+      }
+      return false; // Timeout
+    } catch (e) {
+      debugPrint('Error verifying OTP: $e');
+      return false;
+    }
   }
 }

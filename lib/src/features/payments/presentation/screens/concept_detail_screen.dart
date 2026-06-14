@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hueyappanv1/l10n/app_localizations.dart';
 import 'package:hueyappanv1/src/core/theme/vecinal_theme.dart';
 import '../../domain/entities/housing_payment_entity.dart';
@@ -183,17 +184,33 @@ class _ConceptDetailScreenState extends ConsumerState<ConceptDetailScreen> with 
             ],
           ),
           const SizedBox(height: 16),
-          SizedBox(
-            width: double.infinity,
-            child: OutlinedButton.icon(
-              onPressed: onUpdateExpense,
-              icon: const Icon(Icons.edit_outlined, size: 18),
-              label: Text(l10n.updateExpense, style: const TextStyle(fontWeight: FontWeight.bold)),
-              style: OutlinedButton.styleFrom(
-                side: BorderSide(color: vc.borderDefault),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(VecinalRadius.md)),
+          Row(
+            children: [
+              Expanded(
+                child: OutlinedButton.icon(
+                  onPressed: onUpdateExpense,
+                  icon: const Icon(Icons.edit_outlined, size: 18),
+                  label: Text(l10n.updateExpense, style: const TextStyle(fontWeight: FontWeight.bold)),
+                  style: OutlinedButton.styleFrom(
+                    side: BorderSide(color: vc.borderDefault),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(VecinalRadius.md)),
+                  ),
+                ),
               ),
-            ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: FilledButton.icon(
+                  onPressed: () => context.push('/payments/map/${widget.conceptId}'),
+                  icon: const Icon(Icons.map_outlined, size: 18),
+                  label: const Text('Mapa de Pagos', style: TextStyle(fontWeight: FontWeight.bold)),
+                  style: FilledButton.styleFrom(
+                    backgroundColor: vc.primaryDefault,
+                    foregroundColor: vc.textOnPrimary,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(VecinalRadius.md)),
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -285,7 +302,7 @@ class _PaymentListRow extends ConsumerWidget {
         children: [
           Expanded(
             child: Text(
-              payment.housingUnit,
+              'Lote ${payment.lot}-${payment.house}',
               style: VecinalTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.bold),
               softWrap: true,
             ),

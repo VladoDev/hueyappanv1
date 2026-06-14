@@ -10,11 +10,13 @@ abstract class ResidentModel with _$ResidentModel {
     required String uid,
     required String name,
     required String email,
-    required String housingUnit,
+    @Default('') String lot,
+    @Default('') String house,
     required String accountStatus,
     String? phone,
     String? residentType,
     @Default('vecino') String role,
+    @Default(false) bool isPhoneVerified,
   }) = _ResidentModel;
 
   factory ResidentModel.fromJson(Map<String, dynamic> json) =>
@@ -24,11 +26,13 @@ abstract class ResidentModel with _$ResidentModel {
         uid: entity.uid,
         name: entity.name,
         email: entity.email,
-        housingUnit: entity.housingUnit,
+        lot: entity.lot,
+        house: entity.house,
         accountStatus: entity.accountStatus,
         phone: entity.phone,
         residentType: entity.residentType,
         role: entity.role,
+        isPhoneVerified: entity.isPhoneVerified,
       );
 }
 
@@ -37,10 +41,12 @@ extension ResidentModelX on ResidentModel {
         uid: uid,
         name: name,
         email: email,
-        housingUnit: housingUnit,
+        lot: lot,
+        house: house,
         accountStatus: accountStatus,
         phone: phone,
         residentType: residentType,
         role: role,
+        isPhoneVerified: isPhoneVerified,
       );
 }

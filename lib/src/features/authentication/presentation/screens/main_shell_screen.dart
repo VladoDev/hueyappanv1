@@ -36,44 +36,137 @@ class _MainShellScreenState extends ConsumerState<MainShellScreen> {
       }
     });
 
-    // Listen to incoming foreground FCM messages
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       if (!mounted) return;
-      final title = message.notification?.title ?? 'Notificación';
-      final body = message.notification?.body;
       
-      final vc = context.vecinalColors;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-              if (body != null) ...[
-                const SizedBox(height: 4),
-                Text(body, style: const TextStyle(fontSize: 14)),
+      if (message.data['type'] == 'otp_verification') {
+        _handleIncomingMessage(message);
+      } else {
+        final title = message.notification?.title ?? 'Notificación';
+        final body = message.notification?.body;
+        
+        final vc = context.vecinalColors;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                if (body != null) ...[
+                  const SizedBox(height: 4),
+                  Text(body, style: const TextStyle(fontSize: 14)),
+                ],
               ],
-            ],
+            ),
+            backgroundColor: vc.surfacePrimary,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+              side: BorderSide(color: vc.primaryDefault.withValues(alpha: 0.5), width: 1.5),
+            ),
+            margin: const EdgeInsets.only(bottom: 80, left: 16, right: 16),
+            duration: const Duration(seconds: 4),
+            action: SnackBarAction(
+              label: 'Cerrar',
+              textColor: vc.primaryDefault,
+              onPressed: () {
+                ScaffoldMessenger.of(context).hideCurrentSnackBar();
+              },
+            ),
           ),
-          backgroundColor: vc.surfacePrimary,
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-            side: BorderSide(color: vc.primaryDefault.withValues(alpha: 0.5), width: 1.5),
-          ),
-          margin: const EdgeInsets.only(bottom: 80, left: 16, right: 16),
-          duration: const Duration(seconds: 4),
-          action: SnackBarAction(
-            label: 'Cerrar',
-            textColor: vc.primaryDefault,
-            onPressed: () {
-              ScaffoldMessenger.of(context).hideCurrentSnackBar();
-            },
-          ),
-        ),
-      );
+        );
+      }
     });
+    
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      if (message.data['type'] == 'otp_verification') {
+        _handleIncomingMessage(message);
+      }
+    });
+  }
+
+  void _handleIncomingMessage(RemoteMessage message) {
+    if (message.data['type'] == 'otp_verification') {
+      final name = message.data['requesterName'] ?? '';
+      final lot = message.data['requesterLot'] ?? '';
+      final house = message.data['requesterHouse'] ?? '';
+      final otp = message.data['otp'] ?? '';
+      final phone = message.data['requesterPhone'] ?? '';
+      
+      if (mounted) {
+        showDialog(
+          context: context,
+          builder: (context) {
+            final l10n = AppLocalizations.of(context)!;
+            final vc = context.vecinalColors;
+            return AlertDialog(
+              title: Text(
+                l10n.adminOtpDialogTitle(name),
+                style: TextStyle(color: vc.textPrimary, fontWeight: FontWeight.bold),
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    l10n.adminOtpDialogBody(name, lot, house),
+                    style: TextStyle(color: vc.textSecondary, fontSize: 14),
+                  ),
+                  if (phone.isNotEmpty) ...[
+                    const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        Icon(Icons.phone, size: 18, color: vc.primaryDefault),
+                        const SizedBox(width: 8),
+                        Text(
+                          phone,
+                          style: TextStyle(
+                            color: vc.textPrimary,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                  const SizedBox(height: 20),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    decoration: BoxDecoration(
+                      color: vc.primaryContainer,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      otp,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 32,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 8,
+                        color: vc.primaryDefault,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    l10n.adminOtpDialogInstruction,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: vc.textSecondary, fontSize: 12),
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text(l10n.close),
+                ),
+              ],
+            );
+          },
+        );
+      }
+    }
   }
 
   void _onItemTapped(int index) {
@@ -117,9 +210,9 @@ class _MainShellScreenState extends ConsumerState<MainShellScreen> {
         label: l10n.navHome,
       ),
       _FloatingTabBarItem(
-        icon: Icons.campaign_outlined,
-        selectedIcon: Icons.campaign,
-        label: l10n.navNews,
+        icon: Icons.notifications_outlined,
+        selectedIcon: Icons.notifications,
+        label: l10n.navNotifications,
       ),
       _FloatingTabBarItem(
         icon: Icons.account_balance_wallet_outlined,
@@ -154,7 +247,7 @@ class _MainShellScreenState extends ConsumerState<MainShellScreen> {
                 child: BackdropFilter(
                   filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 10),
                     decoration: BoxDecoration(
                       color: vc.surfacePrimary.withValues(alpha: 0.85),
                       borderRadius: BorderRadius.circular(24),
@@ -181,7 +274,7 @@ class _MainShellScreenState extends ConsumerState<MainShellScreen> {
                           child: AnimatedContainer(
                             duration: const Duration(milliseconds: 250),
                             curve: Curves.easeInOut,
-                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                             decoration: BoxDecoration(
                               color: isSelected
                                   ? vc.primaryDefault.withValues(alpha: 0.15)
@@ -197,7 +290,7 @@ class _MainShellScreenState extends ConsumerState<MainShellScreen> {
                                   size: 24,
                                 ),
                                 if (isSelected) ...[
-                                  const SizedBox(width: 8),
+                                  const SizedBox(width: 6),
                                   Text(
                                     item.label,
                                     style: VecinalTextStyles.labelMedium.copyWith(

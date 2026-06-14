@@ -38,10 +38,10 @@ class PaymentsFirebaseDatasource {
             .toList());
   }
 
-  Stream<List<HousingPaymentModel>> watchNeighborPayments(String housingUnit) {
+  Stream<List<HousingPaymentModel>> watchNeighborPayments(String lot, String house) {
     return _firestore
         .collection('housing_payments')
-        .where('housingUnit', isEqualTo: housingUnit)
+        .where('lot', isEqualTo: lot)
         .snapshots()
         .map((snapshot) => snapshot.docs
             .map((doc) => HousingPaymentModel.fromJson(doc.data()))

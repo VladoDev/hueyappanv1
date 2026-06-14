@@ -70,7 +70,11 @@ class AuthRepositoryImpl implements AuthRepository {
     try {
       final user = _dataSource.currentUser;
       if (user != null) {
-        await _dataSource.unregisterDeviceToken(user.uid);
+        try {
+          await _dataSource.unregisterDeviceToken(user.uid);
+        } catch (e) {
+          // Ignore token unregister errors to ensure we always sign out locally
+        }
       }
       
       // Clear identifiers in Analytics and Crashlytics
@@ -120,14 +124,13 @@ class AuthRepositoryImpl implements AuthRepository {
 
       // 2. Format names and address
       final fullName = '${firstName.trim()} ${lastName.trim()}';
-      final housingUnit = 'Lote $lot - Casa $house';
-
       // 3. Create the model
       final profile = ResidentModel(
         uid: uid,
         name: fullName,
         email: email.trim(),
-        housingUnit: housingUnit,
+        lot: lot,
+        house: house.trim(),
         accountStatus: 'Active',
         phone: phone.trim(),
         residentType: residentType,
@@ -151,7 +154,8 @@ class AuthRepositoryImpl implements AuthRepository {
           final paymentQuery = await FirebaseFirestore.instance
               .collection('housing_payments')
               .where('conceptId', isEqualTo: conceptId)
-              .where('housingUnit', isEqualTo: housingUnit)
+              .where('lot', isEqualTo: lot)
+              .where('house', isEqualTo: house)
               .limit(1)
               .get();
 
@@ -161,7 +165,8 @@ class AuthRepositoryImpl implements AuthRepository {
               'id': paymentId,
               'conceptId': conceptId,
               'residentUid': uid,
-              'housingUnit': housingUnit,
+              'lot': lot,
+              'house': house,
               'totalDue': amountPerUnit,
               'amountPaid': 0.0,
               'balance': amountPerUnit,

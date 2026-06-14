@@ -33,6 +33,8 @@
   "navNews": "Noticias",
   "navPayments": "Pagos",
   "navProfile": "Perfil",
+  "navNotifications": "Notificaciones",
+  "noNotifications": "No tienes notificaciones",
 
   "emergencyAlertTitle": "Alerta de Emergencia",
   "emergencyAlertConfirm": "¿Estás seguro de que deseas activar la alerta de emergencia?\n\nEsta acción enviará una notificación de alerta crítica con sonido a todos los residentes de la comunidad.",
@@ -71,11 +73,14 @@
 
   "myProfile": "Mi Perfil",
   "accountInformation": "Información de la Cuenta",
-  "housingUnitLabel": "Unidad de Vivienda",
-  "housingUnitValue": "Unidad {unit}",
+  "housingUnitLabel": "Lote",
+  "housingUnitValue": "{lot}-{house}",
   "@housingUnitValue": {
     "placeholders": {
-      "unit": {
+      "lot": {
+        "type": "String"
+      },
+      "house": {
         "type": "String"
       }
     }
@@ -136,6 +141,54 @@
   "roleLabel": "Rol",
   "roleAdmin": "Administrador",
   "roleVecino": "Vecino",
+  "recaptchaRequired": "Por favor verifica que no eres un robot.",
+  "verifyPhoneRequiredTitle": "Verificación Requerida",
+  "verifyPhoneRequiredBody": "Para poder enviar Alertas Críticas, necesitas verificar tu número de teléfono.",
+  "requestVerification": "Solicitar Verificación",
+  "enterOtp": "Ingresa el código OTP",
+  "verifyOtp": "Verificar Código",
+  "otpRequestedSuccess": "Solicitud enviada a los administradores.",
+  "otpVerifiedSuccess": "¡Teléfono verificado correctamente!",
+  "otpVerificationFailed": "El código es incorrecto o ha expirado.",
+  "otpAdminNotificationTitle": "Solicitud de Verificación",
+  "otpAdminNotificationBody": "El vecino {name} (Lote {lot}-{house}) ha solicitado verificación OTP.",
+  "@otpAdminNotificationBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "lot": {
+        "type": "String"
+      },
+      "house": {
+        "type": "String"
+      }
+    }
+  },
+  "adminOtpDialogTitle": "Código OTP para {name}",
+  "@adminOtpDialogTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "adminOtpDialogBody": "Verificación solicitada por {name} (Lote {lot}-{house}).",
+  "@adminOtpDialogBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "lot": {
+        "type": "String"
+      },
+      "house": {
+        "type": "String"
+      }
+    }
+  },
+  "adminOtpDialogInstruction": "Verifica el teléfono del vecino y comunícale este código.",
+  "close": "Cerrar",
   "paymentsTitle": "Pagos de la Privada",
   "paymentsHistory": "Historial de Pagos",
   "paymentsPending": "Adeudos Pendientes",
@@ -191,4 +244,5 @@
   "extraAmountLabel": "Monto Extra",
   "extraAmountInput": "Monto extra (ej. llaves, controles, etc.)",
   "extraPaid": "Extra pagado"
+
 }

@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$HousingPaymentModel {
 
- String get id; String get conceptId; String get residentUid; String get housingUnit; double get totalDue; double get amountPaid; double get balance; String get paymentStatus; double get extraAmount;@NullableTimestampConverter() DateTime? get paidAt; String? get notes; bool get hasPendingConfirmation;
+ String get id; String get conceptId; String get residentUid; String get lot; String get house; double get totalDue; double get amountPaid; double get balance; String get paymentStatus; double get extraAmount;@NullableTimestampConverter() DateTime? get paidAt; String? get notes; bool get hasPendingConfirmation;
 /// Create a copy of HousingPaymentModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $HousingPaymentModelCopyWith<HousingPaymentModel> get copyWith => _$HousingPayme
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is HousingPaymentModel&&(identical(other.id, id) || other.id == id)&&(identical(other.conceptId, conceptId) || other.conceptId == conceptId)&&(identical(other.residentUid, residentUid) || other.residentUid == residentUid)&&(identical(other.housingUnit, housingUnit) || other.housingUnit == housingUnit)&&(identical(other.totalDue, totalDue) || other.totalDue == totalDue)&&(identical(other.amountPaid, amountPaid) || other.amountPaid == amountPaid)&&(identical(other.balance, balance) || other.balance == balance)&&(identical(other.paymentStatus, paymentStatus) || other.paymentStatus == paymentStatus)&&(identical(other.extraAmount, extraAmount) || other.extraAmount == extraAmount)&&(identical(other.paidAt, paidAt) || other.paidAt == paidAt)&&(identical(other.notes, notes) || other.notes == notes)&&(identical(other.hasPendingConfirmation, hasPendingConfirmation) || other.hasPendingConfirmation == hasPendingConfirmation));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is HousingPaymentModel&&(identical(other.id, id) || other.id == id)&&(identical(other.conceptId, conceptId) || other.conceptId == conceptId)&&(identical(other.residentUid, residentUid) || other.residentUid == residentUid)&&(identical(other.lot, lot) || other.lot == lot)&&(identical(other.house, house) || other.house == house)&&(identical(other.totalDue, totalDue) || other.totalDue == totalDue)&&(identical(other.amountPaid, amountPaid) || other.amountPaid == amountPaid)&&(identical(other.balance, balance) || other.balance == balance)&&(identical(other.paymentStatus, paymentStatus) || other.paymentStatus == paymentStatus)&&(identical(other.extraAmount, extraAmount) || other.extraAmount == extraAmount)&&(identical(other.paidAt, paidAt) || other.paidAt == paidAt)&&(identical(other.notes, notes) || other.notes == notes)&&(identical(other.hasPendingConfirmation, hasPendingConfirmation) || other.hasPendingConfirmation == hasPendingConfirmation));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,conceptId,residentUid,housingUnit,totalDue,amountPaid,balance,paymentStatus,extraAmount,paidAt,notes,hasPendingConfirmation);
+int get hashCode => Object.hash(runtimeType,id,conceptId,residentUid,lot,house,totalDue,amountPaid,balance,paymentStatus,extraAmount,paidAt,notes,hasPendingConfirmation);
 
 @override
 String toString() {
-  return 'HousingPaymentModel(id: $id, conceptId: $conceptId, residentUid: $residentUid, housingUnit: $housingUnit, totalDue: $totalDue, amountPaid: $amountPaid, balance: $balance, paymentStatus: $paymentStatus, extraAmount: $extraAmount, paidAt: $paidAt, notes: $notes, hasPendingConfirmation: $hasPendingConfirmation)';
+  return 'HousingPaymentModel(id: $id, conceptId: $conceptId, residentUid: $residentUid, lot: $lot, house: $house, totalDue: $totalDue, amountPaid: $amountPaid, balance: $balance, paymentStatus: $paymentStatus, extraAmount: $extraAmount, paidAt: $paidAt, notes: $notes, hasPendingConfirmation: $hasPendingConfirmation)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $HousingPaymentModelCopyWith<$Res>  {
   factory $HousingPaymentModelCopyWith(HousingPaymentModel value, $Res Function(HousingPaymentModel) _then) = _$HousingPaymentModelCopyWithImpl;
 @useResult
 $Res call({
- String id, String conceptId, String residentUid, String housingUnit, double totalDue, double amountPaid, double balance, String paymentStatus, double extraAmount,@NullableTimestampConverter() DateTime? paidAt, String? notes, bool hasPendingConfirmation
+ String id, String conceptId, String residentUid, String lot, String house, double totalDue, double amountPaid, double balance, String paymentStatus, double extraAmount,@NullableTimestampConverter() DateTime? paidAt, String? notes, bool hasPendingConfirmation
 });
 
 
@@ -65,12 +65,13 @@ class _$HousingPaymentModelCopyWithImpl<$Res>
 
 /// Create a copy of HousingPaymentModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? conceptId = null,Object? residentUid = null,Object? housingUnit = null,Object? totalDue = null,Object? amountPaid = null,Object? balance = null,Object? paymentStatus = null,Object? extraAmount = null,Object? paidAt = freezed,Object? notes = freezed,Object? hasPendingConfirmation = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? conceptId = null,Object? residentUid = null,Object? lot = null,Object? house = null,Object? totalDue = null,Object? amountPaid = null,Object? balance = null,Object? paymentStatus = null,Object? extraAmount = null,Object? paidAt = freezed,Object? notes = freezed,Object? hasPendingConfirmation = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,conceptId: null == conceptId ? _self.conceptId : conceptId // ignore: cast_nullable_to_non_nullable
 as String,residentUid: null == residentUid ? _self.residentUid : residentUid // ignore: cast_nullable_to_non_nullable
-as String,housingUnit: null == housingUnit ? _self.housingUnit : housingUnit // ignore: cast_nullable_to_non_nullable
+as String,lot: null == lot ? _self.lot : lot // ignore: cast_nullable_to_non_nullable
+as String,house: null == house ? _self.house : house // ignore: cast_nullable_to_non_nullable
 as String,totalDue: null == totalDue ? _self.totalDue : totalDue // ignore: cast_nullable_to_non_nullable
 as double,amountPaid: null == amountPaid ? _self.amountPaid : amountPaid // ignore: cast_nullable_to_non_nullable
 as double,balance: null == balance ? _self.balance : balance // ignore: cast_nullable_to_non_nullable
@@ -164,10 +165,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String conceptId,  String residentUid,  String housingUnit,  double totalDue,  double amountPaid,  double balance,  String paymentStatus,  double extraAmount, @NullableTimestampConverter()  DateTime? paidAt,  String? notes,  bool hasPendingConfirmation)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String conceptId,  String residentUid,  String lot,  String house,  double totalDue,  double amountPaid,  double balance,  String paymentStatus,  double extraAmount, @NullableTimestampConverter()  DateTime? paidAt,  String? notes,  bool hasPendingConfirmation)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _HousingPaymentModel() when $default != null:
-return $default(_that.id,_that.conceptId,_that.residentUid,_that.housingUnit,_that.totalDue,_that.amountPaid,_that.balance,_that.paymentStatus,_that.extraAmount,_that.paidAt,_that.notes,_that.hasPendingConfirmation);case _:
+return $default(_that.id,_that.conceptId,_that.residentUid,_that.lot,_that.house,_that.totalDue,_that.amountPaid,_that.balance,_that.paymentStatus,_that.extraAmount,_that.paidAt,_that.notes,_that.hasPendingConfirmation);case _:
   return orElse();
 
 }
@@ -185,10 +186,10 @@ return $default(_that.id,_that.conceptId,_that.residentUid,_that.housingUnit,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String conceptId,  String residentUid,  String housingUnit,  double totalDue,  double amountPaid,  double balance,  String paymentStatus,  double extraAmount, @NullableTimestampConverter()  DateTime? paidAt,  String? notes,  bool hasPendingConfirmation)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String conceptId,  String residentUid,  String lot,  String house,  double totalDue,  double amountPaid,  double balance,  String paymentStatus,  double extraAmount, @NullableTimestampConverter()  DateTime? paidAt,  String? notes,  bool hasPendingConfirmation)  $default,) {final _that = this;
 switch (_that) {
 case _HousingPaymentModel():
-return $default(_that.id,_that.conceptId,_that.residentUid,_that.housingUnit,_that.totalDue,_that.amountPaid,_that.balance,_that.paymentStatus,_that.extraAmount,_that.paidAt,_that.notes,_that.hasPendingConfirmation);case _:
+return $default(_that.id,_that.conceptId,_that.residentUid,_that.lot,_that.house,_that.totalDue,_that.amountPaid,_that.balance,_that.paymentStatus,_that.extraAmount,_that.paidAt,_that.notes,_that.hasPendingConfirmation);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -205,10 +206,10 @@ return $default(_that.id,_that.conceptId,_that.residentUid,_that.housingUnit,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String conceptId,  String residentUid,  String housingUnit,  double totalDue,  double amountPaid,  double balance,  String paymentStatus,  double extraAmount, @NullableTimestampConverter()  DateTime? paidAt,  String? notes,  bool hasPendingConfirmation)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String conceptId,  String residentUid,  String lot,  String house,  double totalDue,  double amountPaid,  double balance,  String paymentStatus,  double extraAmount, @NullableTimestampConverter()  DateTime? paidAt,  String? notes,  bool hasPendingConfirmation)?  $default,) {final _that = this;
 switch (_that) {
 case _HousingPaymentModel() when $default != null:
-return $default(_that.id,_that.conceptId,_that.residentUid,_that.housingUnit,_that.totalDue,_that.amountPaid,_that.balance,_that.paymentStatus,_that.extraAmount,_that.paidAt,_that.notes,_that.hasPendingConfirmation);case _:
+return $default(_that.id,_that.conceptId,_that.residentUid,_that.lot,_that.house,_that.totalDue,_that.amountPaid,_that.balance,_that.paymentStatus,_that.extraAmount,_that.paidAt,_that.notes,_that.hasPendingConfirmation);case _:
   return null;
 
 }
@@ -220,13 +221,14 @@ return $default(_that.id,_that.conceptId,_that.residentUid,_that.housingUnit,_th
 @JsonSerializable()
 
 class _HousingPaymentModel implements HousingPaymentModel {
-  const _HousingPaymentModel({required this.id, required this.conceptId, required this.residentUid, required this.housingUnit, required this.totalDue, required this.amountPaid, required this.balance, required this.paymentStatus, this.extraAmount = 0.0, @NullableTimestampConverter() this.paidAt, this.notes, this.hasPendingConfirmation = false});
+  const _HousingPaymentModel({required this.id, required this.conceptId, required this.residentUid, required this.lot, required this.house, required this.totalDue, required this.amountPaid, required this.balance, required this.paymentStatus, this.extraAmount = 0.0, @NullableTimestampConverter() this.paidAt, this.notes, this.hasPendingConfirmation = false});
   factory _HousingPaymentModel.fromJson(Map<String, dynamic> json) => _$HousingPaymentModelFromJson(json);
 
 @override final  String id;
 @override final  String conceptId;
 @override final  String residentUid;
-@override final  String housingUnit;
+@override final  String lot;
+@override final  String house;
 @override final  double totalDue;
 @override final  double amountPaid;
 @override final  double balance;
@@ -249,16 +251,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _HousingPaymentModel&&(identical(other.id, id) || other.id == id)&&(identical(other.conceptId, conceptId) || other.conceptId == conceptId)&&(identical(other.residentUid, residentUid) || other.residentUid == residentUid)&&(identical(other.housingUnit, housingUnit) || other.housingUnit == housingUnit)&&(identical(other.totalDue, totalDue) || other.totalDue == totalDue)&&(identical(other.amountPaid, amountPaid) || other.amountPaid == amountPaid)&&(identical(other.balance, balance) || other.balance == balance)&&(identical(other.paymentStatus, paymentStatus) || other.paymentStatus == paymentStatus)&&(identical(other.extraAmount, extraAmount) || other.extraAmount == extraAmount)&&(identical(other.paidAt, paidAt) || other.paidAt == paidAt)&&(identical(other.notes, notes) || other.notes == notes)&&(identical(other.hasPendingConfirmation, hasPendingConfirmation) || other.hasPendingConfirmation == hasPendingConfirmation));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _HousingPaymentModel&&(identical(other.id, id) || other.id == id)&&(identical(other.conceptId, conceptId) || other.conceptId == conceptId)&&(identical(other.residentUid, residentUid) || other.residentUid == residentUid)&&(identical(other.lot, lot) || other.lot == lot)&&(identical(other.house, house) || other.house == house)&&(identical(other.totalDue, totalDue) || other.totalDue == totalDue)&&(identical(other.amountPaid, amountPaid) || other.amountPaid == amountPaid)&&(identical(other.balance, balance) || other.balance == balance)&&(identical(other.paymentStatus, paymentStatus) || other.paymentStatus == paymentStatus)&&(identical(other.extraAmount, extraAmount) || other.extraAmount == extraAmount)&&(identical(other.paidAt, paidAt) || other.paidAt == paidAt)&&(identical(other.notes, notes) || other.notes == notes)&&(identical(other.hasPendingConfirmation, hasPendingConfirmation) || other.hasPendingConfirmation == hasPendingConfirmation));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,conceptId,residentUid,housingUnit,totalDue,amountPaid,balance,paymentStatus,extraAmount,paidAt,notes,hasPendingConfirmation);
+int get hashCode => Object.hash(runtimeType,id,conceptId,residentUid,lot,house,totalDue,amountPaid,balance,paymentStatus,extraAmount,paidAt,notes,hasPendingConfirmation);
 
 @override
 String toString() {
-  return 'HousingPaymentModel(id: $id, conceptId: $conceptId, residentUid: $residentUid, housingUnit: $housingUnit, totalDue: $totalDue, amountPaid: $amountPaid, balance: $balance, paymentStatus: $paymentStatus, extraAmount: $extraAmount, paidAt: $paidAt, notes: $notes, hasPendingConfirmation: $hasPendingConfirmation)';
+  return 'HousingPaymentModel(id: $id, conceptId: $conceptId, residentUid: $residentUid, lot: $lot, house: $house, totalDue: $totalDue, amountPaid: $amountPaid, balance: $balance, paymentStatus: $paymentStatus, extraAmount: $extraAmount, paidAt: $paidAt, notes: $notes, hasPendingConfirmation: $hasPendingConfirmation)';
 }
 
 
@@ -269,7 +271,7 @@ abstract mixin class _$HousingPaymentModelCopyWith<$Res> implements $HousingPaym
   factory _$HousingPaymentModelCopyWith(_HousingPaymentModel value, $Res Function(_HousingPaymentModel) _then) = __$HousingPaymentModelCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String conceptId, String residentUid, String housingUnit, double totalDue, double amountPaid, double balance, String paymentStatus, double extraAmount,@NullableTimestampConverter() DateTime? paidAt, String? notes, bool hasPendingConfirmation
+ String id, String conceptId, String residentUid, String lot, String house, double totalDue, double amountPaid, double balance, String paymentStatus, double extraAmount,@NullableTimestampConverter() DateTime? paidAt, String? notes, bool hasPendingConfirmation
 });
 
 
@@ -286,12 +288,13 @@ class __$HousingPaymentModelCopyWithImpl<$Res>
 
 /// Create a copy of HousingPaymentModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? conceptId = null,Object? residentUid = null,Object? housingUnit = null,Object? totalDue = null,Object? amountPaid = null,Object? balance = null,Object? paymentStatus = null,Object? extraAmount = null,Object? paidAt = freezed,Object? notes = freezed,Object? hasPendingConfirmation = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? conceptId = null,Object? residentUid = null,Object? lot = null,Object? house = null,Object? totalDue = null,Object? amountPaid = null,Object? balance = null,Object? paymentStatus = null,Object? extraAmount = null,Object? paidAt = freezed,Object? notes = freezed,Object? hasPendingConfirmation = null,}) {
   return _then(_HousingPaymentModel(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,conceptId: null == conceptId ? _self.conceptId : conceptId // ignore: cast_nullable_to_non_nullable
 as String,residentUid: null == residentUid ? _self.residentUid : residentUid // ignore: cast_nullable_to_non_nullable
-as String,housingUnit: null == housingUnit ? _self.housingUnit : housingUnit // ignore: cast_nullable_to_non_nullable
+as String,lot: null == lot ? _self.lot : lot // ignore: cast_nullable_to_non_nullable
+as String,house: null == house ? _self.house : house // ignore: cast_nullable_to_non_nullable
 as String,totalDue: null == totalDue ? _self.totalDue : totalDue // ignore: cast_nullable_to_non_nullable
 as double,amountPaid: null == amountPaid ? _self.amountPaid : amountPaid // ignore: cast_nullable_to_non_nullable
 as double,balance: null == balance ? _self.balance : balance // ignore: cast_nullable_to_non_nullable
