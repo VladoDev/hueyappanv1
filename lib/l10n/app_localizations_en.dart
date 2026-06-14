@@ -519,4 +519,31 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get extraPaid => 'Extra paid';
+
+  @override
+  String get waterStatusTitle => 'Water Supply';
+
+  @override
+  String get waterStatusAvailable => 'Water available today';
+
+  @override
+  String get waterStatusUnavailable => 'No water supply today';
+
+  @override
+  String get waterStatusMaintenance => 'Maintenance in progress';
+
+  @override
+  String get waterStatusAdminTitle => 'Water Control (Admin)';
+
+  @override
+  String get waterStatusAuto => 'Automatic (1 day yes, 1 no)';
+
+  @override
+  String get waterStatusForceAvailable => 'Force: Available';
+
+  @override
+  String get waterStatusForceUnavailable => 'Force: Unavailable';
+
+  @override
+  String get waterStatusForceMaintenance => 'Force: Maintenance';
 }

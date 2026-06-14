@@ -240,6 +240,15 @@
   "referenceCopySuccess": "Reference copied to clipboard",
   "extraAmountLabel": "Extra Amount",
   "extraAmountInput": "Extra amount (e.g. keys, controls, etc.)",
-  "extraPaid": "Extra paid"
+  "extraPaid": "Extra paid",
+  "waterStatusTitle": "Water Supply",
+  "waterStatusAvailable": "Water available today",
+  "waterStatusUnavailable": "No water supply today",
+  "waterStatusMaintenance": "Maintenance in progress",
+  "waterStatusAdminTitle": "Water Control (Admin)",
+  "waterStatusAuto": "Automatic (1 day yes, 1 no)",
+  "waterStatusForceAvailable": "Force: Available",
+  "waterStatusForceUnavailable": "Force: Unavailable",
+  "waterStatusForceMaintenance": "Force: Maintenance"
 
 }

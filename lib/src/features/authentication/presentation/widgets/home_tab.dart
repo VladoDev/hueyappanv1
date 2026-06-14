@@ -8,6 +8,7 @@ import '../providers/auth_provider.dart';
 import '../../../payments/domain/entities/payment_transaction_entity.dart';
 import '../../../payments/domain/entities/payment_concept_entity.dart';
 import '../../../payments/presentation/providers/payments_provider.dart';
+import '../../../water_status/presentation/widgets/water_status_icon.dart';
 
 final _recentEmergencyProvider = StreamProvider.autoDispose<Map<String, dynamic>?>((ref) {
   return ref.watch(authFirebaseDatasourceProvider).watchEmergencies();
@@ -32,6 +33,7 @@ class HomeTab extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
+        leading: const WaterStatusIconWidget(),
         centerTitle: true,
         title: Text(
           l10n.appName,

@@ -1069,6 +1069,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Extra paid'**
   String get extraPaid;
+
+  /// No description provided for @waterStatusTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Water Supply'**
+  String get waterStatusTitle;
+
+  /// No description provided for @waterStatusAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Water available today'**
+  String get waterStatusAvailable;
+
+  /// No description provided for @waterStatusUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No water supply today'**
+  String get waterStatusUnavailable;
+
+  /// No description provided for @waterStatusMaintenance.
+  ///
+  /// In en, this message translates to:
+  /// **'Maintenance in progress'**
+  String get waterStatusMaintenance;
+
+  /// No description provided for @waterStatusAdminTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Water Control (Admin)'**
+  String get waterStatusAdminTitle;
+
+  /// No description provided for @waterStatusAuto.
+  ///
+  /// In en, this message translates to:
+  /// **'Automatic (1 day yes, 1 no)'**
+  String get waterStatusAuto;
+
+  /// No description provided for @waterStatusForceAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Force: Available'**
+  String get waterStatusForceAvailable;
+
+  /// No description provided for @waterStatusForceUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Force: Unavailable'**
+  String get waterStatusForceUnavailable;
+
+  /// No description provided for @waterStatusForceMaintenance.
+  ///
+  /// In en, this message translates to:
+  /// **'Force: Maintenance'**
+  String get waterStatusForceMaintenance;
 }
 
 class _AppLocalizationsDelegate
