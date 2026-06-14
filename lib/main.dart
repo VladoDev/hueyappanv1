@@ -120,7 +120,7 @@ class _MyAppState extends ConsumerState<MyApp> {
     final router = ref.watch(routerProvider);
 
     return MaterialApp.router(
-      title: 'HueyAPPan',
+      title: 'Hueyappan',
       theme: vecinalLightTheme(),
       darkTheme: vecinalDarkTheme(),
       themeMode: ThemeMode.system,
