@@ -16,38 +16,60 @@ import '../../features/payments/presentation/screens/concept_payment_map_screen.
 import '../../features/authentication/presentation/widgets/profile_tab.dart';
 import '../../features/contacts/presentation/screens/contacts_tab.dart';
 import '../../features/notifications/presentation/screens/notifications_screen.dart';
+import '../../features/app_settings/presentation/screens/force_update_screen.dart';
+import '../../features/app_settings/presentation/providers/app_settings_provider.dart';
+import '../../features/app_settings/presentation/providers/package_info_provider.dart';
+import '../../features/app_settings/domain/entities/app_settings_entity.dart';
+import '../../features/app_settings/data/repositories/app_settings_repository_impl.dart';
+import 'dart:io';
 
-class GoRouterRefreshStream extends ChangeNotifier {
-  late final StreamSubscription<dynamic> _subscription;
-
-  GoRouterRefreshStream(Stream<dynamic> stream) {
-    notifyListeners();
-    _subscription = stream.asBroadcastStream().listen((_) => notifyListeners());
-  }
-
-  @override
-  void dispose() {
-    _subscription.cancel();
-    super.dispose();
+class RouterNotifier extends ChangeNotifier {
+  RouterNotifier(Ref ref) {
+    ref.listen(authStateProvider, (_, __) => notifyListeners());
+    ref.listen(appSettingsProvider, (_, __) => notifyListeners());
+    ref.listen(firebaseUserProvider, (_, __) => notifyListeners());
   }
 }
 
+final routerNotifierProvider = Provider<RouterNotifier>((ref) {
+  return RouterNotifier(ref);
+});
+
 final routerProvider = Provider<GoRouter>((ref) {
-  final authRepository = ref.watch(authRepositoryProvider);
-  final authState = ref.watch(authStateProvider);
-  final firebaseUserAsync = ref.watch(firebaseUserProvider);
+  final notifier = ref.watch(routerNotifierProvider);
 
   return GoRouter(
     initialLocation: '/login',
-    refreshListenable: GoRouterRefreshStream(authRepository.authStateChanges),
+    refreshListenable: notifier,
     observers: [
       FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance),
     ],
     redirect: (context, state) {
+      final firebaseUserAsync = ref.read(firebaseUserProvider);
+      final authState = ref.read(authStateProvider);
       final firebaseUser = firebaseUserAsync.value;
       final user = authState.value;
       final isLoggingIn = state.matchedLocation == '/login';
       final isRegistering = state.matchedLocation == '/register';
+      final isForceUpdate = state.matchedLocation == '/force_update';
+
+      // 0. Check for forced updates
+      final appSettings = ref.read(appSettingsProvider).value;
+      final packageInfo = ref.read(packageInfoProvider);
+      
+      if (appSettings != null) {
+        if (appSettings.isOutdated(packageInfo.version, Platform.isIOS)) {
+          return '/force_update';
+        }
+      }
+
+      if (isForceUpdate) {
+        // If we shouldn't be forcing an update anymore, redirect to login/home
+        if (appSettings != null && !appSettings.isOutdated(packageInfo.version, Platform.isIOS)) {
+          return '/login';
+        }
+        return null;
+      }
 
       // 1. If Firebase Auth is still loading and we have no user, wait.
       if (firebaseUserAsync.isLoading && firebaseUser == null) {
@@ -77,6 +99,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       return null; // Allow navigation to the requested route
     },
     routes: [
+      GoRoute(
+        path: '/force_update',
+        builder: (context, state) => const ForceUpdateScreen(),
+      ),
       GoRoute(
         path: '/login',
         builder: (context, state) => const LoginScreen(),

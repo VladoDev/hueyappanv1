@@ -8,6 +8,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'firebase_options.dart';
 import 'src/core/router/router.dart';
 import 'src/core/theme/vecinal_theme.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'src/features/app_settings/presentation/providers/package_info_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,9 +37,15 @@ void main() async {
     sound: true,
   );
 
+  // Load package info synchronously
+  final packageInfo = await PackageInfo.fromPlatform();
+
   runApp(
-    const ProviderScope(
-      child: MyApp(),
+    ProviderScope(
+      overrides: [
+        packageInfoProvider.overrideWithValue(packageInfo),
+      ],
+      child: const MyApp(),
     ),
   );
 }
