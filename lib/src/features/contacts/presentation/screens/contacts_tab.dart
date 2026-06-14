@@ -49,17 +49,18 @@ class _ContactsTabState extends ConsumerState<ContactsTab> {
       ),
       body: SafeArea(
         bottom: false,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: VecinalSpacing.xl),
-          child: Column(
-            children: [
-              _buildSearchBar(vc, l10n),
-              const SizedBox(height: VecinalSpacing.md),
-              _buildFilterChips(filter, vc, l10n),
-              const SizedBox(height: VecinalSpacing.md),
-              Expanded(child: _buildContactsList(vc, l10n)),
-            ],
-          ),
+        child: Column(
+          children: [
+            const SizedBox(height: VecinalSpacing.xl),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: VecinalSpacing.xl),
+              child: _buildSearchBar(vc, l10n),
+            ),
+            const SizedBox(height: VecinalSpacing.md),
+            _buildFilterChips(filter, vc, l10n),
+            const SizedBox(height: VecinalSpacing.md),
+            Expanded(child: _buildContactsList(vc, l10n)),
+          ],
         ),
       ),
     );
@@ -111,6 +112,8 @@ class _ContactsTabState extends ConsumerState<ContactsTab> {
       height: 40,
       child: ListView(
         scrollDirection: Axis.horizontal,
+        clipBehavior: Clip.none,
+        padding: const EdgeInsets.symmetric(horizontal: VecinalSpacing.xl),
         children: [
           _buildChip(
             label: l10n.allContacts,
@@ -188,7 +191,8 @@ class _ContactsTabState extends ConsumerState<ContactsTab> {
         }
         return ListView.builder(
           itemCount: contacts.length,
-          padding: const EdgeInsets.only(bottom: 100),
+          padding: const EdgeInsets.only(left: VecinalSpacing.xl, right: VecinalSpacing.xl, bottom: 100),
+          clipBehavior: Clip.none,
           itemBuilder: (context, index) {
             return ContactListItem(contact: contacts[index]);
           },

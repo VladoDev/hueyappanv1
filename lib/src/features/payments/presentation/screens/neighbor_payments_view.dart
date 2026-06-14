@@ -122,21 +122,25 @@ class NeighborPaymentsView extends ConsumerWidget {
         borderRadius: BorderRadius.circular(VecinalRadius.md),
         side: BorderSide(color: vc.borderDefault, width: 0.5),
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(VecinalSpacing.xl),
-        child: Column(
-          children: [
-            Icon(icon, size: 40, color: vc.textHint),
-            const SizedBox(height: 12),
-            Text(
-              text,
-              style: VecinalTextStyles.bodyMedium.copyWith(
-                color: vc.textSecondary,
-                fontWeight: FontWeight.w500,
+      child: SizedBox(
+        width: double.infinity,
+        child: Padding(
+          padding: const EdgeInsets.all(VecinalSpacing.xl),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, size: 40, color: vc.textHint),
+              const SizedBox(height: 12),
+              Text(
+                text,
+                style: VecinalTextStyles.bodyMedium.copyWith(
+                  color: vc.textSecondary,
+                  fontWeight: FontWeight.w500,
+                ),
+                textAlign: TextAlign.center,
               ),
-              textAlign: TextAlign.center,
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -210,7 +214,7 @@ class NeighborPaymentsView extends ConsumerWidget {
 
   Widget _buildTransferRow(String label, String value, VecinalSemanticColors vc, {VoidCallback? onCopy}) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           label,
@@ -219,24 +223,31 @@ class NeighborPaymentsView extends ConsumerWidget {
             fontWeight: FontWeight.w500,
           ),
         ),
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              value,
-              style: VecinalTextStyles.bodyMedium.copyWith(
-                fontWeight: FontWeight.bold,
-                color: vc.paymentText,
+        const SizedBox(width: 16),
+        Expanded(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Flexible(
+                child: Text(
+                  value,
+                  textAlign: TextAlign.right,
+                  style: VecinalTextStyles.bodyMedium.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: vc.paymentText,
+                  ),
+                ),
               ),
-            ),
-            if (onCopy != null) ...[
-              const SizedBox(width: 6),
-              GestureDetector(
-                onTap: onCopy,
-                child: Icon(Icons.copy, size: 16, color: vc.paymentIcon),
-              ),
-            ]
-          ],
+              if (onCopy != null) ...[
+                const SizedBox(width: 6),
+                GestureDetector(
+                  onTap: onCopy,
+                  child: Icon(Icons.copy, size: 16, color: vc.paymentIcon),
+                ),
+              ]
+            ],
+          ),
         ),
       ],
     );
@@ -316,22 +327,27 @@ class _NeighborPaymentCard extends ConsumerWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        '${l10n.amountPerHouseLabel}: \$${payment.totalDue.toStringAsFixed(2)}',
-                        style: VecinalTextStyles.bodySmall.copyWith(color: vc.textHint),
-                      ),
-                      if (concept != null) ...[
-                        const SizedBox(height: 2),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
                         Text(
-                          '${l10n.conceptTotalCost} (Ref): \$${concept.totalAmount.toStringAsFixed(2)}',
+                          '${l10n.amountPerHouseLabel}: \$${payment.totalDue.toStringAsFixed(2)}',
                           style: VecinalTextStyles.bodySmall.copyWith(color: vc.textHint),
+                          overflow: TextOverflow.ellipsis,
                         ),
+                        if (concept != null) ...[
+                          const SizedBox(height: 2),
+                          Text(
+                            '${l10n.conceptTotalCost} (Ref): \$${concept.totalAmount.toStringAsFixed(2)}',
+                            style: VecinalTextStyles.bodySmall.copyWith(color: vc.textHint),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
                       ],
-                    ],
+                    ),
                   ),
+                  const SizedBox(width: 8),
                   Text(
                     'Adeudo: \$${payment.balance.toStringAsFixed(2)}',
                     style: VecinalTextStyles.labelLarge.copyWith(

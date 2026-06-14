@@ -18,33 +18,15 @@ class NotificationsScreen extends ConsumerWidget {
     final notificationsAsync = ref.watch(notificationsProvider);
 
     return Scaffold(
-      extendBodyBehindAppBar: true,
       appBar: AppBar(
+        centerTitle: true,
+        automaticallyImplyLeading: false,
         title: Text(
           l10n.navNotifications,
           style: TextStyle(color: vc.primaryDefault, fontWeight: FontWeight.bold),
         ),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: vc.primaryDefault),
-          onPressed: () => context.pop(),
-        ),
       ),
-      body: Stack(
-        children: [
-          // Fondo degradado
-          Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [vc.primaryContainer, vc.surfaceSecondary, vc.primaryLight],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-            ),
-          ),
-          SafeArea(
-            child: notificationsAsync.when(
+      body: notificationsAsync.when(
               data: (notifications) {
                 if (notifications.isEmpty) {
                   return Center(
@@ -76,9 +58,7 @@ class NotificationsScreen extends ConsumerWidget {
                 child: Text('Error al cargar notificaciones: $e', style: TextStyle(color: vc.destructive)),
               ),
             ),
-          ),
-        ],
-      ),
+
     );
   }
 }
