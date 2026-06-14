@@ -210,9 +210,9 @@ class _MainShellScreenState extends ConsumerState<MainShellScreen> {
         label: l10n.navHome,
       ),
       _FloatingTabBarItem(
-        icon: Icons.campaign_outlined,
-        selectedIcon: Icons.campaign,
-        label: l10n.navNews,
+        icon: Icons.notifications_outlined,
+        selectedIcon: Icons.notifications,
+        label: l10n.navNotifications,
       ),
       _FloatingTabBarItem(
         icon: Icons.account_balance_wallet_outlined,
@@ -247,7 +247,7 @@ class _MainShellScreenState extends ConsumerState<MainShellScreen> {
                 child: BackdropFilter(
                   filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 10),
                     decoration: BoxDecoration(
                       color: vc.surfacePrimary.withValues(alpha: 0.85),
                       borderRadius: BorderRadius.circular(24),
@@ -274,7 +274,7 @@ class _MainShellScreenState extends ConsumerState<MainShellScreen> {
                           child: AnimatedContainer(
                             duration: const Duration(milliseconds: 250),
                             curve: Curves.easeInOut,
-                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                             decoration: BoxDecoration(
                               color: isSelected
                                   ? vc.primaryDefault.withValues(alpha: 0.15)
@@ -290,7 +290,7 @@ class _MainShellScreenState extends ConsumerState<MainShellScreen> {
                                   size: 24,
                                 ),
                                 if (isSelected) ...[
-                                  const SizedBox(width: 8),
+                                  const SizedBox(width: 6),
                                   Text(
                                     item.label,
                                     style: VecinalTextStyles.labelMedium.copyWith(

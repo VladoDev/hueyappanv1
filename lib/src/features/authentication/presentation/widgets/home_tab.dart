@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hueyappanv1/l10n/app_localizations.dart';
 import 'package:hueyappanv1/src/core/theme/vecinal_theme.dart';
 import '../providers/auth_provider.dart';
 import '../../../payments/domain/entities/payment_transaction_entity.dart';
+import '../../../payments/domain/entities/payment_concept_entity.dart';
 import '../../../payments/presentation/providers/payments_provider.dart';
+
+final _recentEmergencyProvider = StreamProvider.autoDispose<Map<String, dynamic>?>((ref) {
+  return ref.watch(authFirebaseDatasourceProvider).watchEmergencies();
+});
 
 class HomeTab extends ConsumerWidget {
   final String residentName;
@@ -26,58 +32,7 @@ class HomeTab extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        leading: Consumer(
-          builder: (context, ref, child) {
-            final transactionsAsync = ref.watch(neighborTransactionsStreamProvider((lot: lot, house: house)));
-            return transactionsAsync.when(
-              data: (transactions) {
-                final pending = transactions.where((t) => !t.isConfirmed).toList();
-                return Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    IconButton(
-                      icon: Icon(Icons.notifications_none, color: vc.primaryDefault, size: 26),
-                      onPressed: () => _showNotificationsBottomSheet(context, ref, pending),
-                    ),
-                    if (pending.isNotEmpty)
-                      Positioned(
-                        right: 8,
-                        top: 8,
-                        child: Container(
-                          padding: const EdgeInsets.all(2),
-                          decoration: BoxDecoration(
-                            color: vc.destructive,
-                            shape: BoxShape.circle,
-                          ),
-                          constraints: const BoxConstraints(
-                            minWidth: 16,
-                            minHeight: 16,
-                          ),
-                          child: Text(
-                            '${pending.length}',
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 9,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ),
-                  ],
-                );
-              },
-              loading: () => IconButton(
-                icon: Icon(Icons.notifications_none, color: vc.primaryDefault, size: 26),
-                onPressed: () => _showNotificationsBottomSheet(context, ref, []),
-              ),
-              error: (err, stack) => IconButton(
-                icon: Icon(Icons.notifications_none, color: vc.primaryDefault, size: 26),
-                onPressed: () => _showNotificationsBottomSheet(context, ref, []),
-              ),
-            );
-          },
-        ),
+        centerTitle: true,
         title: Text(
           l10n.appName,
           style: VecinalTextStyles.headlineSmall.copyWith(
@@ -86,12 +41,6 @@ class HomeTab extends ConsumerWidget {
           ),
         ),
         actions: [
-          IconButton(
-            icon: Icon(Icons.notifications_none, color: vc.primaryDefault),
-            onPressed: () {
-              context.push('/notifications');
-            },
-          ),
           Container(
             margin: const EdgeInsets.only(right: 16),
             decoration: BoxDecoration(
@@ -128,26 +77,7 @@ class HomeTab extends ConsumerWidget {
               const SizedBox(height: 32),
               _buildFeatureCard(context, vc),
               const SizedBox(height: 24),
-              Text(
-                l10n.recentActivity,
-                style: VecinalTextStyles.headlineSmall.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: vc.textPrimary,
-                ),
-              ),
-              const SizedBox(height: 12),
-              _buildActivityItem(
-                l10n.activityMaintenance,
-                l10n.activityMaintenanceTime,
-                Icons.build_circle,
-                vc,
-              ),
-              _buildActivityItem(
-                l10n.activityAssembly,
-                l10n.activityAssemblyTime,
-                Icons.description,
-                vc,
-              ),
+              _RecentActivitySection(lot: lot, house: house, vc: vc),
             ],
           ),
         ),
@@ -256,29 +186,7 @@ class HomeTab extends ConsumerWidget {
     );
   }
 
-  Widget _buildActivityItem(String text, String time, IconData icon, VecinalSemanticColors vc) {
-    return Card(
-      elevation: 0,
-      margin: const EdgeInsets.only(bottom: 12),
-      child: ListTile(
-        leading: CircleAvatar(
-          backgroundColor: vc.primaryContainer,
-          child: Icon(icon, color: vc.onPrimaryContainer),
-        ),
-        title: Text(
-          text,
-          style: VecinalTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.w500),
-        ),
-        subtitle: Padding(
-          padding: const EdgeInsets.only(top: 4.0),
-          child: Text(
-            time,
-            style: VecinalTextStyles.bodySmall.copyWith(color: vc.textHint),
-          ),
-        ),
-      ),
-    );
-  }
+
 
   void _showEmergencyDialog(BuildContext context, WidgetRef ref, VecinalSemanticColors vc) async {
     final l10n = AppLocalizations.of(context)!;
@@ -398,96 +306,7 @@ class HomeTab extends ConsumerWidget {
     );
   }
 
-  void _showNotificationsBottomSheet(
-      BuildContext context, WidgetRef ref, List<PaymentTransactionEntity> pending) {
-    final vc = context.vecinalColors;
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: vc.surfacePrimary,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (context) {
-        return SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'Notificaciones',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.close),
-                      onPressed: () => Navigator.pop(context),
-                    ),
-                  ],
-                ),
-                const Divider(),
-                if (pending.isEmpty)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 24.0),
-                    child: Center(
-                      child: Column(
-                        children: [
-                          Icon(Icons.notifications_none, size: 48, color: vc.textHint),
-                          const SizedBox(height: 12),
-                          Text(
-                            'No tienes pagos por confirmar',
-                            style: TextStyle(color: vc.textSecondary),
-                          ),
-                        ],
-                      ),
-                    ),
-                  )
-                else
-                  Flexible(
-                    child: ListView.separated(
-                      shrinkWrap: true,
-                      itemCount: pending.length,
-                      separatorBuilder: (context, index) => const SizedBox(height: 8),
-                      itemBuilder: (context, index) {
-                        final payment = pending[index];
-                        return Card(
-                          elevation: 0,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            side: BorderSide(color: vc.borderDefault),
-                          ),
-                          child: ListTile(
-                            leading: Icon(Icons.info_outline, color: vc.textPrimary),
-                            title: Text(
-                              'Pago reportado por Lote ${payment.lot}-${payment.house}',
-                              style: TextStyle(fontWeight: FontWeight.w600, color: vc.textPrimary, fontSize: 14),
-                            ),
-                            subtitle: Text(
-                              'Monto: \$${payment.amount}',
-                              style: TextStyle(color: vc.textSecondary, fontSize: 13),
-                            ),
-                            trailing: IconButton(
-                              icon: Icon(Icons.check_circle_outline, color: vc.primaryDefault),
-                              onPressed: () {
-                                Navigator.pop(context);
-                                context.go('/main/payments');
-                              },
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
+
 
   void _showOtpVerificationDialog(BuildContext context, WidgetRef ref, VecinalSemanticColors vc, AppLocalizations l10n, String uid, String name, String lot, String house, String phone) {
     bool isRequesting = false;
@@ -618,91 +437,152 @@ class HomeTab extends ConsumerWidget {
     );
   }
 
-  void _showConfirmDetailDialog(
-      BuildContext context, WidgetRef ref, PaymentTransactionEntity t, VecinalSemanticColors vc) {
-    showDialog(
-      context: context,
-      builder: (dialogCtx) {
-        return AlertDialog(
-          title: const Text('Confirmar Pago', style: TextStyle(fontWeight: FontWeight.bold)),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Concepto:',
-                style: TextStyle(fontWeight: FontWeight.bold, color: vc.textSecondary, fontSize: 13),
-              ),
-              Text(
-                t.conceptTitle ?? 'Sin concepto',
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-              ),
-              const SizedBox(height: 12),
-              Text(
-                'Monto a Confirmar:',
-                style: TextStyle(fontWeight: FontWeight.bold, color: vc.textSecondary, fontSize: 13),
-              ),
-              Text(
-                '\$${t.amount.toStringAsFixed(2)}',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: vc.destructive),
-              ),
-              if (t.extraAmount > 0) ...[
-                const SizedBox(height: 4),
-                Text(
-                  '+ \$${t.extraAmount.toStringAsFixed(2)} extra',
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: vc.primaryDefault),
-                ),
-              ],
-              if (t.notes != null && t.notes!.isNotEmpty) ...[
-                const SizedBox(height: 12),
-                Text(
-                  'Notas del administrador:',
-                  style: TextStyle(fontWeight: FontWeight.bold, color: vc.textSecondary, fontSize: 13),
-                ),
-                Text(
-                  t.notes!,
-                  style: const TextStyle(fontSize: 14, fontStyle: FontStyle.italic),
-                ),
-              ],
-            ],
+
+}
+
+class _RecentActivitySection extends ConsumerWidget {
+  final String lot;
+  final String house;
+  final VecinalSemanticColors vc;
+
+  const _RecentActivitySection({
+    required this.lot,
+    required this.house,
+    required this.vc,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
+    
+    final emergencyAsync = ref.watch(_recentEmergencyProvider);
+    final transactionsAsync = ref.watch(neighborTransactionsStreamProvider((lot: lot, house: house)));
+    final conceptsAsync = ref.watch(conceptsStreamProvider);
+
+    List<Widget> items = [];
+
+    // 1. Emergency
+    emergencyAsync.whenData((emergency) {
+      if (emergency != null) {
+        final name = emergency['triggeredByName'] ?? 'Usuario';
+        final eLot = emergency['triggeredByLot'] ?? '';
+        final timestamp = emergency['timestamp'];
+        DateTime? dt;
+        if (timestamp is Timestamp) {
+          dt = timestamp.toDate();
+        }
+        
+        final timeStr = dt != null ? '${dt.day}/${dt.month}/${dt.year} ${dt.hour}:${dt.minute.toString().padLeft(2, '0')}' : 'Recientemente';
+        
+        items.add(_ActivityItemWidget(
+          text: 'Alarma crítica: $name (Lote $eLot)',
+          time: timeStr,
+          icon: Icons.warning_rounded,
+          vc: vc,
+          iconColor: vc.destructive,
+        ));
+      }
+    });
+
+    // 2. Latest User Payment
+    transactionsAsync.whenData((txs) {
+      if (txs.isNotEmpty) {
+        final latest = txs.first;
+        final dt = latest.createdAt;
+        final timeStr = '${dt.day}/${dt.month}/${dt.year} ${dt.hour}:${dt.minute.toString().padLeft(2, '0')}';
+        
+        items.add(_ActivityItemWidget(
+          text: 'Realizaste un pago: ${latest.conceptTitle}',
+          time: timeStr,
+          icon: Icons.payment,
+          vc: vc,
+          iconColor: vc.primaryDefault,
+        ));
+      }
+    });
+
+    // 3. Latest Payment Concept
+    conceptsAsync.whenData((concepts) {
+      if (concepts.isNotEmpty) {
+        final sorted = List<PaymentConceptEntity>.from(concepts)..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+        final latest = sorted.first;
+        final dt = latest.createdAt;
+        final timeStr = '${dt.day}/${dt.month}/${dt.year} ${dt.hour}:${dt.minute.toString().padLeft(2, '0')}';
+        
+        items.add(_ActivityItemWidget(
+          text: 'Nuevo concepto de pago: ${latest.title}',
+          time: timeStr,
+          icon: Icons.new_releases,
+          vc: vc,
+          iconColor: vc.noticeIcon,
+        ));
+      }
+    });
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          l10n.recentActivity,
+          style: VecinalTextStyles.headlineSmall.copyWith(
+            fontWeight: FontWeight.bold,
+            color: vc.textPrimary,
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(dialogCtx),
-              child: Text('Cancelar', style: TextStyle(color: vc.textSecondary, fontWeight: FontWeight.w600)),
+        ),
+        const SizedBox(height: 12),
+        if (items.isEmpty)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            child: Text(
+              'No hay actividad reciente',
+              style: TextStyle(color: vc.textSecondary),
             ),
-            ElevatedButton(
-              onPressed: () async {
-                final messenger = ScaffoldMessenger.of(dialogCtx);
-                Navigator.pop(dialogCtx);
-                messenger.showSnackBar(
-                  const SnackBar(content: Text('Confirmando pago...')),
-                );
-                final success = await ref
-                    .read(paymentsControllerProvider.notifier)
-                    .confirmPaymentTransaction(
-                      housingPaymentId: t.housingPaymentId,
-                      transactionId: t.id,
-                    );
-                if (success) {
-                  messenger.showSnackBar(
-                    const SnackBar(content: Text('Pago confirmado con éxito')),
-                  );
-                } else {
-                  messenger.showSnackBar(
-                    const SnackBar(content: Text('Error al confirmar el pago')),
-                  );
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: vc.primaryDefault,
-                foregroundColor: vc.textOnPrimary,
-              ),
-              child: const Text('Confirmar', style: TextStyle(fontWeight: FontWeight.bold)),
-            ),
-          ],
-        );
-      },
+          )
+        else
+          ...items,
+      ],
+    );
+  }
+}
+
+class _ActivityItemWidget extends StatelessWidget {
+  final String text;
+  final String time;
+  final IconData icon;
+  final VecinalSemanticColors vc;
+  final Color? iconColor;
+
+  const _ActivityItemWidget({
+    required this.text,
+    required this.time,
+    required this.icon,
+    required this.vc,
+    this.iconColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final effectiveColor = iconColor ?? vc.onPrimaryContainer;
+    return Card(
+      elevation: 0,
+      margin: const EdgeInsets.only(bottom: 12),
+      child: ListTile(
+        leading: CircleAvatar(
+          backgroundColor: effectiveColor.withValues(alpha: 0.1),
+          child: Icon(icon, color: effectiveColor),
+        ),
+        title: Text(
+          text,
+          style: VecinalTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.w500),
+        ),
+        subtitle: Padding(
+          padding: const EdgeInsets.only(top: 4.0),
+          child: Text(
+            time,
+            style: VecinalTextStyles.bodySmall.copyWith(color: vc.textHint),
+          ),
+        ),
+      ),
     );
   }
 }

@@ -107,8 +107,8 @@ final routerProvider = Provider<GoRouter>((ref) {
           StatefulShellBranch(
             routes: [
               GoRoute(
-                path: '/announcements',
-                builder: (context, state) => const AnnouncementsTab(),
+                path: '/notifications',
+                builder: (context, state) => const NotificationsScreen(),
               ),
             ],
           ),
@@ -178,10 +178,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           ),
         ],
       ),
-      GoRoute(
-        path: '/notifications',
-        builder: (context, state) => const NotificationsScreen(),
-      ),
+
     ],
   );
 });
