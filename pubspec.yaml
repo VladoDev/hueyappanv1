@@ -56,6 +56,7 @@ dependencies:
   url_launcher: ^6.3.0
   flutter_recaptcha_v2_compat: ^1.0.3+3
   package_info_plus: ^10.1.0
+  screenshot_callback: ^3.0.1
 
 dev_dependencies:
   flutter_test:
