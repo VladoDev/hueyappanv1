@@ -43,3 +43,14 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Firebase config files — no subir al repositorio
+lib/firebase_options_production.dart
+lib/firebase_options_development.dart
+android/app/google-services.json
+android/app/src/production/google-services.json
+android/app/src/development/google-services.json
+ios/Runner/GoogleService-Info.plist
+ios/Runner/GoogleService-Info-production.plist
+google-services-production.json
+GoogleService-Info-production.plist
