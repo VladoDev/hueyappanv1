@@ -21,6 +21,9 @@ import '../../features/app_settings/presentation/providers/app_settings_provider
 import '../../features/app_settings/presentation/providers/package_info_provider.dart';
 import '../../features/app_settings/domain/entities/app_settings_entity.dart';
 import '../../features/app_settings/data/repositories/app_settings_repository_impl.dart';
+import '../../features/polls/presentation/pages/polls_page.dart';
+import '../../features/polls/presentation/pages/create_poll_page.dart';
+import '../../features/polls/presentation/pages/revert_requests_page.dart';
 import 'dart:io';
 
 class RouterNotifier extends ChangeNotifier {
@@ -178,6 +181,24 @@ final routerProvider = Provider<GoRouter>((ref) {
               GoRoute(
                 path: '/contacts',
                 builder: (context, state) => const ContactsTab(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/polls',
+                builder: (context, state) => const PollsPage(),
+                routes: [
+                  GoRoute(
+                    path: 'create',
+                    builder: (context, state) => const CreatePollPage(),
+                  ),
+                  GoRoute(
+                    path: 'revert-requests',
+                    builder: (context, state) => const RevertRequestsPage(),
+                  ),
+                ],
               ),
             ],
           ),

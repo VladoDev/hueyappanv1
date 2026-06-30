@@ -88,6 +88,11 @@ class EmergencyNotifier extends Notifier<EmergencyState> {
         // If we triggered it ourselves, don't show the warning screen
         state = state.copyWith(clearActiveEmergency: true);
       }
+    }, onError: (error) {
+      // Handle permission denied or other stream errors safely
+      // instead of throwing an unhandled exception.
+      state = state.copyWith(clearActiveEmergency: true, isPlayingAlarm: false);
+      _stopAlarm();
     });
   }
 

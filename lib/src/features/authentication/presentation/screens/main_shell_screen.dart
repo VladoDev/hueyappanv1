@@ -247,6 +247,11 @@ class _MainShellScreenState extends ConsumerState<MainShellScreen> {
         label: l10n.navContacts,
       ),
       _FloatingTabBarItem(
+        icon: Icons.how_to_vote_outlined,
+        selectedIcon: Icons.how_to_vote,
+        label: 'Votaciones', // No localization for now or hardcoded
+      ),
+      _FloatingTabBarItem(
         icon: Icons.person_outline,
         selectedIcon: Icons.person,
         label: l10n.navProfile,

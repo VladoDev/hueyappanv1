@@ -55,66 +55,52 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     });
 
     return Scaffold(
-      body: Stack(
-        children: [
-          // Background Gradient and Blobs
-          const _BackgroundLayout(),
-          // Glassmorphic Login Card
-          Center(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(VecinalSpacing.xl),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(VecinalRadius.xl),
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                  child: Container(
-                    padding: const EdgeInsets.all(VecinalSpacing.xxl),
-                    decoration: BoxDecoration(
-                      color: vc.surfaceCard.withValues(alpha: 0.85),
-                      borderRadius: BorderRadius.circular(VecinalRadius.xl),
-                      border: Border.all(color: vc.surfaceCard.withValues(alpha: 0.4), width: 1.5),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.1),
-                          blurRadius: 30,
-                          offset: const Offset(0, 10),
-                        ),
-                      ],
-                    ),
-                    child: Form(
-                      key: _formKey,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const _HeaderSection(),
-                          const SizedBox(height: 32),
-                          _buildEmailField(isLoading, vc),
-                          const SizedBox(height: 16),
-                          _buildPasswordField(isLoading, vc),
-                          const SizedBox(height: 32),
-                          _buildSubmitButton(isLoading, vc),
-                          const SizedBox(height: 16),
-                          TextButton(
-                            onPressed: isLoading
-                                ? null
-                                : () => context.push('/register'),
-                            child: Text(
-                              AppLocalizations.of(context)!.registerLink,
-                              style: TextStyle(
-                                color: vc.primaryDefault,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
+      backgroundColor: vc.surfacePrimary,
+      body: SafeArea(
+            child: Center(
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 40.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    // Clean Solid Card
+                    Container(
+                      padding: const EdgeInsets.all(32),
+                      decoration: BoxDecoration(
+                        color: vc.surfaceCard,
+                        borderRadius: BorderRadius.circular(24),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.05),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
                           ),
                         ],
                       ),
-                    ),
-                  ),
+                      child: Form(
+                            key: _formKey,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const _HeaderSection(),
+                                const SizedBox(height: 40),
+                                _buildEmailField(isLoading, vc),
+                                const SizedBox(height: 20),
+                                _buildPasswordField(isLoading, vc),
+                                const SizedBox(height: 40),
+                                _buildSubmitButton(isLoading, vc),
+                                const SizedBox(height: 24),
+                                _buildRegisterLink(isLoading, vc, context),
+                              ],
+                            ),
+                          ),
+                        ),
+                  ],
                 ),
               ),
             ),
-          ),
-        ],
       ),
     );
   }
@@ -125,9 +111,22 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       controller: _emailController,
       enabled: !isLoading,
       keyboardType: TextInputType.emailAddress,
+      style: TextStyle(color: vc.textPrimary, fontWeight: FontWeight.w500),
       decoration: InputDecoration(
         labelText: l10n.emailLabel,
+        labelStyle: TextStyle(color: vc.textSecondary),
         prefixIcon: Icon(Icons.email_outlined, color: vc.primaryDefault),
+        filled: true,
+        fillColor: vc.surfacePrimary.withValues(alpha: 0.7),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide.none,
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: vc.primaryDefault, width: 2),
+        ),
+        contentPadding: const EdgeInsets.symmetric(vertical: 18, horizontal: 20),
       ),
       validator: (value) {
         if (value == null || value.trim().isEmpty) return l10n.emailRequired;
@@ -143,9 +142,22 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       controller: _passwordController,
       enabled: !isLoading,
       obscureText: true,
+      style: TextStyle(color: vc.textPrimary, fontWeight: FontWeight.w500),
       decoration: InputDecoration(
         labelText: l10n.passwordLabel,
-        prefixIcon: Icon(Icons.lock_outlined, color: vc.primaryDefault),
+        labelStyle: TextStyle(color: vc.textSecondary),
+        prefixIcon: Icon(Icons.lock_outline_rounded, color: vc.primaryDefault),
+        filled: true,
+        fillColor: vc.surfacePrimary.withValues(alpha: 0.7),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide.none,
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: vc.primaryDefault, width: 2),
+        ),
+        contentPadding: const EdgeInsets.symmetric(vertical: 18, horizontal: 20),
       ),
       validator: (value) {
         if (value == null || value.isEmpty) return l10n.passwordRequired;
@@ -159,63 +171,47 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     final l10n = AppLocalizations.of(context)!;
     return SizedBox(
       width: double.infinity,
-      height: 54,
+      height: 56,
       child: ElevatedButton(
         onPressed: isLoading ? null : _submitForm,
         style: ElevatedButton.styleFrom(
           backgroundColor: vc.primaryDefault,
-          foregroundColor: vc.textOnPrimary,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(VecinalRadius.md)),
+          foregroundColor: Colors.white,
           elevation: 0,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         ),
         child: isLoading
-            ? SizedBox(
+            ? const SizedBox(
                 width: 24,
                 height: 24,
-                child: CircularProgressIndicator(strokeWidth: 2.5, color: vc.textOnPrimary),
+                child: CircularProgressIndicator(strokeWidth: 2.5, color: Colors.white),
               )
             : Text(
                 l10n.loginButton,
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 0.5,
+                ),
               ),
       ),
     );
   }
-}
 
-class _BackgroundLayout extends StatelessWidget {
-  const _BackgroundLayout();
-
-  @override
-  Widget build(BuildContext context) {
-    final vc = context.vecinalColors;
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [vc.primaryContainer, vc.surfaceSecondary, vc.primaryLight],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+  Widget _buildRegisterLink(bool isLoading, VecinalSemanticColors vc, BuildContext context) {
+    return TextButton(
+      onPressed: isLoading ? null : () => context.push('/register'),
+      style: TextButton.styleFrom(
+        foregroundColor: vc.primaryDefault,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
-      child: Stack(
-        children: [
-          Positioned(
-            top: -100,
-            left: -50,
-            child: CircleAvatar(
-              radius: 150,
-              backgroundColor: vc.primaryDark.withValues(alpha: 0.25),
-            ),
-          ),
-          Positioned(
-            bottom: -50,
-            right: -50,
-            child: CircleAvatar(
-              radius: 180,
-              backgroundColor: vc.primaryDefault.withValues(alpha: 0.2),
-            ),
-          ),
-        ],
+      child: Text(
+        AppLocalizations.of(context)!.registerLink,
+        style: TextStyle(
+          color: vc.primaryDefault,
+          fontWeight: FontWeight.w600,
+          fontSize: 15,
+        ),
       ),
     );
   }
@@ -228,25 +224,45 @@ class _HeaderSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final vc = context.vecinalColors;
     final l10n = AppLocalizations.of(context)!;
+    
     return Column(
       children: [
-        CircleAvatar(
-          radius: 36,
-          backgroundColor: vc.primaryDefault,
-          child: Icon(Icons.shield, size: 40, color: vc.textOnPrimary),
+        // App Logo Icon with subtle shadow
+        Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                color: vc.primaryDefault.withValues(alpha: 0.2),
+                blurRadius: 30,
+                spreadRadius: 5,
+              ),
+            ],
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(28), // Slight rounding or circle depending on logo shape
+            child: Image.asset(
+              'assets/app_icon.png',
+              width: 90,
+              height: 90,
+              fit: BoxFit.cover,
+            ),
+          ),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 24),
         Text(
           l10n.appName,
           style: VecinalTextStyles.displayLarge.copyWith(
             color: vc.primaryDefault,
-            fontSize: 28,
+            fontSize: 32,
+            fontWeight: FontWeight.w800,
+            letterSpacing: -0.5,
           ),
         ),
-        const SizedBox(height: 6),
+        const SizedBox(height: 8),
         Text(
           l10n.loginPortalSubtitle,
-          style: VecinalTextStyles.bodyMedium.copyWith(
+          style: VecinalTextStyles.bodyLarge.copyWith(
             color: vc.textSecondary,
             fontWeight: FontWeight.w500,
           ),
@@ -256,3 +272,4 @@ class _HeaderSection extends StatelessWidget {
     );
   }
 }
+

@@ -2,10 +2,18 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "HueyAPP - Current Device (Debug)",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "debug",
+      "args": ["--flavor", "development"]
+    },
+    {
       "name": "HueyAPP - Release (Auto)",
       "request": "launch",
       "type": "dart",
-      "flutterMode": "release"
+      "flutterMode": "release",
+      "args": ["--flavor", "production"]
     },
     {
       "name": "HueyAPP - Release (Android)",
@@ -13,6 +21,8 @@
       "type": "dart",
       "flutterMode": "release",
       "args": [
+        "--flavor",
+        "production",
         "-d",
         "android"
       ]
@@ -23,6 +33,8 @@
       "type": "dart",
       "flutterMode": "release",
       "args": [
+        "--flavor",
+        "production",
         "-d",
         "ios"
       ]
@@ -32,6 +44,7 @@
       "request": "launch",
       "type": "dart",
       "flutterMode": "release",
+      "args": ["--flavor", "production"],
       "deviceId": "181A083B-51D6-434A-B4C1-016DC031B735"
     },
     {
@@ -39,6 +52,7 @@
       "request": "launch",
       "type": "dart",
       "flutterMode": "release",
+      "args": ["--flavor", "production"],
       "deviceId": "5A140DLCH000TJ"
     },
     {
@@ -46,6 +60,7 @@
       "request": "launch",
       "type": "dart",
       "flutterMode": "debug",
+      "args": ["--flavor", "development"],
       "deviceId": "181A083B-51D6-434A-B4C1-016DC031B735"
     },
     {
@@ -53,6 +68,7 @@
       "request": "launch",
       "type": "dart",
       "flutterMode": "debug",
+      "args": ["--flavor", "development"],
       "deviceId": "5A140DLCH000TJ"
     }
   ],

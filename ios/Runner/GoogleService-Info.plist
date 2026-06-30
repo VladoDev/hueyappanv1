@@ -3,17 +3,17 @@
 <plist version="1.0">
 <dict>
 	<key>API_KEY</key>
-	<string>AIzaSyAmRhRwknxWsfyv7OWrzha5DzQUoDX1htU</string>
+	<string>AIzaSyAiNQPhoF_8INMGTcR9RAxxX5tRPk9WXsk</string>
 	<key>GCM_SENDER_ID</key>
-	<string>324244044620</string>
+	<string>176578478762</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.vlad.hueyappan</string>
+	<string>com.conventohueyapan.hueyappanv1</string>
 	<key>PROJECT_ID</key>
-	<string>hueyappan-prod</string>
+	<string>hueyappanv1</string>
 	<key>STORAGE_BUCKET</key>
-	<string>hueyappan-prod.firebasestorage.app</string>
+	<string>hueyappanv1.firebasestorage.app</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -25,6 +25,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:324244044620:ios:4dae8117a7daa6c48fede9</string>
+	<string>1:176578478762:ios:645667b086a357e573c6d3</string>
 </dict>
 </plist>
