@@ -9,13 +9,11 @@ import '../providers/payments_provider.dart';
 class PaymentRegisterDialog extends ConsumerStatefulWidget {
   final HousingPaymentEntity payment;
 
-  const PaymentRegisterDialog({
-    super.key,
-    required this.payment,
-  });
+  const PaymentRegisterDialog({super.key, required this.payment});
 
   @override
-  ConsumerState<PaymentRegisterDialog> createState() => _PaymentRegisterDialogState();
+  ConsumerState<PaymentRegisterDialog> createState() =>
+      _PaymentRegisterDialogState();
 }
 
 class _PaymentRegisterDialogState extends ConsumerState<PaymentRegisterDialog> {
@@ -29,8 +27,8 @@ class _PaymentRegisterDialogState extends ConsumerState<PaymentRegisterDialog> {
   void initState() {
     super.initState();
     // Auto-fill suggested total paid: if already paid something, use that; else suggest the total due
-    final defaultAmount = widget.payment.amountPaid > 0 
-        ? widget.payment.amountPaid 
+    final defaultAmount = widget.payment.amountPaid > 0
+        ? widget.payment.amountPaid
         : widget.payment.totalDue;
     _amountController.text = defaultAmount.toStringAsFixed(2);
     _notesController.text = widget.payment.notes ?? '';
@@ -69,7 +67,8 @@ class _PaymentRegisterDialogState extends ConsumerState<PaymentRegisterDialog> {
         type = 'partial';
       }
 
-      final double extraAmount = double.tryParse(_extraAmountController.text) ?? 0.0;
+      final double extraAmount =
+          double.tryParse(_extraAmountController.text) ?? 0.0;
       final String refText = _refController.text.trim();
       final String notesText = _notesController.text.trim();
 
@@ -99,22 +98,27 @@ class _PaymentRegisterDialogState extends ConsumerState<PaymentRegisterDialog> {
   }
 
   Widget _buildDifferenceIndicator(VecinalSemanticColors vc) {
-    final double newTotalPaid = double.tryParse(_amountController.text) ?? widget.payment.amountPaid;
+    final double newTotalPaid =
+        double.tryParse(_amountController.text) ?? widget.payment.amountPaid;
     final double difference = newTotalPaid - widget.payment.amountPaid;
 
     if (difference == 0) return const SizedBox.shrink();
 
     final isCorrection = difference < 0;
     final color = isCorrection ? vc.destructive : vc.paymentSuccessText;
-    final text = isCorrection 
-        ? 'Se registrará un ajuste de -\$${difference.abs().toStringAsFixed(2)}' 
+    final text = isCorrection
+        ? 'Se registrará un ajuste de -\$${difference.abs().toStringAsFixed(2)}'
         : 'Se registrará un nuevo pago de +\$${difference.toStringAsFixed(2)}';
 
     return Padding(
       padding: const EdgeInsets.only(top: 8.0, left: 4.0, bottom: 4.0),
       child: Text(
         text,
-        style: TextStyle(color: color, fontWeight: FontWeight.w600, fontSize: 13),
+        style: TextStyle(
+          color: color,
+          fontWeight: FontWeight.w600,
+          fontSize: 13,
+        ),
       ),
     );
   }
@@ -124,7 +128,9 @@ class _PaymentRegisterDialogState extends ConsumerState<PaymentRegisterDialog> {
     final vc = context.vecinalColors;
     final l10n = AppLocalizations.of(context)!;
     final isLoading = ref.watch(paymentsControllerProvider).isLoading;
-    final itemsAsync = ref.watch(conceptItemsStreamProvider(widget.payment.conceptId));
+    final itemsAsync = ref.watch(
+      conceptItemsStreamProvider(widget.payment.conceptId),
+    );
 
     return AlertDialog(
       title: Text(
@@ -144,10 +150,16 @@ class _PaymentRegisterDialogState extends ConsumerState<PaymentRegisterDialog> {
                 controller: _amountController,
                 enabled: !isLoading,
                 onChanged: (val) => setState(() {}),
-                keyboardType: const TextInputType.numberWithOptions(decimal: true, signed: false),
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                  signed: false,
+                ),
                 decoration: InputDecoration(
                   labelText: 'Nuevo Total Abonado',
-                  prefixIcon: Icon(Icons.monetization_on_outlined, color: vc.primaryDefault),
+                  prefixIcon: Icon(
+                    Icons.monetization_on_outlined,
+                    color: vc.primaryDefault,
+                  ),
                 ),
                 validator: (val) {
                   if (val == null || val.isEmpty) return l10n.fieldRequired;
@@ -164,7 +176,10 @@ class _PaymentRegisterDialogState extends ConsumerState<PaymentRegisterDialog> {
                 enabled: !isLoading,
                 decoration: InputDecoration(
                   labelText: l10n.referenceLabel,
-                  prefixIcon: Icon(Icons.receipt_long_outlined, color: vc.primaryDefault),
+                  prefixIcon: Icon(
+                    Icons.receipt_long_outlined,
+                    color: vc.primaryDefault,
+                  ),
                 ),
               ),
               const SizedBox(height: 12),
@@ -174,7 +189,10 @@ class _PaymentRegisterDialogState extends ConsumerState<PaymentRegisterDialog> {
                 maxLines: 2,
                 decoration: InputDecoration(
                   labelText: l10n.notesLabel,
-                  prefixIcon: Icon(Icons.note_alt_outlined, color: vc.primaryDefault),
+                  prefixIcon: Icon(
+                    Icons.note_alt_outlined,
+                    color: vc.primaryDefault,
+                  ),
                 ),
               ),
               itemsAsync.when(
@@ -187,16 +205,22 @@ class _PaymentRegisterDialogState extends ConsumerState<PaymentRegisterDialog> {
                         controller: _extraAmountController,
                         enabled: !isLoading,
                         onChanged: (val) => setState(() {}),
-                        keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                        keyboardType: const TextInputType.numberWithOptions(
+                          decimal: true,
+                        ),
                         decoration: InputDecoration(
                           labelText: l10n.extraAmountInput,
-                          prefixIcon: Icon(Icons.add_circle_outline, color: vc.primaryDefault),
+                          prefixIcon: Icon(
+                            Icons.add_circle_outline,
+                            color: vc.primaryDefault,
+                          ),
                         ),
                         validator: (val) {
                           if (val == null || val.isEmpty) return null;
                           final parsed = double.tryParse(val);
                           if (parsed == null) return l10n.invalidAmount;
-                          if (parsed < 0) return 'El monto extra no puede ser negativo';
+                          if (parsed < 0)
+                            return 'El monto extra no puede ser negativo';
                           return null;
                         },
                       ),
@@ -216,7 +240,13 @@ class _PaymentRegisterDialogState extends ConsumerState<PaymentRegisterDialog> {
           : [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),
-                child: Text(l10n.cancel, style: TextStyle(color: vc.textSecondary, fontWeight: FontWeight.w600)),
+                child: Text(
+                  l10n.cancel,
+                  style: TextStyle(
+                    color: vc.textSecondary,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
               ),
               ElevatedButton(
                 onPressed: _submit,
@@ -234,7 +264,8 @@ class _PaymentRegisterDialogState extends ConsumerState<PaymentRegisterDialog> {
   }
 
   Widget _buildSummaryCard(VecinalSemanticColors vc) {
-    final double newTotalPaid = double.tryParse(_amountController.text) ?? widget.payment.amountPaid;
+    final double newTotalPaid =
+        double.tryParse(_amountController.text) ?? widget.payment.amountPaid;
     final double newBalance = widget.payment.totalDue - newTotalPaid;
 
     return Container(
@@ -251,28 +282,48 @@ class _PaymentRegisterDialogState extends ConsumerState<PaymentRegisterDialog> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text('Total debido:', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
-              Text('\$${widget.payment.totalDue.toStringAsFixed(2)}', style: const TextStyle(fontWeight: FontWeight.bold)),
+              const Text(
+                'Total debido:',
+                style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
+              ),
+              Text(
+                '\$${widget.payment.totalDue.toStringAsFixed(2)}',
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
             ],
           ),
           const SizedBox(height: 6),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text('Abonado actualmente:', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
-              Text('\$${widget.payment.amountPaid.toStringAsFixed(2)}', style: TextStyle(fontWeight: FontWeight.bold, color: vc.paymentSuccessText)),
+              const Text(
+                'Abonado actualmente:',
+                style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
+              ),
+              Text(
+                '\$${widget.payment.amountPaid.toStringAsFixed(2)}',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: vc.paymentSuccessText,
+                ),
+              ),
             ],
           ),
           const Divider(height: 12),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text('Nuevo Saldo Restante:', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+              const Text(
+                'Nuevo Saldo Restante:',
+                style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+              ),
               Text(
                 '\$${newBalance.toStringAsFixed(2)}',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  color: newBalance > 0 ? vc.destructive : vc.paymentSuccessText,
+                  color: newBalance > 0
+                      ? vc.destructive
+                      : vc.paymentSuccessText,
                 ),
               ),
             ],

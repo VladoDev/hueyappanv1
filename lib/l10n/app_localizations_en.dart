@@ -546,4 +546,58 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get waterStatusForceMaintenance => 'Force: Maintenance';
+
+  @override
+  String get forgotPassword => 'Forgot your password?';
+
+  @override
+  String get forgotPasswordTitle => 'Reset Password';
+
+  @override
+  String get forgotPasswordSubtitle =>
+      'Enter your email and we\'ll send you a link to reset your password.';
+
+  @override
+  String get sendResetLink => 'Send Reset Link';
+
+  @override
+  String get resetEmailSent => 'A recovery link has been sent to your email.';
+
+  @override
+  String get backToLogin => 'Back to login';
+
+  @override
+  String get biometricLoginTitle => 'Quick Login';
+
+  @override
+  String get biometricLoginSubtitle => 'Tap to sign in';
+
+  @override
+  String get biometricLoginButton => 'Sign in with Biometrics';
+
+  @override
+  String get loginWithCredentials => 'Sign in with email and password';
+
+  @override
+  String get biometricSetupTitle => 'Quick Sign-In';
+
+  @override
+  String get biometricSetupBody =>
+      'Would you like to use biometrics for faster sign-in next time?';
+
+  @override
+  String get enableBiometric => 'Enable';
+
+  @override
+  String get notNow => 'Not now';
+
+  @override
+  String get biometricAuthReason => 'Authenticate to sign in';
+
+  @override
+  String get biometricAuthFailed => 'Biometric authentication failed.';
+
+  @override
+  String get biometricNotAvailable =>
+      'Biometrics are not available on this device.';
 }

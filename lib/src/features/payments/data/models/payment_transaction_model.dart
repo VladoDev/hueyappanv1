@@ -48,19 +48,19 @@ abstract class PaymentTransactionModel with _$PaymentTransactionModel {
 
 extension PaymentTransactionModelX on PaymentTransactionModel {
   PaymentTransactionEntity toEntity() => PaymentTransactionEntity(
-        id: id,
-        housingPaymentId: housingPaymentId,
-        amount: amount,
-        extraAmount: extraAmount,
-        type: type,
-        createdAt: createdAt,
-        createdBy: createdBy,
-        notes: notes,
-        lot: lot,
-        house: house,
-        conceptTitle: conceptTitle,
-        conceptId: conceptId,
-        isConfirmed: isConfirmed,
-        confirmedAt: confirmedAt,
-      );
+    id: id,
+    housingPaymentId: housingPaymentId,
+    amount: amount,
+    extraAmount: extraAmount,
+    type: type,
+    createdAt: createdAt,
+    createdBy: createdBy,
+    notes: notes,
+    lot: lot,
+    house: house,
+    conceptTitle: conceptTitle,
+    conceptId: conceptId,
+    isConfirmed: isConfirmed,
+    confirmedAt: confirmedAt,
+  );
 }

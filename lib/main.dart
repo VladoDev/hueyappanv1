@@ -39,11 +39,15 @@ class _MyAppState extends ConsumerState<MyApp> {
     screenshotCallback.addListener(() async {
       final user = FirebaseAuth.instance.currentUser;
       if (user != null) {
-        String userName = user.displayName ?? user.email ?? 'Nombre no disponible';
-        
+        String userName =
+            user.displayName ?? user.email ?? 'Nombre no disponible';
+
         try {
           // Fetch name from residents collection
-          final doc = await FirebaseFirestore.instance.collection('residents').doc(user.uid).get();
+          final doc = await FirebaseFirestore.instance
+              .collection('residents')
+              .doc(user.uid)
+              .get();
           if (doc.exists && doc.data() != null) {
             final data = doc.data()!;
             if (data.containsKey('name') && data['name'] != null) {
@@ -61,7 +65,7 @@ class _MyAppState extends ConsumerState<MyApp> {
           eventType: 'SCREENSHOT_TAKEN',
           timestamp: DateTime.now(),
         );
-        
+
         try {
           final repository = ref.read(securityEventsRepositoryProvider);
           await repository.logEvent(event);

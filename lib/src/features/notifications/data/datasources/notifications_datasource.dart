@@ -5,7 +5,7 @@ class NotificationsDatasource {
   final FirebaseFirestore _firestore;
 
   NotificationsDatasource({FirebaseFirestore? firestore})
-      : _firestore = firestore ?? FirebaseFirestore.instance;
+    : _firestore = firestore ?? FirebaseFirestore.instance;
 
   Stream<List<NotificationModel>> watchNotifications(String uid) {
     return _firestore
@@ -15,12 +15,12 @@ class NotificationsDatasource {
         .orderBy('createdAt', descending: true)
         .snapshots()
         .map((snapshot) {
-      return snapshot.docs.map((doc) {
-        final data = doc.data();
-        data['id'] = doc.id;
-        return NotificationModel.fromJson(data);
-      }).toList();
-    });
+          return snapshot.docs.map((doc) {
+            final data = doc.data();
+            data['id'] = doc.id;
+            return NotificationModel.fromJson(data);
+          }).toList();
+        });
   }
 
   Future<void> markAsRead(String uid, String notificationId) async {

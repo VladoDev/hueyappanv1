@@ -29,14 +29,46 @@ class ContactsDatabase extends _$ContactsDatabase {
         await m.createAll();
         await batch((b) {
           b.insertAll(contacts, [
-            ContactsCompanion.insert(name: 'Caseta de Vigilancia', phoneNumber: '+527351234567', category: 'Security'),
-            ContactsCompanion.insert(name: 'Administración', phoneNumber: '+527357654321', category: 'Admin'),
-            ContactsCompanion.insert(name: 'Mantenimiento General', phoneNumber: '+527359876543', category: 'Services'),
-            ContactsCompanion.insert(name: 'Bomberos Hueyapan', phoneNumber: '+527353520055', category: 'Emergency'),
-            ContactsCompanion.insert(name: 'Cruz Roja', phoneNumber: '+527353521212', category: 'Emergency'),
-            ContactsCompanion.insert(name: 'Policía Municipal', phoneNumber: '+527353520110', category: 'Emergency'),
-            ContactsCompanion.insert(name: 'Suministro de Agua (Pipas)', phoneNumber: '+527351112222', category: 'Services'),
-            ContactsCompanion.insert(name: 'Gas LP Convento', phoneNumber: '+527353334444', category: 'Services'),
+            ContactsCompanion.insert(
+              name: 'Caseta de Vigilancia',
+              phoneNumber: '+527351234567',
+              category: 'Security',
+            ),
+            ContactsCompanion.insert(
+              name: 'Administración',
+              phoneNumber: '+527357654321',
+              category: 'Admin',
+            ),
+            ContactsCompanion.insert(
+              name: 'Mantenimiento General',
+              phoneNumber: '+527359876543',
+              category: 'Services',
+            ),
+            ContactsCompanion.insert(
+              name: 'Bomberos Hueyapan',
+              phoneNumber: '+527353520055',
+              category: 'Emergency',
+            ),
+            ContactsCompanion.insert(
+              name: 'Cruz Roja',
+              phoneNumber: '+527353521212',
+              category: 'Emergency',
+            ),
+            ContactsCompanion.insert(
+              name: 'Policía Municipal',
+              phoneNumber: '+527353520110',
+              category: 'Emergency',
+            ),
+            ContactsCompanion.insert(
+              name: 'Suministro de Agua (Pipas)',
+              phoneNumber: '+527351112222',
+              category: 'Services',
+            ),
+            ContactsCompanion.insert(
+              name: 'Gas LP Convento',
+              phoneNumber: '+527353334444',
+              category: 'Services',
+            ),
           ]);
         });
       },

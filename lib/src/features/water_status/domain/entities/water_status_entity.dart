@@ -1,5 +1,6 @@
 class WaterStatusEntity {
-  final String status; // 'auto', 'maintenance', 'force_available', 'force_unavailable'
+  final String
+  status; // 'auto', 'maintenance', 'force_available', 'force_unavailable'
   final DateTime? updatedAt;
   final String? updatedBy;
 
@@ -24,13 +25,17 @@ class WaterStatusEntity {
     // Reference date where water was NO: June 13, 2026.
     final baseDate = DateTime(2026, 6, 13);
     final today = DateTime.now();
-    
+
     // Calculate difference in days using UTC to avoid timezone/daylight saving quirks
-    final baseDateUtc = DateTime.utc(baseDate.year, baseDate.month, baseDate.day);
+    final baseDateUtc = DateTime.utc(
+      baseDate.year,
+      baseDate.month,
+      baseDate.day,
+    );
     final todayUtc = DateTime.utc(today.year, today.month, today.day);
-    
+
     final differenceInDays = todayUtc.difference(baseDateUtc).inDays;
-    
+
     // June 13 (diff 0) -> NO
     // June 14 (diff 1) -> YES
     // June 15 (diff 2) -> NO

@@ -13,18 +13,13 @@ class PaymentsTabScreen extends ConsumerWidget {
     final user = authState.value;
 
     if (user == null) {
-      return const Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     if (user.isAdmin) {
       return AdminPaymentsWrapperScreen(lot: user.lot, house: user.house);
     } else {
-      return NeighborPaymentsView(lot: user.lot,
-        house: user.house);
+      return NeighborPaymentsView(lot: user.lot, house: user.house);
     }
   }
 }

@@ -22,8 +22,11 @@ class EmergencyState {
     bool? isPlayingAlarm,
   }) {
     return EmergencyState(
-      activeEmergency: clearActiveEmergency ? null : (activeEmergency ?? this.activeEmergency),
-      dismissedEmergencyIds: dismissedEmergencyIds ?? this.dismissedEmergencyIds,
+      activeEmergency: clearActiveEmergency
+          ? null
+          : (activeEmergency ?? this.activeEmergency),
+      dismissedEmergencyIds:
+          dismissedEmergencyIds ?? this.dismissedEmergencyIds,
       isPlayingAlarm: isPlayingAlarm ?? this.isPlayingAlarm,
     );
   }
@@ -60,7 +63,10 @@ class EmergencyNotifier extends Notifier<EmergencyState> {
 
       if (status != 'active') {
         _stopAlarm();
-        state = state.copyWith(clearActiveEmergency: true, isPlayingAlarm: false);
+        state = state.copyWith(
+          clearActiveEmergency: true,
+          isPlayingAlarm: false,
+        );
         return;
       }
 
@@ -72,16 +78,19 @@ class EmergencyNotifier extends Notifier<EmergencyState> {
       }
 
       final now = DateTime.now();
-      final isRecent = triggeredAt == null || now.difference(triggeredAt).inMinutes.abs() < 2;
+      final isRecent =
+          triggeredAt == null ||
+          now.difference(triggeredAt).inMinutes.abs() < 2;
 
       // Don't alert if we triggered it ourselves, or if it is already dismissed, or if it is old
-      final currentUid = ref.read(authFirebaseDatasourceProvider).currentUser?.uid;
+      final currentUid = ref
+          .read(authFirebaseDatasourceProvider)
+          .currentUser
+          ?.uid;
 
       if (triggeredBy != currentUid) {
         if (!state.dismissedEmergencyIds.contains(id) && isRecent) {
-          state = state.copyWith(
-            activeEmergency: emergency,
-          );
+          state = state.copyWith(activeEmergency: emergency);
           _startAlarm();
         }
       } else {
@@ -93,7 +102,8 @@ class EmergencyNotifier extends Notifier<EmergencyState> {
 
   void silenceAlarm(String id) {
     _stopAlarm();
-    final updatedDismissed = Set<String>.from(state.dismissedEmergencyIds)..add(id);
+    final updatedDismissed = Set<String>.from(state.dismissedEmergencyIds)
+      ..add(id);
     state = state.copyWith(
       dismissedEmergencyIds: updatedDismissed,
       isPlayingAlarm: false,
@@ -115,4 +125,6 @@ class EmergencyNotifier extends Notifier<EmergencyState> {
   }
 }
 
-final emergencyProvider = NotifierProvider<EmergencyNotifier, EmergencyState>(EmergencyNotifier.new);
+final emergencyProvider = NotifierProvider<EmergencyNotifier, EmergencyState>(
+  EmergencyNotifier.new,
+);

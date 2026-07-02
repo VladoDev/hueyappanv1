@@ -53,7 +53,9 @@ class _ContactsTabState extends ConsumerState<ContactsTab> {
           children: [
             const SizedBox(height: VecinalSpacing.xl),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: VecinalSpacing.xl),
+              padding: const EdgeInsets.symmetric(
+                horizontal: VecinalSpacing.xl,
+              ),
               child: _buildSearchBar(vc, l10n),
             ),
             const SizedBox(height: VecinalSpacing.md),
@@ -69,7 +71,8 @@ class _ContactsTabState extends ConsumerState<ContactsTab> {
   Widget _buildSearchBar(VecinalSemanticColors vc, AppLocalizations l10n) {
     return TextField(
       controller: _searchController,
-      onChanged: (val) => ref.read(contactsFilterProvider.notifier).setSearchQuery(val),
+      onChanged: (val) =>
+          ref.read(contactsFilterProvider.notifier).setSearchQuery(val),
       style: VecinalTextStyles.bodyMedium,
       decoration: InputDecoration(
         hintText: l10n.searchContacts,
@@ -86,7 +89,10 @@ class _ContactsTabState extends ConsumerState<ContactsTab> {
             : null,
         filled: true,
         fillColor: vc.surfaceSecondary,
-        contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: VecinalSpacing.md),
+        contentPadding: const EdgeInsets.symmetric(
+          vertical: 0,
+          horizontal: VecinalSpacing.md,
+        ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(VecinalRadius.lg),
           borderSide: BorderSide(color: vc.borderDefault),
@@ -132,12 +138,15 @@ class _ContactsTabState extends ConsumerState<ContactsTab> {
             vc: vc,
           ),
           ...['security', 'admin', 'emergency', 'services'].map((cat) {
-            final isSel = filter.categoryFilter?.toLowerCase() == cat.toLowerCase();
+            final isSel =
+                filter.categoryFilter?.toLowerCase() == cat.toLowerCase();
             return _buildChip(
               label: _getLocalizedCategoryName(l10n, cat),
               selected: isSel,
               onSelected: (_) {
-                ref.read(contactsFilterProvider.notifier).setCategoryFilter(cat);
+                ref
+                    .read(contactsFilterProvider.notifier)
+                    .setCategoryFilter(cat);
               },
               vc: vc,
             );
@@ -168,7 +177,9 @@ class _ContactsTabState extends ConsumerState<ContactsTab> {
         backgroundColor: vc.surfaceSecondary,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(VecinalRadius.md),
-          side: BorderSide(color: selected ? vc.primaryDefault : vc.borderDefault),
+          side: BorderSide(
+            color: selected ? vc.primaryDefault : vc.borderDefault,
+          ),
         ),
       ),
     );
@@ -191,7 +202,11 @@ class _ContactsTabState extends ConsumerState<ContactsTab> {
         }
         return ListView.builder(
           itemCount: contacts.length,
-          padding: const EdgeInsets.only(left: VecinalSpacing.xl, right: VecinalSpacing.xl, bottom: 100),
+          padding: const EdgeInsets.only(
+            left: VecinalSpacing.xl,
+            right: VecinalSpacing.xl,
+            bottom: 100,
+          ),
           clipBehavior: Clip.none,
           itemBuilder: (context, index) {
             return ContactListItem(contact: contacts[index]);

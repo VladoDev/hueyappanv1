@@ -8,11 +8,8 @@ import '../providers/payments_provider.dart';
 
 class AdminPaymentsView extends ConsumerWidget {
   final bool isEmbedded;
-  
-  const AdminPaymentsView({
-    super.key,
-    this.isEmbedded = false,
-  });
+
+  const AdminPaymentsView({super.key, this.isEmbedded = false});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -33,7 +30,9 @@ class AdminPaymentsView extends ConsumerWidget {
                   const SizedBox(height: 16),
                   Text(
                     'No hay conceptos de pago creados aún.',
-                    style: VecinalTextStyles.headlineSmall.copyWith(color: vc.textSecondary),
+                    style: VecinalTextStyles.headlineSmall.copyWith(
+                      color: vc.textSecondary,
+                    ),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 24),
@@ -44,8 +43,13 @@ class AdminPaymentsView extends ConsumerWidget {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: vc.primaryDefault,
                       foregroundColor: vc.textOnPrimary,
-                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(VecinalRadius.md)),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 12,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(VecinalRadius.md),
+                      ),
                     ),
                   ),
                 ],
@@ -154,12 +158,18 @@ class _ConceptCard extends ConsumerWidget {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text(l10n.deleteConcept, style: const TextStyle(fontWeight: FontWeight.bold)),
+            title: Text(
+              l10n.deleteConcept,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
             content: Text(l10n.deleteConfirm),
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),
-                child: Text(l10n.cancel, style: TextStyle(color: vc.textSecondary)),
+                child: Text(
+                  l10n.cancel,
+                  style: TextStyle(color: vc.textSecondary),
+                ),
               ),
               ElevatedButton(
                 onPressed: () async {
@@ -169,11 +179,16 @@ class _ConceptCard extends ConsumerWidget {
                       .deleteConcept(concept.id);
                   if (context.mounted && success) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Concepto eliminado con éxito')),
+                      const SnackBar(
+                        content: Text('Concepto eliminado con éxito'),
+                      ),
                     );
                   }
                 },
-                style: ElevatedButton.styleFrom(backgroundColor: vc.destructive, foregroundColor: vc.textOnPrimary),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: vc.destructive,
+                  foregroundColor: vc.textOnPrimary,
+                ),
                 child: Text(l10n.delete),
               ),
             ],
@@ -210,7 +225,10 @@ class _ConceptCard extends ConsumerWidget {
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
                       color: statusBgColor(concept.status),
                       borderRadius: BorderRadius.circular(VecinalRadius.xs),
@@ -237,7 +255,11 @@ class _ConceptCard extends ConsumerWidget {
                         value: 'edit',
                         child: Row(
                           children: [
-                            Icon(Icons.edit_outlined, size: 20, color: vc.textPrimary),
+                            Icon(
+                              Icons.edit_outlined,
+                              size: 20,
+                              color: vc.textPrimary,
+                            ),
                             const SizedBox(width: 8),
                             Text(l10n.editConcept),
                           ],
@@ -247,9 +269,16 @@ class _ConceptCard extends ConsumerWidget {
                         value: 'delete',
                         child: Row(
                           children: [
-                            Icon(Icons.delete_outline, size: 20, color: vc.destructive),
+                            Icon(
+                              Icons.delete_outline,
+                              size: 20,
+                              color: vc.destructive,
+                            ),
                             const SizedBox(width: 8),
-                            Text(l10n.deleteConcept, style: TextStyle(color: vc.destructive)),
+                            Text(
+                              l10n.deleteConcept,
+                              style: TextStyle(color: vc.destructive),
+                            ),
                           ],
                         ),
                       ),
@@ -257,13 +286,16 @@ class _ConceptCard extends ConsumerWidget {
                   ),
                 ],
               ),
-              if (concept.description != null && concept.description!.isNotEmpty) ...[
+              if (concept.description != null &&
+                  concept.description!.isNotEmpty) ...[
                 const SizedBox(height: 8),
                 Text(
                   concept.description!,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: VecinalTextStyles.bodyMedium.copyWith(color: vc.textSecondary),
+                  style: VecinalTextStyles.bodyMedium.copyWith(
+                    color: vc.textSecondary,
+                  ),
                 ),
               ],
               const SizedBox(height: 16),
@@ -275,19 +307,25 @@ class _ConceptCard extends ConsumerWidget {
                     children: [
                       Text(
                         '${l10n.conceptTotalCost}: \$${concept.totalAmount.toStringAsFixed(2)}',
-                        style: VecinalTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.w500),
+                        style: VecinalTextStyles.bodyMedium.copyWith(
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                       const SizedBox(height: 4),
                       Text(
                         '${l10n.amountPerHouseLabel}: \$${concept.amountPerUnit.toStringAsFixed(2)}',
-                        style: VecinalTextStyles.bodySmall.copyWith(color: vc.textHint),
+                        style: VecinalTextStyles.bodySmall.copyWith(
+                          color: vc.textHint,
+                        ),
                       ),
                     ],
                   ),
                   paymentsAsync.when(
                     data: (payments) {
                       final total = payments.length;
-                      final paid = payments.where((p) => p.paymentStatus == 'paid').length;
+                      final paid = payments
+                          .where((p) => p.paymentStatus == 'paid')
+                          .length;
                       final percent = total > 0 ? (paid / total) : 0.0;
 
                       return Column(
@@ -309,7 +347,9 @@ class _ConceptCard extends ConsumerWidget {
                               child: LinearProgressIndicator(
                                 value: percent,
                                 backgroundColor: vc.borderDefault,
-                                valueColor: AlwaysStoppedAnimation<Color>(vc.primaryDefault),
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  vc.primaryDefault,
+                                ),
                               ),
                             ),
                           ),
@@ -319,7 +359,9 @@ class _ConceptCard extends ConsumerWidget {
                     loading: () => const SizedBox(
                       width: 50,
                       height: 20,
-                      child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
+                      child: Center(
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      ),
                     ),
                     error: (err, stack) => const Text('Err'),
                   ),

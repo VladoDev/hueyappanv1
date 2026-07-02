@@ -249,6 +249,25 @@
   "waterStatusAuto": "Automático (1 día sí, 1 no)",
   "waterStatusForceAvailable": "Forzar: Disponible",
   "waterStatusForceUnavailable": "Forzar: Sin suministro",
-  "waterStatusForceMaintenance": "Forzar: Mantenimiento"
+  "waterStatusForceMaintenance": "Forzar: Mantenimiento",
+
+  "forgotPassword": "¿Olvidaste tu contraseña?",
+  "forgotPasswordTitle": "Recuperar Contraseña",
+  "forgotPasswordSubtitle": "Ingresa tu correo y te enviaremos un enlace para restablecer tu contraseña.",
+  "sendResetLink": "Enviar Enlace",
+  "resetEmailSent": "Se ha enviado un enlace de recuperación a tu correo.",
+  "backToLogin": "Volver al inicio de sesión",
+
+  "biometricLoginTitle": "Inicio Rápido",
+  "biometricLoginSubtitle": "Toca para iniciar sesión",
+  "biometricLoginButton": "Iniciar con Biométrico",
+  "loginWithCredentials": "Iniciar con usuario y contraseña",
+  "biometricSetupTitle": "Inicio de Sesión Rápido",
+  "biometricSetupBody": "¿Deseas usar tu biométrico para iniciar sesión más rápido la próxima vez?",
+  "enableBiometric": "Activar",
+  "notNow": "Ahora no",
+  "biometricAuthReason": "Autentícate para iniciar sesión",
+  "biometricAuthFailed": "La autenticación biométrica falló.",
+  "biometricNotAvailable": "Los biométricos no están disponibles en este dispositivo."
 
 }

@@ -9,9 +9,9 @@ class NotificationsRepositoryImpl implements NotificationsRepository {
 
   @override
   Stream<List<NotificationEntity>> watchNotifications(String uid) {
-    return _dataSource.watchNotifications(uid).map(
-          (models) => models.map((m) => m.toEntity()).toList(),
-        );
+    return _dataSource
+        .watchNotifications(uid)
+        .map((models) => models.map((m) => m.toEntity()).toList());
   }
 
   @override

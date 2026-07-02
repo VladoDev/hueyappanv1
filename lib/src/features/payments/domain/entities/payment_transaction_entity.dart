@@ -44,7 +44,8 @@ class PaymentTransactionEntity {
           createdAt == other.createdAt &&
           createdBy == other.createdBy &&
           notes == other.notes &&
-          lot == other.lot && house == other.house &&
+          lot == other.lot &&
+          house == other.house &&
           conceptTitle == other.conceptTitle &&
           conceptId == other.conceptId &&
           isConfirmed == other.isConfirmed &&
@@ -60,7 +61,8 @@ class PaymentTransactionEntity {
       createdAt.hashCode ^
       createdBy.hashCode ^
       notes.hashCode ^
-      lot.hashCode ^ house.hashCode ^
+      lot.hashCode ^
+      house.hashCode ^
       conceptTitle.hashCode ^
       conceptId.hashCode ^
       isConfirmed.hashCode ^

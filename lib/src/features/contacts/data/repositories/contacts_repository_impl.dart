@@ -35,15 +35,17 @@ class ContactsRepositoryImpl implements ContactsRepository {
       }
 
       if (categoryFilter != null && categoryFilter.isNotEmpty) {
-        expressions.add(tbl.category.lower().equals(categoryFilter.toLowerCase()));
+        expressions.add(
+          tbl.category.lower().equals(categoryFilter.toLowerCase()),
+        );
       }
 
       if (query != null && query.trim().isNotEmpty) {
         final term = '%${query.trim().toLowerCase()}%';
         expressions.add(
           tbl.name.lower().like(term) |
-          tbl.phoneNumber.lower().like(term) |
-          tbl.category.lower().like(term),
+              tbl.phoneNumber.lower().like(term) |
+              tbl.category.lower().like(term),
         );
       }
 
@@ -57,7 +59,8 @@ class ContactsRepositoryImpl implements ContactsRepository {
 
   void _applySorting(SimpleSelectStatement<$ContactsTable, Contact> statement) {
     statement.orderBy([
-      (tbl) => OrderingTerm(expression: tbl.isFavorite, mode: OrderingMode.desc),
+      (tbl) =>
+          OrderingTerm(expression: tbl.isFavorite, mode: OrderingMode.desc),
       (tbl) => OrderingTerm(expression: tbl.name, mode: OrderingMode.asc),
     ]);
   }

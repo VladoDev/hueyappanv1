@@ -249,6 +249,25 @@
   "waterStatusAuto": "Automatic (1 day yes, 1 no)",
   "waterStatusForceAvailable": "Force: Available",
   "waterStatusForceUnavailable": "Force: Unavailable",
-  "waterStatusForceMaintenance": "Force: Maintenance"
+  "waterStatusForceMaintenance": "Force: Maintenance",
+
+  "forgotPassword": "Forgot your password?",
+  "forgotPasswordTitle": "Reset Password",
+  "forgotPasswordSubtitle": "Enter your email and we'll send you a link to reset your password.",
+  "sendResetLink": "Send Reset Link",
+  "resetEmailSent": "A recovery link has been sent to your email.",
+  "backToLogin": "Back to login",
+
+  "biometricLoginTitle": "Quick Login",
+  "biometricLoginSubtitle": "Tap to sign in",
+  "biometricLoginButton": "Sign in with Biometrics",
+  "loginWithCredentials": "Sign in with email and password",
+  "biometricSetupTitle": "Quick Sign-In",
+  "biometricSetupBody": "Would you like to use biometrics for faster sign-in next time?",
+  "enableBiometric": "Enable",
+  "notNow": "Not now",
+  "biometricAuthReason": "Authenticate to sign in",
+  "biometricAuthFailed": "Biometric authentication failed.",
+  "biometricNotAvailable": "Biometrics are not available on this device."
 
 }

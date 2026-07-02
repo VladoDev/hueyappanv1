@@ -9,10 +9,7 @@ import '../providers/contacts_provider.dart';
 class ContactListItem extends ConsumerWidget {
   final ContactEntity contact;
 
-  const ContactListItem({
-    super.key,
-    required this.contact,
-  });
+  const ContactListItem({super.key, required this.contact});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -39,7 +36,9 @@ class ContactListItem extends ConsumerWidget {
           contact.name,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
-          style: VecinalTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.bold),
+          style: VecinalTextStyles.bodyMedium.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
         ),
         subtitle: _buildSubtitle(context, vc, categoryStyles),
         trailing: _buildActions(context, ref, vc),
@@ -62,7 +61,9 @@ class ContactListItem extends ConsumerWidget {
               contact.phoneNumber,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: VecinalTextStyles.bodySmall.copyWith(color: vc.textSecondary),
+              style: VecinalTextStyles.bodySmall.copyWith(
+                color: vc.textSecondary,
+              ),
             ),
           ),
           Padding(
@@ -87,7 +88,11 @@ class ContactListItem extends ConsumerWidget {
     );
   }
 
-  Widget _buildActions(BuildContext context, WidgetRef ref, VecinalSemanticColors vc) {
+  Widget _buildActions(
+    BuildContext context,
+    WidgetRef ref,
+    VecinalSemanticColors vc,
+  ) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -107,22 +112,33 @@ class ContactListItem extends ConsumerWidget {
   }
 
   void _toggleFavorite(WidgetRef ref) {
-    ref.read(toggleFavoriteUseCaseProvider).execute(contact.id, !contact.isFavorite);
-    ref.read(analyticsProvider).logEvent(
-      name: 'toggle_favorite_contact',
-      parameters: {
-        'contact_name': contact.name,
-        'is_favorite': !contact.isFavorite ? 1 : 0,
-      },
-    );
+    ref
+        .read(toggleFavoriteUseCaseProvider)
+        .execute(contact.id, !contact.isFavorite);
+    ref
+        .read(analyticsProvider)
+        .logEvent(
+          name: 'toggle_favorite_contact',
+          parameters: {
+            'contact_name': contact.name,
+            'is_favorite': !contact.isFavorite ? 1 : 0,
+          },
+        );
   }
 
-  void _showCallConfirmDialog(BuildContext context, WidgetRef ref, VecinalSemanticColors vc) {
+  void _showCallConfirmDialog(
+    BuildContext context,
+    WidgetRef ref,
+    VecinalSemanticColors vc,
+  ) {
     final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(l10n.callConfirmTitle, style: const TextStyle(fontWeight: FontWeight.bold)),
+        title: Text(
+          l10n.callConfirmTitle,
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
         content: Text(l10n.callConfirmBody(contact.name, contact.phoneNumber)),
         actions: [
           TextButton(
@@ -137,9 +153,14 @@ class ContactListItem extends ConsumerWidget {
             style: ElevatedButton.styleFrom(
               backgroundColor: vc.primaryDefault,
               foregroundColor: vc.textOnPrimary,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(VecinalRadius.md)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(VecinalRadius.md),
+              ),
             ),
-            child: Text(l10n.callAction, style: const TextStyle(fontWeight: FontWeight.bold)),
+            child: Text(
+              l10n.callAction,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
           ),
         ],
       ),
@@ -148,19 +169,21 @@ class ContactListItem extends ConsumerWidget {
 
   Future<void> _makeCall(BuildContext context, WidgetRef ref) async {
     final uri = Uri(scheme: 'tel', path: contact.phoneNumber);
-    await ref.read(analyticsProvider).logEvent(
-      name: 'call_contact',
-      parameters: {
-        'contact_name': contact.name,
-        'contact_phone': contact.phoneNumber,
-      },
-    );
+    await ref
+        .read(analyticsProvider)
+        .logEvent(
+          name: 'call_contact',
+          parameters: {
+            'contact_name': contact.name,
+            'contact_phone': contact.phoneNumber,
+          },
+        );
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri);
     } else if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Could not launch dialer')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Could not launch dialer')));
     }
   }
 
@@ -183,14 +206,30 @@ class ContactListItem extends ConsumerWidget {
   _CategoryStyle _getCategoryStyles(String category, VecinalSemanticColors vc) {
     switch (category.toLowerCase()) {
       case 'security':
-        return _CategoryStyle(icon: Icons.shield_outlined, bgColor: vc.noticeBg, textColor: vc.noticeText);
+        return _CategoryStyle(
+          icon: Icons.shield_outlined,
+          bgColor: vc.noticeBg,
+          textColor: vc.noticeText,
+        );
       case 'admin':
-        return _CategoryStyle(icon: Icons.admin_panel_settings_outlined, bgColor: vc.paymentBg, textColor: vc.paymentText);
+        return _CategoryStyle(
+          icon: Icons.admin_panel_settings_outlined,
+          bgColor: vc.paymentBg,
+          textColor: vc.paymentText,
+        );
       case 'emergency':
-        return _CategoryStyle(icon: Icons.warning_amber_rounded, bgColor: vc.emergencyBg, textColor: vc.emergencyText);
+        return _CategoryStyle(
+          icon: Icons.warning_amber_rounded,
+          bgColor: vc.emergencyBg,
+          textColor: vc.emergencyText,
+        );
       case 'services':
       default:
-        return _CategoryStyle(icon: Icons.build_outlined, bgColor: vc.ticketBg, textColor: vc.ticketText);
+        return _CategoryStyle(
+          icon: Icons.build_outlined,
+          bgColor: vc.ticketBg,
+          textColor: vc.ticketText,
+        );
     }
   }
 }

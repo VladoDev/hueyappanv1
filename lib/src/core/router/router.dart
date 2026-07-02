@@ -6,6 +6,7 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import '../../features/authentication/presentation/providers/auth_provider.dart';
 import '../../features/authentication/presentation/screens/login_screen.dart';
 import '../../features/authentication/presentation/screens/register_screen.dart';
+import '../../features/authentication/presentation/screens/forgot_password_screen.dart';
 import '../../features/authentication/presentation/screens/main_shell_screen.dart';
 import '../../features/authentication/presentation/widgets/home_tab.dart';
 import '../../features/authentication/presentation/widgets/announcements_tab.dart';
@@ -51,12 +52,13 @@ final routerProvider = Provider<GoRouter>((ref) {
       final user = authState.value;
       final isLoggingIn = state.matchedLocation == '/login';
       final isRegistering = state.matchedLocation == '/register';
+      final isForgotPassword = state.matchedLocation == '/forgot-password';
       final isForceUpdate = state.matchedLocation == '/force_update';
 
       // 0. Check for forced updates
       final appSettings = ref.read(appSettingsProvider).value;
       final packageInfo = ref.read(packageInfoProvider);
-      
+
       if (appSettings != null) {
         if (appSettings.isOutdated(packageInfo.version, Platform.isIOS)) {
           return '/force_update';
@@ -65,7 +67,8 @@ final routerProvider = Provider<GoRouter>((ref) {
 
       if (isForceUpdate) {
         // If we shouldn't be forcing an update anymore, redirect to login/home
-        if (appSettings != null && !appSettings.isOutdated(packageInfo.version, Platform.isIOS)) {
+        if (appSettings != null &&
+            !appSettings.isOutdated(packageInfo.version, Platform.isIOS)) {
           return '/login';
         }
         return null;
@@ -78,7 +81,9 @@ final routerProvider = Provider<GoRouter>((ref) {
 
       // 2. If Firebase Auth user is null, we are definitely logged out. Redirect to login.
       if (firebaseUser == null) {
-        return (isLoggingIn || isRegistering) ? null : '/login';
+        return (isLoggingIn || isRegistering || isForgotPassword)
+            ? null
+            : '/login';
       }
 
       // 3. If Firebase user is logged in but profile is still loading and we have no value, wait.
@@ -92,7 +97,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       }
 
       // 5. If fully logged in, redirect away from auth screens.
-      if (isLoggingIn || isRegistering) {
+      if (isLoggingIn || isRegistering || isForgotPassword) {
         return '/home';
       }
 
@@ -103,9 +108,10 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/force_update',
         builder: (context, state) => const ForceUpdateScreen(),
       ),
+      GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
       GoRoute(
-        path: '/login',
-        builder: (context, state) => const LoginScreen(),
+        path: '/forgot-password',
+        builder: (context, state) => const ForgotPasswordScreen(),
       ),
       GoRoute(
         path: '/register',
@@ -124,7 +130,11 @@ final routerProvider = Provider<GoRouter>((ref) {
                   builder: (context, ref, child) {
                     final user = ref.watch(authStateProvider).value;
                     if (user == null) return const SizedBox.shrink();
-                    return HomeTab(residentName: user.name, lot: user.lot, house: user.house);
+                    return HomeTab(
+                      residentName: user.name,
+                      lot: user.lot,
+                      house: user.house,
+                    );
                   },
                 ),
               ),
@@ -204,8 +214,6 @@ final routerProvider = Provider<GoRouter>((ref) {
           ),
         ],
       ),
-
     ],
   );
 });
-

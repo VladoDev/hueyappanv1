@@ -11,7 +11,7 @@ class LoginWithEmailUsecase {
     if (trimmedEmail.isEmpty) {
       throw ArgumentError('Email cannot be empty.');
     }
-    
+
     // Regular expression for basic email validation
     final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
     if (!emailRegex.hasMatch(trimmedEmail)) {

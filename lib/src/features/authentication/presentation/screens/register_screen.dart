@@ -16,7 +16,7 @@ class RegisterScreen extends ConsumerStatefulWidget {
 
 class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
-  
+
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _firstNameController = TextEditingController();
@@ -34,10 +34,11 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     }
     return ['A', 'B'];
   }
+
   final List<String> _residentTypes = ['Propietario', 'Inquilino'];
 
   bool _isPreAuthenticated = false;
-  
+
   final RecaptchaV2Controller recaptchaV2Controller = RecaptchaV2Controller();
   bool _isRecaptchaVerified = false;
 
@@ -79,7 +80,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         _selectedLot != null &&
         _selectedHouse != null &&
         _selectedResidentType != null) {
-      final success = await ref.read(authControllerProvider.notifier).register(
+      final success = await ref
+          .read(authControllerProvider.notifier)
+          .register(
             email: _emailController.text,
             password: _passwordController.text,
             firstName: _firstNameController.text,
@@ -89,7 +92,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             residentType: _selectedResidentType!,
             phone: _phoneController.text,
           );
-          
+
       if (!success && mounted) {
         // Error will be caught by ref.listen, but we can also log it here if we want
       }
@@ -119,7 +122,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             content: Text(errorMsg),
             backgroundColor: vc.destructive,
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(VecinalRadius.md)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(VecinalRadius.md),
+            ),
           ),
         );
       }
@@ -151,7 +156,12 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           const _BackgroundLayout(),
           Center(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.only(top: 100, left: 24, right: 24, bottom: 24),
+              padding: const EdgeInsets.only(
+                top: 100,
+                left: 24,
+                right: 24,
+                bottom: 24,
+              ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(VecinalRadius.xl),
                 child: BackdropFilter(
@@ -161,7 +171,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     decoration: BoxDecoration(
                       color: vc.surfaceCard.withValues(alpha: 0.85),
                       borderRadius: BorderRadius.circular(VecinalRadius.xl),
-                      border: Border.all(color: vc.surfaceCard.withValues(alpha: 0.4), width: 1.5),
+                      border: Border.all(
+                        color: vc.surfaceCard.withValues(alpha: 0.4),
+                        width: 1.5,
+                      ),
                     ),
                     child: Form(
                       key: _formKey,
@@ -204,7 +217,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
               labelText: l10n.firstNameLabel,
               prefixIcon: Icon(Icons.person_outline, color: vc.primaryDefault),
             ),
-            validator: (val) => val == null || val.trim().isEmpty ? l10n.requiredField : null,
+            validator: (val) =>
+                val == null || val.trim().isEmpty ? l10n.requiredField : null,
           ),
         ),
         const SizedBox(width: 12),
@@ -212,10 +226,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           child: TextFormField(
             controller: _lastNameController,
             enabled: !isLoading,
-            decoration: InputDecoration(
-              labelText: l10n.lastNameLabel,
-            ),
-            validator: (val) => val == null || val.trim().isEmpty ? l10n.requiredField : null,
+            decoration: InputDecoration(labelText: l10n.lastNameLabel),
+            validator: (val) =>
+                val == null || val.trim().isEmpty ? l10n.requiredField : null,
           ),
         ),
       ],
@@ -233,17 +246,25 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 value: _selectedLot,
                 decoration: InputDecoration(
                   labelText: l10n.lotLabel,
-                  prefixIcon: Icon(Icons.home_outlined, color: vc.primaryDefault),
+                  prefixIcon: Icon(
+                    Icons.home_outlined,
+                    color: vc.primaryDefault,
+                  ),
                 ),
-                items: _lots.map((l) => DropdownMenuItem(value: l, child: Text(l))).toList(),
-                onChanged: isLoading ? null : (val) {
-                  setState(() {
-                    _selectedLot = val;
-                    if (_selectedHouse != null && !_houses.contains(_selectedHouse)) {
-                      _selectedHouse = null;
-                    }
-                  });
-                },
+                items: _lots
+                    .map((l) => DropdownMenuItem(value: l, child: Text(l)))
+                    .toList(),
+                onChanged: isLoading
+                    ? null
+                    : (val) {
+                        setState(() {
+                          _selectedLot = val;
+                          if (_selectedHouse != null &&
+                              !_houses.contains(_selectedHouse)) {
+                            _selectedHouse = null;
+                          }
+                        });
+                      },
                 validator: (val) => val == null ? l10n.requiredField : null,
               ),
             ),
@@ -251,11 +272,13 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             Expanded(
               child: DropdownButtonFormField<String>(
                 value: _selectedHouse,
-                decoration: InputDecoration(
-                  labelText: l10n.houseLabel,
-                ),
-                items: _houses.map((h) => DropdownMenuItem(value: h, child: Text(h))).toList(),
-                onChanged: isLoading ? null : (val) => setState(() => _selectedHouse = val),
+                decoration: InputDecoration(labelText: l10n.houseLabel),
+                items: _houses
+                    .map((h) => DropdownMenuItem(value: h, child: Text(h)))
+                    .toList(),
+                onChanged: isLoading
+                    ? null
+                    : (val) => setState(() => _selectedHouse = val),
                 validator: (val) => val == null ? l10n.requiredField : null,
               ),
             ),
@@ -266,7 +289,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           initialValue: _selectedResidentType,
           decoration: InputDecoration(
             labelText: l10n.residentTypeLabel,
-            prefixIcon: Icon(Icons.assignment_ind_outlined, color: vc.primaryDefault),
+            prefixIcon: Icon(
+              Icons.assignment_ind_outlined,
+              color: vc.primaryDefault,
+            ),
           ),
           items: _residentTypes.map((t) {
             final String label;
@@ -277,7 +303,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             }
             return DropdownMenuItem(value: t, child: Text(label));
           }).toList(),
-          onChanged: isLoading ? null : (val) => setState(() => _selectedResidentType = val),
+          onChanged: isLoading
+              ? null
+              : (val) => setState(() => _selectedResidentType = val),
           validator: (val) => val == null ? l10n.requiredField : null,
         ),
       ],
@@ -294,11 +322,15 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           keyboardType: TextInputType.phone,
           decoration: InputDecoration(
             labelText: l10n.phoneLabel,
-            prefixIcon: Icon(Icons.phone_android_outlined, color: vc.primaryDefault),
+            prefixIcon: Icon(
+              Icons.phone_android_outlined,
+              color: vc.primaryDefault,
+            ),
           ),
           validator: (val) {
             if (val == null || val.isEmpty) return l10n.phoneRequired;
-            if (!RegExp(r'^\d{10}$').hasMatch(val)) return l10n.phoneLengthInvalid;
+            if (!RegExp(r'^\d{10}$').hasMatch(val))
+              return l10n.phoneLengthInvalid;
             return null;
           },
         ),
@@ -312,7 +344,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             prefixIcon: Icon(Icons.email_outlined, color: vc.primaryDefault),
           ),
           validator: (val) {
-            if (val == null || val.trim().isEmpty) return l10n.emailRequiredRegister;
+            if (val == null || val.trim().isEmpty)
+              return l10n.emailRequiredRegister;
             if (!val.contains('@')) return l10n.emailInvalidRegister;
             return null;
           },
@@ -327,7 +360,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             prefixIcon: Icon(Icons.lock_outline, color: vc.primaryDefault),
           ),
           validator: (val) {
-            if (val == null || val.isEmpty) return l10n.passwordRequiredRegister;
+            if (val == null || val.isEmpty)
+              return l10n.passwordRequiredRegister;
             if (val.length < 6) return l10n.passwordTooShortRegister;
             return null;
           },
@@ -368,18 +402,26 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         style: ElevatedButton.styleFrom(
           backgroundColor: vc.primaryDefault,
           foregroundColor: vc.textOnPrimary,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(VecinalRadius.md)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(VecinalRadius.md),
+          ),
           elevation: 0,
         ),
         child: isLoading
             ? SizedBox(
                 width: 24,
                 height: 24,
-                child: CircularProgressIndicator(strokeWidth: 2.5, color: vc.textOnPrimary),
+                child: CircularProgressIndicator(
+                  strokeWidth: 2.5,
+                  color: vc.textOnPrimary,
+                ),
               )
             : Text(
                 l10n.registerButton,
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
       ),
     );

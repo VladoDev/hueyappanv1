@@ -29,10 +29,10 @@ abstract class ConceptItemModel with _$ConceptItemModel {
 
 extension ConceptItemModelX on ConceptItemModel {
   ConceptItemEntity toEntity() => ConceptItemEntity(
-        id: id,
-        conceptId: conceptId,
-        label: label,
-        amount: amount,
-        order: order,
-      );
+    id: id,
+    conceptId: conceptId,
+    label: label,
+    amount: amount,
+    order: order,
+  );
 }

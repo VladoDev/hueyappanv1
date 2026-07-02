@@ -1123,6 +1123,108 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Force: Maintenance'**
   String get waterStatusForceMaintenance;
+
+  /// No description provided for @forgotPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Forgot your password?'**
+  String get forgotPassword;
+
+  /// No description provided for @forgotPasswordTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset Password'**
+  String get forgotPasswordTitle;
+
+  /// No description provided for @forgotPasswordSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your email and we\'ll send you a link to reset your password.'**
+  String get forgotPasswordSubtitle;
+
+  /// No description provided for @sendResetLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Send Reset Link'**
+  String get sendResetLink;
+
+  /// No description provided for @resetEmailSent.
+  ///
+  /// In en, this message translates to:
+  /// **'A recovery link has been sent to your email.'**
+  String get resetEmailSent;
+
+  /// No description provided for @backToLogin.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to login'**
+  String get backToLogin;
+
+  /// No description provided for @biometricLoginTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick Login'**
+  String get biometricLoginTitle;
+
+  /// No description provided for @biometricLoginSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to sign in'**
+  String get biometricLoginSubtitle;
+
+  /// No description provided for @biometricLoginButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in with Biometrics'**
+  String get biometricLoginButton;
+
+  /// No description provided for @loginWithCredentials.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in with email and password'**
+  String get loginWithCredentials;
+
+  /// No description provided for @biometricSetupTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick Sign-In'**
+  String get biometricSetupTitle;
+
+  /// No description provided for @biometricSetupBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Would you like to use biometrics for faster sign-in next time?'**
+  String get biometricSetupBody;
+
+  /// No description provided for @enableBiometric.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable'**
+  String get enableBiometric;
+
+  /// No description provided for @notNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Not now'**
+  String get notNow;
+
+  /// No description provided for @biometricAuthReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Authenticate to sign in'**
+  String get biometricAuthReason;
+
+  /// No description provided for @biometricAuthFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Biometric authentication failed.'**
+  String get biometricAuthFailed;
+
+  /// No description provided for @biometricNotAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Biometrics are not available on this device.'**
+  String get biometricNotAvailable;
 }
 
 class _AppLocalizationsDelegate

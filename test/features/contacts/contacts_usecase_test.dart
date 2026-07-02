@@ -33,10 +33,14 @@ class MockContactsRepository implements ContactsRepository {
       filtered = filtered.where((c) => c.isFavorite);
     }
     if (categoryFilter != null) {
-      filtered = filtered.where((c) => c.category.toLowerCase() == categoryFilter.toLowerCase());
+      filtered = filtered.where(
+        (c) => c.category.toLowerCase() == categoryFilter.toLowerCase(),
+      );
     }
     if (query != null && query.isNotEmpty) {
-      filtered = filtered.where((c) => c.name.toLowerCase().contains(query.toLowerCase()));
+      filtered = filtered.where(
+        (c) => c.name.toLowerCase().contains(query.toLowerCase()),
+      );
     }
     return Stream.value(filtered.toList());
   }

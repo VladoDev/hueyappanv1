@@ -57,9 +57,17 @@ class ProfileTab extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 12),
-          _buildInfoRow(l10n.housingUnitLabel, l10n.housingUnitValue(lot, house), vc),
+          _buildInfoRow(
+            l10n.housingUnitLabel,
+            l10n.housingUnitValue(lot, house),
+            vc,
+          ),
           _buildInfoRow(l10n.residentStatusLabel, status, vc),
-          _buildInfoRow(l10n.roleLabel, role == 'admin' ? l10n.roleAdmin : l10n.roleVecino, vc),
+          _buildInfoRow(
+            l10n.roleLabel,
+            role == 'admin' ? l10n.roleAdmin : l10n.roleVecino,
+            vc,
+          ),
           const SizedBox(height: 48),
           _buildSignOutButton(context, ref, controller.isLoading, vc),
         ],
@@ -87,14 +95,21 @@ class ProfileTab extends ConsumerWidget {
           const SizedBox(height: 4),
           Text(
             email,
-            style: VecinalTextStyles.bodyMedium.copyWith(color: vc.textSecondary),
+            style: VecinalTextStyles.bodyMedium.copyWith(
+              color: vc.textSecondary,
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildSignOutButton(BuildContext context, WidgetRef ref, bool isLoading, VecinalSemanticColors vc) {
+  Widget _buildSignOutButton(
+    BuildContext context,
+    WidgetRef ref,
+    bool isLoading,
+    VecinalSemanticColors vc,
+  ) {
     final l10n = AppLocalizations.of(context)!;
     return ElevatedButton.icon(
       onPressed: isLoading
@@ -117,7 +132,10 @@ class ProfileTab extends ConsumerWidget {
           ? SizedBox(
               width: 18,
               height: 18,
-              child: CircularProgressIndicator(strokeWidth: 2, color: vc.textOnPrimary),
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                color: vc.textOnPrimary,
+              ),
             )
           : const Icon(Icons.logout),
       label: Text(
@@ -128,7 +146,9 @@ class ProfileTab extends ConsumerWidget {
         backgroundColor: vc.destructive,
         foregroundColor: vc.textOnPrimary,
         padding: const EdgeInsets.symmetric(vertical: 16),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(VecinalRadius.md)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(VecinalRadius.md),
+        ),
         elevation: 0,
       ),
     );

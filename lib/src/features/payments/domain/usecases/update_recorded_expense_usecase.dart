@@ -5,10 +5,7 @@ class UpdateRecordedExpenseUsecase {
 
   UpdateRecordedExpenseUsecase(this._repository);
 
-  Future<void> execute({
-    required String conceptId,
-    required double expense,
-  }) {
+  Future<void> execute({required String conceptId, required double expense}) {
     return _repository.updateRecordedExpense(
       conceptId: conceptId,
       expense: expense,

@@ -5,7 +5,9 @@ import '../../data/datasources/water_status_firebase_datasource.dart';
 import '../../data/repositories/water_status_repository_impl.dart';
 import '../../../authentication/presentation/providers/auth_provider.dart';
 
-final waterStatusDatasourceProvider = Provider<WaterStatusFirebaseDatasource>((ref) {
+final waterStatusDatasourceProvider = Provider<WaterStatusFirebaseDatasource>((
+  ref,
+) {
   return WaterStatusFirebaseDatasource();
 });
 
@@ -19,7 +21,10 @@ final waterStatusProvider = StreamProvider<WaterStatusEntity>((ref) {
   return repository.watchWaterStatus();
 });
 
-final updateWaterStatusProvider = FutureProvider.family<void, String>((ref, status) async {
+final updateWaterStatusProvider = FutureProvider.family<void, String>((
+  ref,
+  status,
+) async {
   final repository = ref.watch(waterStatusRepositoryProvider);
   final currentUser = ref.read(authStateProvider).value;
   if (currentUser != null) {
