@@ -26,22 +26,25 @@ runner_target = project.targets.find { |t| t.name == 'Runner' }
 ['Debug', 'Release', 'Profile'].each do |base_name|
   ['development', 'production'].each do |flavor|
     new_name = "#{base_name}-#{flavor}"
-    unless runner_target.build_configurations.map(&:name).include?(new_name)
+    
+    config = runner_target.build_configurations.find { |c| c.name == new_name }
+    if config.nil?
       base_config = runner_target.build_configurations.find { |c| c.name == base_name }
-      new_config = project.new(Xcodeproj::Project::XCBuildConfiguration)
-      new_config.name = new_name
-      new_config.build_settings = base_config.build_settings.dup
-      new_config.base_configuration_reference = base_config.base_configuration_reference
-      
-      # Update Bundle Identifier for production
-      if flavor == 'production'
-        new_config.build_settings['PRODUCT_BUNDLE_IDENTIFIER'] = 'com.vlad.hueyappan'
-        new_config.build_settings['ASSETCATALOG_COMPILER_APPICON_NAME'] = 'AppIcon'
-      else
-        new_config.build_settings['PRODUCT_BUNDLE_IDENTIFIER'] = 'com.conventohueyapan.hueyappanv1'
-      end
-      
-      runner_target.build_configuration_list.build_configurations << new_config
+      config = project.new(Xcodeproj::Project::XCBuildConfiguration)
+      config.name = new_name
+      config.build_settings = base_config.build_settings.dup
+      config.base_configuration_reference = base_config.base_configuration_reference
+      runner_target.build_configuration_list.build_configurations << config
+    end
+    
+    # Update Bundle Identifier and FLUTTER_TARGET
+    if flavor == 'production'
+      config.build_settings['PRODUCT_BUNDLE_IDENTIFIER'] = 'com.vlad.hueyappan'
+      config.build_settings['ASSETCATALOG_COMPILER_APPICON_NAME'] = 'AppIcon'
+      config.build_settings['FLUTTER_TARGET'] = 'lib/main_production.dart'
+    else
+      config.build_settings['PRODUCT_BUNDLE_IDENTIFIER'] = 'com.conventohueyapan.hueyappanv1'
+      config.build_settings['FLUTTER_TARGET'] = 'lib/main_development.dart'
     end
   end
 end
