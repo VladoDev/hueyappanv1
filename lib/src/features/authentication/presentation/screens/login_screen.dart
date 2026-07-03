@@ -82,21 +82,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     final canUse = await biometricService.canCheckBiometrics();
     if (!canUse) return;
 
-    final storedCreds = await biometricService.getCredentials();
-    bool alreadyEnabled = await biometricService.isBiometricEnabled();
-
-    // If a different user logs in, clear previous biometric data to prompt anew
-    if (storedCreds != null && storedCreds.email != email) {
-      await biometricService.clearCredentials();
-      alreadyEnabled = false;
-    }
-
-    if (alreadyEnabled) {
-      // Update credentials silently (in case password changed for the SAME user)
-      await biometricService.saveCredentials(email, password);
-      return;
-    }
-
+    // Whenever a manual login occurs, we must wipe the previously stored
+    // biometric credentials (even if it's the same user) and prompt them anew.
+    await biometricService.clearCredentials();
+    
     if (!mounted) return;
 
     final l10n = AppLocalizations.of(context)!;
