@@ -76,8 +76,11 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<void> sendPasswordResetEmail(String email) async {
     try {
+      debugPrint('Repository: Llamando al datasource');
       await _dataSource.sendPasswordResetEmail(email);
+      debugPrint('Repository: Datasource completó la llamada exitosamente');
     } catch (e, stackTrace) {
+      debugPrint('Repository: Error en datasource: $e');
       await FirebaseCrashlytics.instance.recordError(
         e,
         stackTrace,

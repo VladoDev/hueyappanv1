@@ -1,11 +1,11 @@
-import 'dart:convert';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
-import 'package:http/http.dart' as http;
+
 import '../models/resident_model.dart';
 
 class AuthFirebaseDatasource {
@@ -35,8 +35,15 @@ class AuthFirebaseDatasource {
     return _auth.signInWithEmailAndPassword(email: email, password: password);
   }
 
-  Future<void> sendPasswordResetEmail(String email) {
-    return _auth.sendPasswordResetEmail(email: email);
+  Future<void> sendPasswordResetEmail(String email) async {
+    debugPrint('Datasource: Enviando petición a FirebaseAuth (sendPasswordResetEmail)');
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+      debugPrint('Datasource: FirebaseAuth aceptó la petición de reseteo');
+    } catch (e) {
+      debugPrint('Datasource: FirebaseAuth rechazó la petición con error: $e');
+      rethrow;
+    }
   }
 
   Future<UserCredential> createUserWithEmailAndPassword(

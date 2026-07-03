@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import '../repositories/auth_repository.dart';
 
 class SendPasswordResetUsecase {
@@ -6,6 +7,7 @@ class SendPasswordResetUsecase {
   SendPasswordResetUsecase(this._repository);
 
   Future<void> execute(String email) async {
+    debugPrint('Usecase: Validando email $email');
     final trimmedEmail = email.trim();
     if (trimmedEmail.isEmpty) {
       throw ArgumentError('Email cannot be empty.');
@@ -16,6 +18,7 @@ class SendPasswordResetUsecase {
       throw ArgumentError('Invalid email format.');
     }
 
+    debugPrint('Usecase: Email válido, llamando al repositorio');
     return _repository.sendPasswordResetEmail(trimmedEmail);
   }
 }

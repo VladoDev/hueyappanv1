@@ -1,4 +1,4 @@
-import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -9,7 +9,7 @@ import '../../features/authentication/presentation/screens/register_screen.dart'
 import '../../features/authentication/presentation/screens/forgot_password_screen.dart';
 import '../../features/authentication/presentation/screens/main_shell_screen.dart';
 import '../../features/authentication/presentation/widgets/home_tab.dart';
-import '../../features/authentication/presentation/widgets/announcements_tab.dart';
+
 import '../../features/payments/presentation/screens/payments_tab_screen.dart';
 import '../../features/payments/presentation/screens/concept_form_screen.dart';
 import '../../features/payments/presentation/screens/concept_detail_screen.dart';
@@ -20,15 +20,14 @@ import '../../features/notifications/presentation/screens/notifications_screen.d
 import '../../features/app_settings/presentation/screens/force_update_screen.dart';
 import '../../features/app_settings/presentation/providers/app_settings_provider.dart';
 import '../../features/app_settings/presentation/providers/package_info_provider.dart';
-import '../../features/app_settings/domain/entities/app_settings_entity.dart';
-import '../../features/app_settings/data/repositories/app_settings_repository_impl.dart';
+
 import 'dart:io';
 
 class RouterNotifier extends ChangeNotifier {
   RouterNotifier(Ref ref) {
-    ref.listen(authStateProvider, (_, __) => notifyListeners());
-    ref.listen(appSettingsProvider, (_, __) => notifyListeners());
-    ref.listen(firebaseUserProvider, (_, __) => notifyListeners());
+    ref.listen(authStateProvider, (previous, next) => notifyListeners());
+    ref.listen(appSettingsProvider, (previous, next) => notifyListeners());
+    ref.listen(firebaseUserProvider, (previous, next) => notifyListeners());
   }
 }
 

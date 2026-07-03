@@ -1,15 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
 import 'package:hueyappanv1/l10n/app_localizations.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'firebase_options.dart';
 import 'src/core/router/router.dart';
 import 'src/core/theme/vecinal_theme.dart';
-import 'package:package_info_plus/package_info_plus.dart';
-import 'src/features/app_settings/presentation/providers/package_info_provider.dart';
 import 'package:screenshot_callback/screenshot_callback.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';

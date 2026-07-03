@@ -30,9 +30,23 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
 
     setState(() => _isLoading = true);
 
+    debugPrint('UI: Iniciando reseteo de contraseña para ${_emailController.text}');
+    final email = _emailController.text.trim();
     final success = await ref
         .read(authControllerProvider.notifier)
-        .sendPasswordReset(_emailController.text.trim());
+        .sendPasswordReset(email);
+    debugPrint('UI: Resultado del reseteo: $success');
+
+    if (success) {
+      // Clear biometrics if the user is resetting the password for the stored account
+      final biometricService = ref.read(biometricServiceProvider);
+      final storedCreds = await biometricService.getCredentials();
+      if (storedCreds != null && storedCreds.email == email) {
+        await biometricService.clearCredentials();
+        ref.invalidate(biometricEnabledProvider);
+        ref.invalidate(hasStoredCredentialsProvider);
+      }
+    }
 
     if (!mounted) return;
     setState(() => _isLoading = false);

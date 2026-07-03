@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/foundation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../domain/entities/resident_entity.dart';
 import '../../domain/repositories/auth_repository.dart';
@@ -124,10 +125,13 @@ class AuthController extends Notifier<AsyncValue<ResidentEntity?>> {
   /// Send password reset email.
   Future<bool> sendPasswordReset(String email) async {
     try {
+      debugPrint('Provider: Llamando a sendPasswordResetUsecase con email $email');
       final usecase = ref.read(sendPasswordResetUsecaseProvider);
       await usecase.execute(email);
+      debugPrint('Provider: Reseteo de contraseña exitoso');
       return true;
     } catch (e, stack) {
+      debugPrint('Provider: Error en sendPasswordReset: $e');
       if (ref.mounted) {
         state = AsyncValue.error(e, stack);
       }
