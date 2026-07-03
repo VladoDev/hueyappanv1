@@ -268,6 +268,11 @@
   "notNow": "Not now",
   "biometricAuthReason": "Authenticate to sign in",
   "biometricAuthFailed": "Biometric authentication failed.",
-  "biometricNotAvailable": "Biometrics are not available on this device."
-
+  "biometricNotAvailable": "Biometrics are not available on this device.",
+  "enterPasswordForBiometrics": "To enable biometric login, please enter your password.",
+  "passwordPlaceholder": "Password",
+  "biometricsEnabled": "Biometrics enabled",
+  "biometricsDisabled": "Biometrics disabled",
+  "invalidPassword": "Invalid password",
+  "biometricToggle": "Biometric Sign-In"
 }

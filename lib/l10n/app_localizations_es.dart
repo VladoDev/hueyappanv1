@@ -603,4 +603,23 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get biometricNotAvailable =>
       'Los biométricos no están disponibles en este dispositivo.';
+
+  @override
+  String get enterPasswordForBiometrics =>
+      'Para activar el inicio de sesión con datos biométricos, por favor ingresa tu contraseña.';
+
+  @override
+  String get passwordPlaceholder => 'Contraseña';
+
+  @override
+  String get biometricsEnabled => 'Biométricos activados';
+
+  @override
+  String get biometricsDisabled => 'Biométricos desactivados';
+
+  @override
+  String get invalidPassword => 'Contraseña incorrecta';
+
+  @override
+  String get biometricToggle => 'Inicio de Sesión con Biométrico';
 }

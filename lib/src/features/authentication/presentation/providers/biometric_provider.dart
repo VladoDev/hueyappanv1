@@ -19,3 +19,21 @@ final biometricEnabledProvider = FutureProvider<bool>((ref) {
 final hasStoredCredentialsProvider = FutureProvider<bool>((ref) {
   return ref.watch(biometricServiceProvider).hasStoredCredentials();
 });
+
+/// Provider to temporarily hold credentials after registration for biometric prompt on Home
+class PendingBiometricSetupNotifier extends Notifier<({String email, String password})?> {
+  @override
+  ({String email, String password})? build() {
+    return null;
+  }
+  
+  void setCredentials(String email, String password) {
+    state = (email: email, password: password);
+  }
+
+  void clear() {
+    state = null;
+  }
+}
+
+final pendingBiometricSetupProvider = NotifierProvider<PendingBiometricSetupNotifier, ({String email, String password})?>(PendingBiometricSetupNotifier.new);

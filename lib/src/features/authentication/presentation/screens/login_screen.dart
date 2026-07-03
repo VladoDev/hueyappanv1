@@ -19,6 +19,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
+  bool _obscurePassword = true;
+
   /// When true, show the email/password form instead of biometric view.
   bool _showCredentialForm = false;
 
@@ -419,12 +421,23 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     return TextFormField(
       controller: _passwordController,
       enabled: !isLoading,
-      obscureText: true,
+      obscureText: _obscurePassword,
       style: TextStyle(color: vc.textPrimary, fontWeight: FontWeight.w500),
       decoration: InputDecoration(
         labelText: l10n.passwordLabel,
         labelStyle: TextStyle(color: vc.textSecondary),
         prefixIcon: Icon(Icons.lock_outline_rounded, color: vc.primaryDefault),
+        suffixIcon: IconButton(
+          icon: Icon(
+            _obscurePassword ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+            color: vc.textSecondary,
+          ),
+          onPressed: () {
+            setState(() {
+              _obscurePassword = !_obscurePassword;
+            });
+          },
+        ),
         filled: true,
         fillColor: vc.surfacePrimary.withValues(alpha: 0.7),
         border: OutlineInputBorder(

@@ -1225,6 +1225,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Biometrics are not available on this device.'**
   String get biometricNotAvailable;
+
+  /// No description provided for @enterPasswordForBiometrics.
+  ///
+  /// In en, this message translates to:
+  /// **'To enable biometric login, please enter your password.'**
+  String get enterPasswordForBiometrics;
+
+  /// No description provided for @passwordPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get passwordPlaceholder;
+
+  /// No description provided for @biometricsEnabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Biometrics enabled'**
+  String get biometricsEnabled;
+
+  /// No description provided for @biometricsDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Biometrics disabled'**
+  String get biometricsDisabled;
+
+  /// No description provided for @invalidPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid password'**
+  String get invalidPassword;
+
+  /// No description provided for @biometricToggle.
+  ///
+  /// In en, this message translates to:
+  /// **'Biometric Sign-In'**
+  String get biometricToggle;
 }
 
 class _AppLocalizationsDelegate

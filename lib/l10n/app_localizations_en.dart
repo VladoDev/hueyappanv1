@@ -600,4 +600,23 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get biometricNotAvailable =>
       'Biometrics are not available on this device.';
+
+  @override
+  String get enterPasswordForBiometrics =>
+      'To enable biometric login, please enter your password.';
+
+  @override
+  String get passwordPlaceholder => 'Password';
+
+  @override
+  String get biometricsEnabled => 'Biometrics enabled';
+
+  @override
+  String get biometricsDisabled => 'Biometrics disabled';
+
+  @override
+  String get invalidPassword => 'Invalid password';
+
+  @override
+  String get biometricToggle => 'Biometric Sign-In';
 }

@@ -9,13 +9,15 @@ import '../../../payments/domain/entities/payment_transaction_entity.dart';
 import '../../../payments/domain/entities/payment_concept_entity.dart';
 import '../../../payments/presentation/providers/payments_provider.dart';
 import '../../../water_status/presentation/widgets/water_status_icon.dart';
+import '../providers/biometric_provider.dart';
+import 'package:local_auth/local_auth.dart';
 
 final _recentEmergencyProvider =
     StreamProvider.autoDispose<Map<String, dynamic>?>((ref) {
       return ref.watch(authFirebaseDatasourceProvider).watchEmergencies();
     });
 
-class HomeTab extends ConsumerWidget {
+class HomeTab extends ConsumerStatefulWidget {
   final String residentName;
   final String lot;
   final String house;
@@ -28,7 +30,120 @@ class HomeTab extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<HomeTab> createState() => _HomeTabState();
+}
+
+class _HomeTabState extends ConsumerState<HomeTab> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkPendingBiometricSetup();
+    });
+  }
+
+  void _checkPendingBiometricSetup() async {
+    final pending = ref.read(pendingBiometricSetupProvider);
+    if (pending != null) {
+      // Clear it so it doesn't show again
+      ref.read(pendingBiometricSetupProvider.notifier).clear();
+      await _offerBiometricSetup(pending.email, pending.password);
+    }
+  }
+
+  Future<void> _offerBiometricSetup(String email, String password) async {
+    final biometricService = ref.read(biometricServiceProvider);
+    final canUse = await biometricService.canCheckBiometrics();
+    if (!canUse) return;
+
+    final alreadyEnabled = await biometricService.isBiometricEnabled();
+    if (alreadyEnabled) {
+      await biometricService.saveCredentials(email, password);
+      return;
+    }
+
+    if (!mounted) return;
+
+    final l10n = AppLocalizations.of(context)!;
+    final vc = context.vecinalColors;
+
+    final biometrics = await biometricService.getAvailableBiometrics();
+    final IconData biometricIcon = biometrics.contains(BiometricType.face)
+        ? Icons.face_rounded
+        : Icons.fingerprint_rounded;
+
+    if (!mounted) return;
+
+    final shouldEnable = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: vc.surfaceModal,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        icon: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: vc.primaryContainer,
+            shape: BoxShape.circle,
+          ),
+          child: Icon(biometricIcon, size: 40, color: vc.primaryDefault),
+        ),
+        title: Text(
+          l10n.biometricSetupTitle,
+          style: VecinalTextStyles.headlineMedium.copyWith(color: vc.textPrimary),
+        ),
+        content: Text(
+          l10n.biometricSetupBody,
+          style: VecinalTextStyles.bodyMedium.copyWith(color: vc.textSecondary),
+          textAlign: TextAlign.center,
+        ),
+        actionsAlignment: MainAxisAlignment.center,
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: Text(
+              l10n.notNow,
+              style: TextStyle(
+                color: vc.textSecondary,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          ElevatedButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: vc.primaryDefault,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              elevation: 0,
+            ),
+            child: Text(
+              l10n.enableBiometric,
+              style: const TextStyle(fontWeight: FontWeight.w700),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (shouldEnable == true) {
+      final authenticated = await biometricService.authenticate(
+        l10n.biometricAuthReason,
+      );
+      if (authenticated) {
+        await biometricService.saveCredentials(email, password);
+        await biometricService.setBiometricEnabled(true);
+        ref.invalidate(biometricEnabledProvider);
+        ref.invalidate(hasStoredCredentialsProvider);
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final vc = context.vecinalColors;
     final l10n = AppLocalizations.of(context)!;
 
@@ -83,7 +198,7 @@ class HomeTab extends ConsumerWidget {
               const SizedBox(height: 32),
               _buildFeatureCard(context, vc),
               const SizedBox(height: 24),
-              _RecentActivitySection(lot: lot, house: house, vc: vc),
+              _RecentActivitySection(lot: widget.lot, house: widget.house, vc: vc),
             ],
           ),
         ),
@@ -109,7 +224,7 @@ class HomeTab extends ConsumerWidget {
               ),
               const SizedBox(height: 4),
               Text(
-                residentName,
+                widget.residentName,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: VecinalTextStyles.headlineLarge.copyWith(
@@ -133,7 +248,7 @@ class HomeTab extends ConsumerWidget {
               Icon(Icons.home, size: 16, color: vc.onPrimaryContainer),
               const SizedBox(width: 4),
               Text(
-                l10n.housingUnitValue(lot, house),
+                l10n.housingUnitValue(widget.lot, widget.house),
                 style: VecinalTextStyles.labelSmall.copyWith(
                   fontWeight: FontWeight.bold,
                   color: vc.onPrimaryContainer,
@@ -312,8 +427,8 @@ class HomeTab extends ConsumerWidget {
                                   profile?.name ??
                                   currentUser.email ??
                                   'Vecino';
-                              final lotVal = profile?.lot ?? lot;
-                              final houseVal = profile?.house ?? house;
+                              final lotVal = profile?.lot ?? widget.lot;
+                              final houseVal = profile?.house ?? widget.house;
                               await datasource.triggerEmergencyAlarm(
                                 currentUser.uid,
                                 name,

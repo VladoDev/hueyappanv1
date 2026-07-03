@@ -174,6 +174,7 @@ class _PaymentRegisterDialogState extends ConsumerState<PaymentRegisterDialog> {
               TextFormField(
                 controller: _refController,
                 enabled: !isLoading,
+                textCapitalization: TextCapitalization.words,
                 decoration: InputDecoration(
                   labelText: l10n.referenceLabel,
                   prefixIcon: Icon(
@@ -187,6 +188,7 @@ class _PaymentRegisterDialogState extends ConsumerState<PaymentRegisterDialog> {
                 controller: _notesController,
                 enabled: !isLoading,
                 maxLines: 2,
+                textCapitalization: TextCapitalization.words,
                 decoration: InputDecoration(
                   labelText: l10n.notesLabel,
                   prefixIcon: Icon(

@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hueyappanv1/l10n/app_localizations.dart';
 import 'package:hueyappanv1/src/core/theme/vecinal_theme.dart';
 import '../providers/auth_provider.dart';
+import '../providers/biometric_provider.dart';
 import 'package:flutter_recaptcha_v2_compat/flutter_recaptcha_v2_compat.dart';
 
 class RegisterScreen extends ConsumerStatefulWidget {
@@ -22,6 +23,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
   final _phoneController = TextEditingController();
+
+  bool _obscurePassword = true;
 
   String? _selectedLot;
   String? _selectedHouse;
@@ -80,6 +83,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         _selectedLot != null &&
         _selectedHouse != null &&
         _selectedResidentType != null) {
+      final pendingNotifier = ref.read(pendingBiometricSetupProvider.notifier);
+
       final success = await ref
           .read(authControllerProvider.notifier)
           .register(
@@ -92,6 +97,13 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             residentType: _selectedResidentType!,
             phone: _phoneController.text,
           );
+
+      if (success) {
+        pendingNotifier.setCredentials(
+          _emailController.text,
+          _passwordController.text,
+        );
+      }
 
       if (!success && mounted) {
         // Error will be caught by ref.listen, but we can also log it here if we want
@@ -215,14 +227,16 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   InputDecoration _commonInputDecoration(
     String labelText,
     IconData? prefixIcon,
-    VecinalSemanticColors vc,
-  ) {
+    VecinalSemanticColors vc, {
+    Widget? suffixIcon,
+  }) {
     return InputDecoration(
       labelText: labelText,
       labelStyle: TextStyle(color: vc.textSecondary),
       prefixIcon: prefixIcon != null
           ? Icon(prefixIcon, color: vc.primaryDefault)
           : null,
+      suffixIcon: suffixIcon,
       filled: true,
       fillColor: vc.surfacePrimary.withValues(alpha: 0.7),
       border: OutlineInputBorder(
@@ -244,6 +258,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         TextFormField(
           controller: _firstNameController,
           enabled: !isLoading,
+          textCapitalization: TextCapitalization.words,
           style: TextStyle(color: vc.textPrimary, fontWeight: FontWeight.w500),
           decoration: _commonInputDecoration(
             l10n.firstNameLabel,
@@ -257,6 +272,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         TextFormField(
           controller: _lastNameController,
           enabled: !isLoading,
+          textCapitalization: TextCapitalization.words,
           style: TextStyle(color: vc.textPrimary, fontWeight: FontWeight.w500),
           decoration: _commonInputDecoration(
             l10n.lastNameLabel,
@@ -398,12 +414,25 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         TextFormField(
           controller: _passwordController,
           enabled: !isLoading && !_isPreAuthenticated,
-          obscureText: true,
+          obscureText: _obscurePassword,
           style: TextStyle(color: vc.textPrimary, fontWeight: FontWeight.w500),
           decoration: _commonInputDecoration(
             l10n.passwordLabel,
             Icons.lock_outline,
             vc,
+            suffixIcon: IconButton(
+              icon: Icon(
+                _obscurePassword
+                    ? Icons.visibility_off_outlined
+                    : Icons.visibility_outlined,
+                color: vc.textSecondary,
+              ),
+              onPressed: () {
+                setState(() {
+                  _obscurePassword = !_obscurePassword;
+                });
+              },
+            ),
           ),
           validator: (val) {
             if (val == null || val.isEmpty)
