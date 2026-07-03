@@ -15,7 +15,9 @@ class FakeFirebaseAnalytics extends Fake implements FirebaseAnalytics {
 }
 
 void main() {
-  testWidgets('ContactsTab renders title, filter chips, and search field', (WidgetTester tester) async {
+  testWidgets('ContactsTab renders title, filter chips, and search field', (
+    WidgetTester tester,
+  ) async {
     final testContacts = [
       const ContactEntity(
         id: 1,
@@ -29,7 +31,9 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          contactsStreamProvider.overrideWith((ref) => Stream.value(testContacts)),
+          contactsStreamProvider.overrideWith(
+            (ref) => Stream.value(testContacts),
+          ),
           analyticsProvider.overrideWithValue(FakeFirebaseAnalytics()),
         ],
         child: const MaterialApp(

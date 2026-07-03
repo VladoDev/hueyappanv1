@@ -20,18 +20,23 @@ class PaymentsRepositoryImpl implements PaymentsRepository {
 
   @override
   Stream<List<PaymentConceptEntity>> watchConcepts() {
-    return _dataSource.watchConcepts().map((list) =>
-        list.map((model) => model.toEntity()).toList());
+    return _dataSource.watchConcepts().map(
+      (list) => list.map((model) => model.toEntity()).toList(),
+    );
   }
 
   @override
   Stream<List<ConceptItemEntity>> watchConceptItems(String conceptId) {
-    return _dataSource.watchConceptItems(conceptId).map((list) =>
-        list.map((model) => model.toEntity()).toList());
+    return _dataSource
+        .watchConceptItems(conceptId)
+        .map((list) => list.map((model) => model.toEntity()).toList());
   }
 
   @override
-  Stream<List<HousingPaymentEntity>> watchNeighborPayments(String lot, String house) {
+  Stream<List<HousingPaymentEntity>> watchNeighborPayments(
+    String lot,
+    String house,
+  ) {
     return _dataSource.watchNeighborPayments(lot, house).map((list) {
       final entities = list.map((model) => model.toEntity()).toList();
       return _mergeHousingPayments(entities);
@@ -48,22 +53,28 @@ class PaymentsRepositoryImpl implements PaymentsRepository {
 
   @override
   Stream<List<PaymentTransactionEntity>> watchPaymentTransactions(
-      String housingPaymentId) {
-    return _dataSource.watchPaymentTransactions(housingPaymentId).map((list) =>
-        list.map((model) => model.toEntity()).toList());
+    String housingPaymentId,
+  ) {
+    return _dataSource
+        .watchPaymentTransactions(housingPaymentId)
+        .map((list) => list.map((model) => model.toEntity()).toList());
   }
 
   // ── Concept Creation & Management ──
 
   @override
   Future<void> createConcept(
-      PaymentConceptEntity concept, List<ConceptItemEntity> items) async {
+    PaymentConceptEntity concept,
+    List<ConceptItemEntity> items,
+  ) async {
     // 1. Fetch active residents
     final activeResidents = await _dataSource.getActiveResidents();
 
     // 2. Map concept and items to models
     final conceptModel = PaymentConceptModel.fromEntity(concept);
-    final itemModels = items.map((e) => ConceptItemModel.fromEntity(e)).toList();
+    final itemModels = items
+        .map((e) => ConceptItemModel.fromEntity(e))
+        .toList();
 
     // 3. Generate housing payment records for each unique housing unit
     final List<HousingPaymentModel> payments = [];
@@ -72,21 +83,26 @@ class PaymentsRepositoryImpl implements PaymentsRepository {
       if (uniqueHousingUnits.contains(resident.lot)) continue;
       uniqueHousingUnits.add(resident.lot);
 
-      final paymentId = FirebaseFirestore.instance.collection('housing_payments').doc().id;
-      payments.add(HousingPaymentModel(
-        id: paymentId,
-        conceptId: concept.id,
-        residentUid: resident.uid,
-        lot: resident.lot,
-        house: resident.house,
-        totalDue: concept.amountPerUnit,
-        amountPaid: 0.0,
-        balance: concept.amountPerUnit,
-        paymentStatus: 'pending',
-        extraAmount: 0.0,
-        paidAt: null,
-        notes: null,
-      ));
+      final paymentId = FirebaseFirestore.instance
+          .collection('housing_payments')
+          .doc()
+          .id;
+      payments.add(
+        HousingPaymentModel(
+          id: paymentId,
+          conceptId: concept.id,
+          residentUid: resident.uid,
+          lot: resident.lot,
+          house: resident.house,
+          totalDue: concept.amountPerUnit,
+          amountPaid: 0.0,
+          balance: concept.amountPerUnit,
+          paymentStatus: 'pending',
+          extraAmount: 0.0,
+          paidAt: null,
+          notes: null,
+        ),
+      );
     }
 
     // 4. Save batch to Firestore
@@ -102,7 +118,8 @@ class PaymentsRepositoryImpl implements PaymentsRepository {
       await _dataSource.sendPushNotification(
         serverKey,
         title: 'Nuevo Pago Pendiente 📋',
-        body: 'Se ha creado el concepto "${concept.title}" con un monto de \$${concept.amountPerUnit.toStringAsFixed(2)} por casa.',
+        body:
+            'Se ha creado el concepto "${concept.title}" con un monto de \$${concept.amountPerUnit.toStringAsFixed(2)} por casa.',
         topic: 'payments',
       );
     } catch (e) {
@@ -135,7 +152,9 @@ class PaymentsRepositoryImpl implements PaymentsRepository {
     String? notes,
   }) async {
     // 1. Fetch current payment details
-    final docRef = FirebaseFirestore.instance.collection('housing_payments').doc(housingPaymentId);
+    final docRef = FirebaseFirestore.instance
+        .collection('housing_payments')
+        .doc(housingPaymentId);
     final paymentDoc = await docRef.get();
     if (!paymentDoc.exists || paymentDoc.data() == null) {
       throw Exception('Registro de adeudo no encontrado.');
@@ -153,9 +172,7 @@ class PaymentsRepositoryImpl implements PaymentsRepository {
     }
 
     // Set hasPendingConfirmation to true, but do not update totals yet
-    final updatedModel = currentModel.copyWith(
-      hasPendingConfirmation: true,
-    );
+    final updatedModel = currentModel.copyWith(hasPendingConfirmation: true);
 
     // 3. Create the transaction record as unconfirmed
     final transactionId = docRef.collection('transactions').doc().id;
@@ -185,7 +202,7 @@ class PaymentsRepositoryImpl implements PaymentsRepository {
     // 5. Send push notification depending on who registered the payment
     try {
       final serverKey = await _dataSource.getFcmServerKey();
-      
+
       final List<String> targetTokens = [];
       String notificationBody = '';
       String notificationTitle = 'Confirmación de Pago Pendiente 💳';
@@ -193,20 +210,24 @@ class PaymentsRepositoryImpl implements PaymentsRepository {
       if (isAdmin) {
         // Admin registered it -> send to neighbors of that unit
         final activeResidents = await _dataSource.getActiveResidents();
-        final unitResidents = activeResidents.where((r) => r.lot == currentModel.lot && r.house == currentModel.house);
-        
+        final unitResidents = activeResidents.where(
+          (r) => r.lot == currentModel.lot && r.house == currentModel.house,
+        );
+
         for (final resident in unitResidents) {
           final t = await _dataSource.getResidentTokens(resident.uid);
           targetTokens.addAll(t);
         }
 
-        notificationBody = 'El administrador registró un pago por \$${amount.toStringAsFixed(2)} para el concepto "$conceptTitle". Por favor confírmalo para que se refleje en tu cuenta.';
+        notificationBody =
+            'El administrador registró un pago por \$${amount.toStringAsFixed(2)} para el concepto "$conceptTitle". Por favor confírmalo para que se refleje en tu cuenta.';
       } else {
         // Neighbor registered it -> send to admins
         final adminTokens = await _dataSource.getAdminTokens();
         targetTokens.addAll(adminTokens);
-        
-        notificationBody = 'El residente del Lote ${currentModel.lot}-${currentModel.house} ha reportado un pago por \$${amount.toStringAsFixed(2)} para el concepto "$conceptTitle". Por favor revísalo y confírmalo.';
+
+        notificationBody =
+            'El residente del Lote ${currentModel.lot}-${currentModel.house} ha reportado un pago por \$${amount.toStringAsFixed(2)} para el concepto "$conceptTitle". Por favor revísalo y confírmalo.';
       }
 
       if (targetTokens.isNotEmpty) {
@@ -227,7 +248,9 @@ class PaymentsRepositoryImpl implements PaymentsRepository {
     required String housingPaymentId,
     required String transactionId,
   }) async {
-    final docRef = FirebaseFirestore.instance.collection('housing_payments').doc(housingPaymentId);
+    final docRef = FirebaseFirestore.instance
+        .collection('housing_payments')
+        .doc(housingPaymentId);
     final paymentDoc = await docRef.get();
     if (!paymentDoc.exists || paymentDoc.data() == null) {
       throw Exception('Registro de adeudo no encontrado.');
@@ -314,7 +337,10 @@ class PaymentsRepositoryImpl implements PaymentsRepository {
     required String conceptId,
     required double expense,
   }) async {
-    final doc = await FirebaseFirestore.instance.collection('concepts').doc(conceptId).get();
+    final doc = await FirebaseFirestore.instance
+        .collection('concepts')
+        .doc(conceptId)
+        .get();
     if (!doc.exists || doc.data() == null) {
       throw Exception('Concepto no encontrado.');
     }
@@ -327,7 +353,9 @@ class PaymentsRepositoryImpl implements PaymentsRepository {
     await _dataSource.updateConcept(updatedModel);
   }
 
-  List<HousingPaymentEntity> _mergeHousingPayments(List<HousingPaymentEntity> list) {
+  List<HousingPaymentEntity> _mergeHousingPayments(
+    List<HousingPaymentEntity> list,
+  ) {
     final Map<String, List<HousingPaymentEntity>> grouped = {};
     for (final payment in list) {
       final key = '${payment.conceptId}_${payment.lot}_${payment.house}';
@@ -344,13 +372,19 @@ class PaymentsRepositoryImpl implements PaymentsRepository {
       } else {
         // Merge multiple payments for the same concept and housing unit (lote)
         final representative = payments.first;
-        
-        final double totalPaid = payments.fold<double>(0, (acc, p) => acc + p.amountPaid);
-        final double totalExtra = payments.fold<double>(0, (acc, p) => acc + p.extraAmount);
-        
+
+        final double totalPaid = payments.fold<double>(
+          0,
+          (acc, p) => acc + p.amountPaid,
+        );
+        final double totalExtra = payments.fold<double>(
+          0,
+          (acc, p) => acc + p.extraAmount,
+        );
+
         final double totalDue = representative.totalDue;
         final double balance = (totalDue - totalPaid).clamp(0.0, totalDue);
-        
+
         final String status;
         if (balance <= 0) {
           status = 'paid';
@@ -359,7 +393,7 @@ class PaymentsRepositoryImpl implements PaymentsRepository {
         } else {
           status = 'pending';
         }
-        
+
         DateTime? latestPaidAt;
         for (final p in payments) {
           if (p.paidAt != null) {
@@ -368,25 +402,33 @@ class PaymentsRepositoryImpl implements PaymentsRepository {
             }
           }
         }
-        
-        final notesList = payments.map((p) => p.notes).whereType<String>().where((n) => n.isNotEmpty).toList();
+
+        final notesList = payments
+            .map((p) => p.notes)
+            .whereType<String>()
+            .where((n) => n.isNotEmpty)
+            .toList();
         final notes = notesList.isNotEmpty ? notesList.join(' | ') : null;
 
-        mergedList.add(HousingPaymentEntity(
-          id: representative.id,
-          conceptId: representative.conceptId,
-          residentUid: representative.residentUid,
-          lot: representative.lot,
-          house: representative.house,
-          totalDue: totalDue,
-          amountPaid: totalPaid,
-          balance: balance,
-          paymentStatus: status,
-          extraAmount: totalExtra,
-          paidAt: latestPaidAt,
-          notes: notes,
-          hasPendingConfirmation: payments.any((p) => p.hasPendingConfirmation),
-        ));
+        mergedList.add(
+          HousingPaymentEntity(
+            id: representative.id,
+            conceptId: representative.conceptId,
+            residentUid: representative.residentUid,
+            lot: representative.lot,
+            house: representative.house,
+            totalDue: totalDue,
+            amountPaid: totalPaid,
+            balance: balance,
+            paymentStatus: status,
+            extraAmount: totalExtra,
+            paidAt: latestPaidAt,
+            notes: notes,
+            hasPendingConfirmation: payments.any(
+              (p) => p.hasPendingConfirmation,
+            ),
+          ),
+        );
       }
     });
 

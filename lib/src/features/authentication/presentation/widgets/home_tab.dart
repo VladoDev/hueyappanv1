@@ -9,12 +9,15 @@ import '../../../payments/domain/entities/payment_transaction_entity.dart';
 import '../../../payments/domain/entities/payment_concept_entity.dart';
 import '../../../payments/presentation/providers/payments_provider.dart';
 import '../../../water_status/presentation/widgets/water_status_icon.dart';
+import '../providers/biometric_provider.dart';
+import 'package:local_auth/local_auth.dart';
 
-final _recentEmergencyProvider = StreamProvider.autoDispose<Map<String, dynamic>?>((ref) {
-  return ref.watch(authFirebaseDatasourceProvider).watchEmergencies();
-});
+final _recentEmergencyProvider =
+    StreamProvider.autoDispose<Map<String, dynamic>?>((ref) {
+      return ref.watch(authFirebaseDatasourceProvider).watchEmergencies();
+    });
 
-class HomeTab extends ConsumerWidget {
+class HomeTab extends ConsumerStatefulWidget {
   final String residentName;
   final String lot;
   final String house;
@@ -27,7 +30,120 @@ class HomeTab extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<HomeTab> createState() => _HomeTabState();
+}
+
+class _HomeTabState extends ConsumerState<HomeTab> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkPendingBiometricSetup();
+    });
+  }
+
+  void _checkPendingBiometricSetup() async {
+    final pending = ref.read(pendingBiometricSetupProvider);
+    if (pending != null) {
+      // Clear it so it doesn't show again
+      ref.read(pendingBiometricSetupProvider.notifier).clear();
+      await _offerBiometricSetup(pending.email, pending.password);
+    }
+  }
+
+  Future<void> _offerBiometricSetup(String email, String password) async {
+    final biometricService = ref.read(biometricServiceProvider);
+    final canUse = await biometricService.canCheckBiometrics();
+    if (!canUse) return;
+
+    final alreadyEnabled = await biometricService.isBiometricEnabled();
+    if (alreadyEnabled) {
+      await biometricService.saveCredentials(email, password);
+      return;
+    }
+
+    if (!mounted) return;
+
+    final l10n = AppLocalizations.of(context)!;
+    final vc = context.vecinalColors;
+
+    final biometrics = await biometricService.getAvailableBiometrics();
+    final IconData biometricIcon = biometrics.contains(BiometricType.face)
+        ? Icons.face_rounded
+        : Icons.fingerprint_rounded;
+
+    if (!mounted) return;
+
+    final shouldEnable = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: vc.surfaceModal,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        icon: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: vc.primaryContainer,
+            shape: BoxShape.circle,
+          ),
+          child: Icon(biometricIcon, size: 40, color: vc.primaryDefault),
+        ),
+        title: Text(
+          l10n.biometricSetupTitle,
+          style: VecinalTextStyles.headlineMedium.copyWith(color: vc.textPrimary),
+        ),
+        content: Text(
+          l10n.biometricSetupBody,
+          style: VecinalTextStyles.bodyMedium.copyWith(color: vc.textSecondary),
+          textAlign: TextAlign.center,
+        ),
+        actionsAlignment: MainAxisAlignment.center,
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: Text(
+              l10n.notNow,
+              style: TextStyle(
+                color: vc.textSecondary,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          ElevatedButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: vc.primaryDefault,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              elevation: 0,
+            ),
+            child: Text(
+              l10n.enableBiometric,
+              style: const TextStyle(fontWeight: FontWeight.w700),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (shouldEnable == true) {
+      final authenticated = await biometricService.authenticate(
+        l10n.biometricAuthReason,
+      );
+      if (authenticated) {
+        await biometricService.saveCredentials(email, password);
+        await biometricService.setBiometricEnabled(true);
+        ref.invalidate(biometricEnabledProvider);
+        ref.invalidate(hasStoredCredentialsProvider);
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final vc = context.vecinalColors;
     final l10n = AppLocalizations.of(context)!;
 
@@ -61,7 +177,10 @@ class HomeTab extends ConsumerWidget {
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [vc.primaryContainer.withValues(alpha: 0.15), vc.surfaceTertiary],
+            colors: [
+              vc.primaryContainer.withValues(alpha: 0.15),
+              vc.surfaceTertiary,
+            ],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
@@ -79,7 +198,7 @@ class HomeTab extends ConsumerWidget {
               const SizedBox(height: 32),
               _buildFeatureCard(context, vc),
               const SizedBox(height: 24),
-              _RecentActivitySection(lot: lot, house: house, vc: vc),
+              _RecentActivitySection(lot: widget.lot, house: widget.house, vc: vc),
             ],
           ),
         ),
@@ -105,7 +224,7 @@ class HomeTab extends ConsumerWidget {
               ),
               const SizedBox(height: 4),
               Text(
-                residentName,
+                widget.residentName,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: VecinalTextStyles.headlineLarge.copyWith(
@@ -129,7 +248,7 @@ class HomeTab extends ConsumerWidget {
               Icon(Icons.home, size: 16, color: vc.onPrimaryContainer),
               const SizedBox(width: 4),
               Text(
-                l10n.housingUnitValue(lot, house),
+                l10n.housingUnitValue(widget.lot, widget.house),
                 style: VecinalTextStyles.labelSmall.copyWith(
                   fontWeight: FontWeight.bold,
                   color: vc.onPrimaryContainer,
@@ -146,7 +265,9 @@ class HomeTab extends ConsumerWidget {
     final l10n = AppLocalizations.of(context)!;
     return Card(
       elevation: 0,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(VecinalRadius.lg)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(VecinalRadius.lg),
+      ),
       color: vc.primaryDark,
       child: Padding(
         padding: const EdgeInsets.all(VecinalSpacing.xl),
@@ -188,31 +309,57 @@ class HomeTab extends ConsumerWidget {
     );
   }
 
-
-
-  void _showEmergencyDialog(BuildContext context, WidgetRef ref, VecinalSemanticColors vc) async {
+  void _showEmergencyDialog(
+    BuildContext context,
+    WidgetRef ref,
+    VecinalSemanticColors vc,
+  ) async {
     final l10n = AppLocalizations.of(context)!;
     final datasource = ref.read(authFirebaseDatasourceProvider);
     final currentUser = datasource.currentUser;
-    
+
     if (currentUser == null) return;
-    
+
     // Check if phone is verified or if user is an admin
     final profile = await datasource.getResidentProfile(currentUser.uid);
     if (profile == null) return;
-    
+
     if (profile.isPhoneVerified || profile.role == 'admin') {
       if (context.mounted) {
-        _showActiveEmergencyDialog(context, ref, vc, l10n, currentUser.uid, profile.name);
+        _showActiveEmergencyDialog(
+          context,
+          ref,
+          vc,
+          l10n,
+          currentUser.uid,
+          profile.name,
+        );
       }
     } else {
       if (context.mounted) {
-        _showOtpVerificationDialog(context, ref, vc, l10n, currentUser.uid, profile.name, profile.lot, profile.house, profile.phone ?? '');
+        _showOtpVerificationDialog(
+          context,
+          ref,
+          vc,
+          l10n,
+          currentUser.uid,
+          profile.name,
+          profile.lot,
+          profile.house,
+          profile.phone ?? '',
+        );
       }
     }
   }
 
-  void _showActiveEmergencyDialog(BuildContext context, WidgetRef ref, VecinalSemanticColors vc, AppLocalizations l10n, String uid, String name) {
+  void _showActiveEmergencyDialog(
+    BuildContext context,
+    WidgetRef ref,
+    VecinalSemanticColors vc,
+    AppLocalizations l10n,
+    String uid,
+    String name,
+  ) {
     bool isDialogLoading = false;
     showDialog(
       context: context,
@@ -223,11 +370,18 @@ class HomeTab extends ConsumerWidget {
             return AlertDialog(
               title: Row(
                 children: [
-                  Icon(Icons.warning_amber_rounded, color: vc.destructive, size: 28),
+                  Icon(
+                    Icons.warning_amber_rounded,
+                    color: vc.destructive,
+                    size: 28,
+                  ),
                   const SizedBox(width: 8),
                   Text(
                     l10n.emergencyAlertTitle,
-                    style: TextStyle(fontWeight: FontWeight.bold, color: vc.destructive),
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: vc.destructive,
+                    ),
                   ),
                 ],
               ),
@@ -247,7 +401,13 @@ class HomeTab extends ConsumerWidget {
                   : [
                       TextButton(
                         onPressed: () => Navigator.of(context).pop(),
-                        child: Text(l10n.cancel, style: TextStyle(color: vc.textSecondary, fontWeight: FontWeight.w600)),
+                        child: Text(
+                          l10n.cancel,
+                          style: TextStyle(
+                            color: vc.textSecondary,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
                       ),
                       ElevatedButton(
                         onPressed: () async {
@@ -256,38 +416,59 @@ class HomeTab extends ConsumerWidget {
                           });
 
                           try {
-                            final datasource = ref.read(authFirebaseDatasourceProvider);
+                            final datasource = ref.read(
+                              authFirebaseDatasourceProvider,
+                            );
                             final currentUser = datasource.currentUser;
                             if (currentUser != null) {
-                              final profile = await datasource.getResidentProfile(currentUser.uid);
-                              final name = profile?.name ?? currentUser.email ?? 'Vecino';
-                              final lotVal = profile?.lot ?? lot;
-                              final houseVal = profile?.house ?? house;
-                              await datasource.triggerEmergencyAlarm(currentUser.uid, name, lotVal, houseVal);
+                              final profile = await datasource
+                                  .getResidentProfile(currentUser.uid);
+                              final name =
+                                  profile?.name ??
+                                  currentUser.email ??
+                                  'Vecino';
+                              final lotVal = profile?.lot ?? widget.lot;
+                              final houseVal = profile?.house ?? widget.house;
+                              await datasource.triggerEmergencyAlarm(
+                                currentUser.uid,
+                                name,
+                                lotVal,
+                                houseVal,
+                              );
                             }
-                            
+
                             if (context.mounted) {
-                              Navigator.of(context).pop(); 
+                              Navigator.of(context).pop();
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Text(l10n.alarmActivatedSuccess),
                                   backgroundColor: vc.destructive,
                                   behavior: SnackBarBehavior.floating,
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(VecinalRadius.md)),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(
+                                      VecinalRadius.md,
+                                    ),
+                                  ),
                                 ),
                               );
                             }
                           } catch (e) {
                             if (context.mounted) {
                               setState(() {
-                                    isDialogLoading = false;
+                                isDialogLoading = false;
                               });
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
-                                  content: Text(l10n.alarmActivatedError(e.toString())),
+                                  content: Text(
+                                    l10n.alarmActivatedError(e.toString()),
+                                  ),
                                   backgroundColor: vc.surfacePrimary,
                                   behavior: SnackBarBehavior.floating,
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(VecinalRadius.md)),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(
+                                      VecinalRadius.md,
+                                    ),
+                                  ),
                                 ),
                               );
                             }
@@ -296,9 +477,16 @@ class HomeTab extends ConsumerWidget {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: vc.destructive,
                           foregroundColor: vc.textOnPrimary,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(VecinalRadius.md)),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(
+                              VecinalRadius.md,
+                            ),
+                          ),
                         ),
-                        child: Text(l10n.activateAlarm, style: const TextStyle(fontWeight: FontWeight.bold)),
+                        child: Text(
+                          l10n.activateAlarm,
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
                       ),
                     ],
             );
@@ -308,9 +496,17 @@ class HomeTab extends ConsumerWidget {
     );
   }
 
-
-
-  void _showOtpVerificationDialog(BuildContext context, WidgetRef ref, VecinalSemanticColors vc, AppLocalizations l10n, String uid, String name, String lot, String house, String phone) {
+  void _showOtpVerificationDialog(
+    BuildContext context,
+    WidgetRef ref,
+    VecinalSemanticColors vc,
+    AppLocalizations l10n,
+    String uid,
+    String name,
+    String lot,
+    String house,
+    String phone,
+  ) {
     bool isRequesting = false;
     bool isRequested = false;
     bool isVerifying = false;
@@ -325,7 +521,10 @@ class HomeTab extends ConsumerWidget {
             return AlertDialog(
               title: Text(
                 l10n.verifyPhoneRequiredTitle,
-                style: TextStyle(fontWeight: FontWeight.bold, color: vc.textPrimary),
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: vc.textPrimary,
+                ),
               ),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -350,8 +549,13 @@ class HomeTab extends ConsumerWidget {
               actions: [
                 if (!isRequested)
                   TextButton(
-                    onPressed: isRequesting ? null : () => Navigator.of(context).pop(),
-                    child: Text(l10n.cancel, style: TextStyle(color: vc.textSecondary)),
+                    onPressed: isRequesting
+                        ? null
+                        : () => Navigator.of(context).pop(),
+                    child: Text(
+                      l10n.cancel,
+                      style: TextStyle(color: vc.textSecondary),
+                    ),
                   ),
                 if (!isRequested)
                   ElevatedButton(
@@ -360,10 +564,20 @@ class HomeTab extends ConsumerWidget {
                         : () async {
                             setState(() => isRequesting = true);
                             try {
-                              await ref.read(authFirebaseDatasourceProvider).requestPhoneVerification(uid, phone, name, lot, house);
+                              await ref
+                                  .read(authFirebaseDatasourceProvider)
+                                  .requestPhoneVerification(
+                                    uid,
+                                    phone,
+                                    name,
+                                    lot,
+                                    house,
+                                  );
                               if (context.mounted) {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text(l10n.otpRequestedSuccess)),
+                                  SnackBar(
+                                    content: Text(l10n.otpRequestedSuccess),
+                                  ),
                                 );
                                 setState(() {
                                   isRequesting = false;
@@ -380,13 +594,22 @@ class HomeTab extends ConsumerWidget {
                             }
                           },
                     child: isRequesting
-                        ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
+                        ? const SizedBox(
+                            width: 16,
+                            height: 16,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
                         : Text(l10n.requestVerification),
                   ),
                 if (isRequested)
                   TextButton(
-                    onPressed: isVerifying ? null : () => Navigator.of(context).pop(),
-                    child: Text(l10n.cancel, style: TextStyle(color: vc.textSecondary)),
+                    onPressed: isVerifying
+                        ? null
+                        : () => Navigator.of(context).pop(),
+                    child: Text(
+                      l10n.cancel,
+                      style: TextStyle(color: vc.textSecondary),
+                    ),
                   ),
                 if (isRequested)
                   ElevatedButton(
@@ -395,10 +618,12 @@ class HomeTab extends ConsumerWidget {
                         : () async {
                             final otp = otpController.text.trim();
                             if (otp.isEmpty) return;
-                            
+
                             setState(() => isVerifying = true);
                             try {
-                              final success = await ref.read(authFirebaseDatasourceProvider).verifyPhoneOtp(uid, otp);
+                              final success = await ref
+                                  .read(authFirebaseDatasourceProvider)
+                                  .verifyPhoneOtp(uid, otp);
                               if (context.mounted) {
                                 if (success) {
                                   Navigator.of(context).pop();
@@ -428,7 +653,11 @@ class HomeTab extends ConsumerWidget {
                             }
                           },
                     child: isVerifying
-                        ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
+                        ? const SizedBox(
+                            width: 16,
+                            height: 16,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
                         : Text(l10n.verifyOtp),
                   ),
               ],
@@ -438,8 +667,6 @@ class HomeTab extends ConsumerWidget {
       },
     );
   }
-
-
 }
 
 class _RecentActivitySection extends ConsumerWidget {
@@ -456,9 +683,11 @@ class _RecentActivitySection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-    
+
     final emergencyAsync = ref.watch(_recentEmergencyProvider);
-    final transactionsAsync = ref.watch(neighborTransactionsStreamProvider((lot: lot, house: house)));
+    final transactionsAsync = ref.watch(
+      neighborTransactionsStreamProvider((lot: lot, house: house)),
+    );
     final conceptsAsync = ref.watch(conceptsStreamProvider);
 
     List<Widget> items = [];
@@ -473,16 +702,20 @@ class _RecentActivitySection extends ConsumerWidget {
         if (timestamp is Timestamp) {
           dt = timestamp.toDate();
         }
-        
-        final timeStr = dt != null ? '${dt.day}/${dt.month}/${dt.year} ${dt.hour}:${dt.minute.toString().padLeft(2, '0')}' : 'Recientemente';
-        
-        items.add(_ActivityItemWidget(
-          text: 'Alarma crítica: $name (Lote $eLot)',
-          time: timeStr,
-          icon: Icons.warning_rounded,
-          vc: vc,
-          iconColor: vc.destructive,
-        ));
+
+        final timeStr = dt != null
+            ? '${dt.day}/${dt.month}/${dt.year} ${dt.hour}:${dt.minute.toString().padLeft(2, '0')}'
+            : 'Recientemente';
+
+        items.add(
+          _ActivityItemWidget(
+            text: 'Alarma crítica: $name (Lote $eLot)',
+            time: timeStr,
+            icon: Icons.warning_rounded,
+            vc: vc,
+            iconColor: vc.destructive,
+          ),
+        );
       }
     });
 
@@ -491,33 +724,40 @@ class _RecentActivitySection extends ConsumerWidget {
       if (txs.isNotEmpty) {
         final latest = txs.first;
         final dt = latest.createdAt;
-        final timeStr = '${dt.day}/${dt.month}/${dt.year} ${dt.hour}:${dt.minute.toString().padLeft(2, '0')}';
-        
-        items.add(_ActivityItemWidget(
-          text: 'Realizaste un pago: ${latest.conceptTitle}',
-          time: timeStr,
-          icon: Icons.payment,
-          vc: vc,
-          iconColor: vc.primaryDefault,
-        ));
+        final timeStr =
+            '${dt.day}/${dt.month}/${dt.year} ${dt.hour}:${dt.minute.toString().padLeft(2, '0')}';
+
+        items.add(
+          _ActivityItemWidget(
+            text: 'Realizaste un pago: ${latest.conceptTitle}',
+            time: timeStr,
+            icon: Icons.payment,
+            vc: vc,
+            iconColor: vc.primaryDefault,
+          ),
+        );
       }
     });
 
     // 3. Latest Payment Concept
     conceptsAsync.whenData((concepts) {
       if (concepts.isNotEmpty) {
-        final sorted = List<PaymentConceptEntity>.from(concepts)..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+        final sorted = List<PaymentConceptEntity>.from(concepts)
+          ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
         final latest = sorted.first;
         final dt = latest.createdAt;
-        final timeStr = '${dt.day}/${dt.month}/${dt.year} ${dt.hour}:${dt.minute.toString().padLeft(2, '0')}';
-        
-        items.add(_ActivityItemWidget(
-          text: 'Nuevo concepto de pago: ${latest.title}',
-          time: timeStr,
-          icon: Icons.new_releases,
-          vc: vc,
-          iconColor: vc.noticeIcon,
-        ));
+        final timeStr =
+            '${dt.day}/${dt.month}/${dt.year} ${dt.hour}:${dt.minute.toString().padLeft(2, '0')}';
+
+        items.add(
+          _ActivityItemWidget(
+            text: 'Nuevo concepto de pago: ${latest.title}',
+            time: timeStr,
+            icon: Icons.new_releases,
+            vc: vc,
+            iconColor: vc.noticeIcon,
+          ),
+        );
       }
     });
 
@@ -575,7 +815,9 @@ class _ActivityItemWidget extends StatelessWidget {
         ),
         title: Text(
           text,
-          style: VecinalTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.w500),
+          style: VecinalTextStyles.bodyMedium.copyWith(
+            fontWeight: FontWeight.w500,
+          ),
         ),
         subtitle: Padding(
           padding: const EdgeInsets.only(top: 4.0),

@@ -548,4 +548,78 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get waterStatusForceMaintenance => 'Forzar: Mantenimiento';
+
+  @override
+  String get forgotPassword => '¿Olvidaste tu contraseña?';
+
+  @override
+  String get forgotPasswordTitle => 'Recuperar Contraseña';
+
+  @override
+  String get forgotPasswordSubtitle =>
+      'Ingresa tu correo y te enviaremos un enlace para restablecer tu contraseña.';
+
+  @override
+  String get sendResetLink => 'Enviar Enlace';
+
+  @override
+  String get resetEmailSent =>
+      'Se ha enviado un enlace de recuperación a tu correo.';
+
+  @override
+  String get backToLogin => 'Volver al inicio de sesión';
+
+  @override
+  String get biometricLoginTitle => 'Inicio Rápido';
+
+  @override
+  String get biometricLoginSubtitle => 'Toca para iniciar sesión';
+
+  @override
+  String get biometricLoginButton => 'Iniciar con Biométrico';
+
+  @override
+  String get loginWithCredentials => 'Iniciar con usuario y contraseña';
+
+  @override
+  String get biometricSetupTitle => 'Inicio de Sesión Rápido';
+
+  @override
+  String get biometricSetupBody =>
+      '¿Deseas usar tu biométrico para iniciar sesión más rápido la próxima vez?';
+
+  @override
+  String get enableBiometric => 'Activar';
+
+  @override
+  String get notNow => 'Ahora no';
+
+  @override
+  String get biometricAuthReason => 'Autentícate para iniciar sesión';
+
+  @override
+  String get biometricAuthFailed => 'La autenticación biométrica falló.';
+
+  @override
+  String get biometricNotAvailable =>
+      'Los biométricos no están disponibles en este dispositivo.';
+
+  @override
+  String get enterPasswordForBiometrics =>
+      'Para activar el inicio de sesión con datos biométricos, por favor ingresa tu contraseña.';
+
+  @override
+  String get passwordPlaceholder => 'Contraseña';
+
+  @override
+  String get biometricsEnabled => 'Biométricos activados';
+
+  @override
+  String get biometricsDisabled => 'Biométricos desactivados';
+
+  @override
+  String get invalidPassword => 'Contraseña incorrecta';
+
+  @override
+  String get biometricToggle => 'Inicio de Sesión con Biométrico';
 }

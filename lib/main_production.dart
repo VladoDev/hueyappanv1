@@ -12,14 +12,10 @@ import 'src/features/app_settings/presentation/providers/package_info_provider.d
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
-  try {
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
-  } catch (e) {
-    debugPrint('Firebase ya inicializado: $e');
-  }
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
   FlutterError.onError = (errorDetails) {
     FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
@@ -40,9 +36,7 @@ void main() async {
 
   runApp(
     ProviderScope(
-      overrides: [
-        packageInfoProvider.overrideWithValue(packageInfo),
-      ],
+      overrides: [packageInfoProvider.overrideWithValue(packageInfo)],
       child: const MyApp(),
     ),
   );

@@ -48,7 +48,13 @@ class AnnouncementsTab extends StatelessWidget {
     );
   }
 
-  Widget _buildNewsCard(String title, String body, String date, String author, VecinalSemanticColors vc) {
+  Widget _buildNewsCard(
+    String title,
+    String body,
+    String date,
+    String author,
+    VecinalSemanticColors vc,
+  ) {
     return Card(
       color: vc.surfaceCard,
       shape: RoundedRectangleBorder(
@@ -71,7 +77,10 @@ class AnnouncementsTab extends StatelessWidget {
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: vc.noticeBg,
                     borderRadius: BorderRadius.circular(VecinalRadius.sm),

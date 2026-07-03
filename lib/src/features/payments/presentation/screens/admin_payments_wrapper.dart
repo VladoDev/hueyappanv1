@@ -17,10 +17,13 @@ class AdminPaymentsWrapperScreen extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<AdminPaymentsWrapperScreen> createState() => _AdminPaymentsWrapperScreenState();
+  ConsumerState<AdminPaymentsWrapperScreen> createState() =>
+      _AdminPaymentsWrapperScreenState();
 }
 
-class _AdminPaymentsWrapperScreenState extends ConsumerState<AdminPaymentsWrapperScreen> with SingleTickerProviderStateMixin {
+class _AdminPaymentsWrapperScreenState
+    extends ConsumerState<AdminPaymentsWrapperScreen>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   @override

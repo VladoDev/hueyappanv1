@@ -40,15 +40,15 @@ abstract class PaymentConceptModel with _$PaymentConceptModel {
 
 extension PaymentConceptModelX on PaymentConceptModel {
   PaymentConceptEntity toEntity() => PaymentConceptEntity(
-        id: id,
-        title: title,
-        description: description,
-        totalAmount: totalAmount,
-        totalUnits: totalUnits,
-        amountPerUnit: amountPerUnit,
-        status: status,
-        createdAt: createdAt,
-        updatedAt: updatedAt,
-        recordedExpense: recordedExpense,
-      );
+    id: id,
+    title: title,
+    description: description,
+    totalAmount: totalAmount,
+    totalUnits: totalUnits,
+    amountPerUnit: amountPerUnit,
+    status: status,
+    createdAt: createdAt,
+    updatedAt: updatedAt,
+    recordedExpense: recordedExpense,
+  );
 }

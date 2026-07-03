@@ -26,13 +26,17 @@ class ContactsFilterState {
   }) {
     return ContactsFilterState(
       searchQuery: searchQuery ?? this.searchQuery,
-      categoryFilter: clearCategoryFilter ? null : (categoryFilter ?? this.categoryFilter),
+      categoryFilter: clearCategoryFilter
+          ? null
+          : (categoryFilter ?? this.categoryFilter),
       favoritesOnly: favoritesOnly ?? this.favoritesOnly,
     );
   }
 }
 
-final analyticsProvider = Provider<FirebaseAnalytics>((ref) => FirebaseAnalytics.instance);
+final analyticsProvider = Provider<FirebaseAnalytics>(
+  (ref) => FirebaseAnalytics.instance,
+);
 
 final contactsDatabaseProvider = Provider<ContactsDatabase>((ref) {
   final db = ContactsDatabase();
@@ -79,9 +83,10 @@ class ContactsFilterNotifier extends Notifier<ContactsFilterState> {
   }
 }
 
-final contactsFilterProvider = NotifierProvider<ContactsFilterNotifier, ContactsFilterState>(
-  ContactsFilterNotifier.new,
-);
+final contactsFilterProvider =
+    NotifierProvider<ContactsFilterNotifier, ContactsFilterState>(
+      ContactsFilterNotifier.new,
+    );
 
 final contactsStreamProvider = StreamProvider<List<ContactEntity>>((ref) {
   final filter = ref.watch(contactsFilterProvider);

@@ -71,5 +71,7 @@
 		<string>fetch</string>
 		<string>remote-notification</string>
 	</array>
+	<key>NSFaceIDUsageDescription</key>
+	<string>Usamos Face ID para un inicio de sesión rápido y seguro</string>
 </dict>
 </plist>

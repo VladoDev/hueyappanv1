@@ -23,30 +23,30 @@ abstract class ResidentModel with _$ResidentModel {
       _$ResidentModelFromJson(json);
 
   factory ResidentModel.fromEntity(ResidentEntity entity) => ResidentModel(
-        uid: entity.uid,
-        name: entity.name,
-        email: entity.email,
-        lot: entity.lot,
-        house: entity.house,
-        accountStatus: entity.accountStatus,
-        phone: entity.phone,
-        residentType: entity.residentType,
-        role: entity.role,
-        isPhoneVerified: entity.isPhoneVerified,
-      );
+    uid: entity.uid,
+    name: entity.name,
+    email: entity.email,
+    lot: entity.lot,
+    house: entity.house,
+    accountStatus: entity.accountStatus,
+    phone: entity.phone,
+    residentType: entity.residentType,
+    role: entity.role,
+    isPhoneVerified: entity.isPhoneVerified,
+  );
 }
 
 extension ResidentModelX on ResidentModel {
   ResidentEntity toEntity() => ResidentEntity(
-        uid: uid,
-        name: name,
-        email: email,
-        lot: lot,
-        house: house,
-        accountStatus: accountStatus,
-        phone: phone,
-        residentType: residentType,
-        role: role,
-        isPhoneVerified: isPhoneVerified,
-      );
+    uid: uid,
+    name: name,
+    email: email,
+    lot: lot,
+    house: house,
+    accountStatus: accountStatus,
+    phone: phone,
+    residentType: residentType,
+    role: role,
+    isPhoneVerified: isPhoneVerified,
+  );
 }

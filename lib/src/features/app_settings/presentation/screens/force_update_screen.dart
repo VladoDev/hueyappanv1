@@ -78,7 +78,10 @@ class ForceUpdateScreen extends ConsumerWidget {
                         elevation: 0,
                       ),
                       onPressed: settings != null
-                          ? () => _launchStore(settings.storeUrlAndroid, settings.storeUrlIos)
+                          ? () => _launchStore(
+                              settings.storeUrlAndroid,
+                              settings.storeUrlIos,
+                            )
                           : null,
                       child: const Text(
                         'Actualizar en la Tienda',

@@ -27,8 +27,10 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<ResidentEntity> loginWithEmail(String email, String password) async {
     try {
-      final userCredential =
-          await _dataSource.signInWithEmailAndPassword(email, password);
+      final userCredential = await _dataSource.signInWithEmailAndPassword(
+        email,
+        password,
+      );
       final uid = userCredential.user!.uid;
 
       final profile = await _dataSource.getResidentProfile(uid);
@@ -49,10 +51,16 @@ class AuthRepositoryImpl implements AuthRepository {
         name: 'user_role',
         value: profile.role,
       );
-      
+
       await FirebaseCrashlytics.instance.setUserIdentifier(uid);
-      await FirebaseCrashlytics.instance.setCustomKey('resident_type', profile.residentType ?? 'unknown');
-      await FirebaseCrashlytics.instance.setCustomKey('user_role', profile.role);
+      await FirebaseCrashlytics.instance.setCustomKey(
+        'resident_type',
+        profile.residentType ?? 'unknown',
+      );
+      await FirebaseCrashlytics.instance.setCustomKey(
+        'user_role',
+        profile.role,
+      );
 
       return profile.toEntity();
     } catch (e, stackTrace) {
@@ -60,6 +68,23 @@ class AuthRepositoryImpl implements AuthRepository {
         e,
         stackTrace,
         reason: 'Login failed',
+      );
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> sendPasswordResetEmail(String email) async {
+    try {
+      debugPrint('Repository: Llamando al datasource');
+      await _dataSource.sendPasswordResetEmail(email);
+      debugPrint('Repository: Datasource completó la llamada exitosamente');
+    } catch (e, stackTrace) {
+      debugPrint('Repository: Error en datasource: $e');
+      await FirebaseCrashlytics.instance.recordError(
+        e,
+        stackTrace,
+        reason: 'Password reset email failed',
       );
       rethrow;
     }
@@ -76,11 +101,11 @@ class AuthRepositoryImpl implements AuthRepository {
           // Ignore token unregister errors to ensure we always sign out locally
         }
       }
-      
+
       // Clear identifiers in Analytics and Crashlytics
       await FirebaseAnalytics.instance.setUserId(id: null);
       await FirebaseCrashlytics.instance.setUserIdentifier('');
-      
+
       await _dataSource.signOut();
     } catch (e, stackTrace) {
       await FirebaseCrashlytics.instance.recordError(
@@ -118,7 +143,10 @@ class AuthRepositoryImpl implements AuthRepository {
       if (existingUser != null) {
         uid = existingUser.uid;
       } else {
-        final credential = await _dataSource.createUserWithEmailAndPassword(email, password);
+        final credential = await _dataSource.createUserWithEmailAndPassword(
+          email,
+          password,
+        );
         uid = credential.user!.uid;
       }
 
@@ -142,13 +170,16 @@ class AuthRepositoryImpl implements AuthRepository {
 
       // 5. Initialize payment records for existing concepts
       try {
-        final conceptsSnapshot = await FirebaseFirestore.instance.collection('concepts').get();
+        final conceptsSnapshot = await FirebaseFirestore.instance
+            .collection('concepts')
+            .get();
         for (final doc in conceptsSnapshot.docs) {
           final conceptId = doc.id;
           final status = doc.data()['status'] as String? ?? 'active';
           if (status == 'cancelled') continue;
 
-          final amountPerUnit = (doc.data()['amountPerUnit'] as num?)?.toDouble() ?? 0.0;
+          final amountPerUnit =
+              (doc.data()['amountPerUnit'] as num?)?.toDouble() ?? 0.0;
 
           // Check if a payment record already exists for this housing unit
           final paymentQuery = await FirebaseFirestore.instance
@@ -160,26 +191,34 @@ class AuthRepositoryImpl implements AuthRepository {
               .get();
 
           if (paymentQuery.docs.isEmpty) {
-            final paymentId = FirebaseFirestore.instance.collection('housing_payments').doc().id;
-            await FirebaseFirestore.instance.collection('housing_payments').doc(paymentId).set({
-              'id': paymentId,
-              'conceptId': conceptId,
-              'residentUid': uid,
-              'lot': lot,
-              'house': house,
-              'totalDue': amountPerUnit,
-              'amountPaid': 0.0,
-              'balance': amountPerUnit,
-              'paymentStatus': 'pending',
-              'extraAmount': 0.0,
-              'paidAt': null,
-              'notes': null,
-            });
+            final paymentId = FirebaseFirestore.instance
+                .collection('housing_payments')
+                .doc()
+                .id;
+            await FirebaseFirestore.instance
+                .collection('housing_payments')
+                .doc(paymentId)
+                .set({
+                  'id': paymentId,
+                  'conceptId': conceptId,
+                  'residentUid': uid,
+                  'lot': lot,
+                  'house': house,
+                  'totalDue': amountPerUnit,
+                  'amountPaid': 0.0,
+                  'balance': amountPerUnit,
+                  'paymentStatus': 'pending',
+                  'extraAmount': 0.0,
+                  'paidAt': null,
+                  'notes': null,
+                });
           }
         }
       } catch (e) {
         // Non-blocking error initialization log
-        debugPrint('⚠️ Error initializing existing concept payments for new resident: $e');
+        debugPrint(
+          '⚠️ Error initializing existing concept payments for new resident: $e',
+        );
       }
 
       // 6. Register device token for push notifications
@@ -198,7 +237,10 @@ class AuthRepositoryImpl implements AuthRepository {
       );
 
       await FirebaseCrashlytics.instance.setUserIdentifier(uid);
-      await FirebaseCrashlytics.instance.setCustomKey('resident_type', residentType);
+      await FirebaseCrashlytics.instance.setCustomKey(
+        'resident_type',
+        residentType,
+      );
       await FirebaseCrashlytics.instance.setCustomKey('user_role', 'vecino');
 
       return profile.toEntity();

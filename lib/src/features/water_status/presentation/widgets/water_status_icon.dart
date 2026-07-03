@@ -30,38 +30,74 @@ class WaterStatusIconWidget extends ConsumerWidget {
           iconColor = const Color(0xFFB06000); // Dark orange
           icon = Icons.warning_amber_rounded;
           statusTitle = "Mantenimiento Reportado";
-          funnyMessage = "Se ha reportado mantenimiento en la red de agua. El servicio externo se encuentra temporalmente interrumpido.";
+          funnyMessage =
+              "Se ha reportado mantenimiento en la red de agua. El servicio externo se encuentra temporalmente interrumpido.";
         } else if (isAvailable) {
           iconColor = const Color(0xFF0D47A1); // Dark blue
           icon = Icons.water_drop;
           statusTitle = "Suministro Activo";
-          funnyMessage = "De acuerdo al calendario municipal, el suministro de agua se encuentra activo el día de hoy. Le invitamos a hacer un uso responsable.";
+          funnyMessage =
+              "De acuerdo al calendario municipal, el suministro de agua se encuentra activo el día de hoy. Le invitamos a hacer un uso responsable.";
         } else {
           iconColor = const Color(0xFF616161); // Dark grey
           icon = Icons.format_color_reset;
           statusTitle = "Sin Suministro Programado";
-          funnyMessage = "De acuerdo al calendario municipal, hoy no hay suministro de agua programado en la zona. Le sugerimos administrar sus reservas.";
+          funnyMessage =
+              "De acuerdo al calendario municipal, hoy no hay suministro de agua programado en la zona. Le sugerimos administrar sus reservas.";
         }
 
         return IconButton(
           icon: Icon(icon, color: iconColor),
           onPressed: () {
-            _showPopupMessage(context, statusTitle, funnyMessage, icon, iconColor, vc);
+            _showPopupMessage(
+              context,
+              statusTitle,
+              funnyMessage,
+              icon,
+              iconColor,
+              vc,
+            );
           },
-          onLongPress: isAdmin ? () => _showAdminOptions(context, ref, waterStatus.status, l10n, vc) : null,
+          onLongPress: isAdmin
+              ? () => _showAdminOptions(
+                  context,
+                  ref,
+                  waterStatus.status,
+                  l10n,
+                  vc,
+                )
+              : null,
         );
       },
-      loading: () => const SizedBox(width: 48, child: Center(child: SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2)))),
+      loading: () => const SizedBox(
+        width: 48,
+        child: Center(
+          child: SizedBox(
+            width: 16,
+            height: 16,
+            child: CircularProgressIndicator(strokeWidth: 2),
+          ),
+        ),
+      ),
       error: (_, __) => const SizedBox(width: 48),
     );
   }
 
-  void _showPopupMessage(BuildContext context, String title, String message, IconData icon, Color color, VecinalSemanticColors vc) {
+  void _showPopupMessage(
+    BuildContext context,
+    String title,
+    String message,
+    IconData icon,
+    Color color,
+    VecinalSemanticColors vc,
+  ) {
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
           backgroundColor: vc.surfacePrimary,
           title: Row(
             children: [
@@ -104,7 +140,13 @@ class WaterStatusIconWidget extends ConsumerWidget {
     );
   }
 
-  void _showAdminOptions(BuildContext context, WidgetRef ref, String currentStatus, AppLocalizations l10n, VecinalSemanticColors vc) {
+  void _showAdminOptions(
+    BuildContext context,
+    WidgetRef ref,
+    String currentStatus,
+    AppLocalizations l10n,
+    VecinalSemanticColors vc,
+  ) {
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -126,10 +168,38 @@ class WaterStatusIconWidget extends ConsumerWidget {
                   ),
                 ),
                 const SizedBox(height: 16),
-                _buildOption(context, ref, 'auto', l10n.waterStatusAuto, currentStatus, vc),
-                _buildOption(context, ref, 'force_available', l10n.waterStatusForceAvailable, currentStatus, vc),
-                _buildOption(context, ref, 'force_unavailable', l10n.waterStatusForceUnavailable, currentStatus, vc),
-                _buildOption(context, ref, 'maintenance', l10n.waterStatusForceMaintenance, currentStatus, vc),
+                _buildOption(
+                  context,
+                  ref,
+                  'auto',
+                  l10n.waterStatusAuto,
+                  currentStatus,
+                  vc,
+                ),
+                _buildOption(
+                  context,
+                  ref,
+                  'force_available',
+                  l10n.waterStatusForceAvailable,
+                  currentStatus,
+                  vc,
+                ),
+                _buildOption(
+                  context,
+                  ref,
+                  'force_unavailable',
+                  l10n.waterStatusForceUnavailable,
+                  currentStatus,
+                  vc,
+                ),
+                _buildOption(
+                  context,
+                  ref,
+                  'maintenance',
+                  l10n.waterStatusForceMaintenance,
+                  currentStatus,
+                  vc,
+                ),
               ],
             ),
           ),
@@ -138,7 +208,14 @@ class WaterStatusIconWidget extends ConsumerWidget {
     );
   }
 
-  Widget _buildOption(BuildContext context, WidgetRef ref, String status, String label, String currentStatus, VecinalSemanticColors vc) {
+  Widget _buildOption(
+    BuildContext context,
+    WidgetRef ref,
+    String status,
+    String label,
+    String currentStatus,
+    VecinalSemanticColors vc,
+  ) {
     final isSelected = status == currentStatus;
     return ListTile(
       title: Text(

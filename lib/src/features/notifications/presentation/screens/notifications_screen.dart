@@ -23,42 +23,51 @@ class NotificationsScreen extends ConsumerWidget {
         automaticallyImplyLeading: false,
         title: Text(
           l10n.navNotifications,
-          style: TextStyle(color: vc.primaryDefault, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            color: vc.primaryDefault,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
       body: notificationsAsync.when(
-              data: (notifications) {
-                if (notifications.isEmpty) {
-                  return Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.notifications_off_outlined, size: 64, color: vc.textSecondary.withValues(alpha: 0.5)),
-                        const SizedBox(height: 16),
-                        Text(
-                          l10n.noNotifications,
-                          style: TextStyle(color: vc.textSecondary, fontSize: 16),
-                        ),
-                      ],
-                    ),
-                  );
-                }
-
-                return ListView.builder(
-                  padding: const EdgeInsets.all(16),
-                  itemCount: notifications.length,
-                  itemBuilder: (context, index) {
-                    final notification = notifications[index];
-                    return _NotificationCard(notification: notification);
-                  },
-                );
-              },
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (e, st) => Center(
-                child: Text('Error al cargar notificaciones: $e', style: TextStyle(color: vc.destructive)),
+        data: (notifications) {
+          if (notifications.isEmpty) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.notifications_off_outlined,
+                    size: 64,
+                    color: vc.textSecondary.withValues(alpha: 0.5),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    l10n.noNotifications,
+                    style: TextStyle(color: vc.textSecondary, fontSize: 16),
+                  ),
+                ],
               ),
-            ),
+            );
+          }
 
+          return ListView.builder(
+            padding: const EdgeInsets.all(16),
+            itemCount: notifications.length,
+            itemBuilder: (context, index) {
+              final notification = notifications[index];
+              return _NotificationCard(notification: notification);
+            },
+          );
+        },
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (e, st) => Center(
+          child: Text(
+            'Error al cargar notificaciones: $e',
+            style: TextStyle(color: vc.destructive),
+          ),
+        ),
+      ),
     );
   }
 }
@@ -72,17 +81,21 @@ class _NotificationCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final vc = context.vecinalColors;
     final l10n = AppLocalizations.of(context)!;
-    
+
     final dateFormat = DateFormat('dd/MM/yyyy HH:mm');
     final dateStr = dateFormat.format(notification.createdAt);
 
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-        color: notification.isRead ? vc.surfaceCard.withValues(alpha: 0.7) : vc.surfaceCard.withValues(alpha: 0.95),
+        color: notification.isRead
+            ? vc.surfaceCard.withValues(alpha: 0.7)
+            : vc.surfaceCard.withValues(alpha: 0.95),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: notification.isRead ? vc.surfaceCard.withValues(alpha: 0.3) : vc.primaryDefault.withValues(alpha: 0.5),
+          color: notification.isRead
+              ? vc.surfaceCard.withValues(alpha: 0.3)
+              : vc.primaryDefault.withValues(alpha: 0.5),
           width: 1.5,
         ),
         boxShadow: [
@@ -102,7 +115,9 @@ class _NotificationCard extends ConsumerWidget {
             if (!notification.isRead) {
               final user = ref.read(firebaseUserProvider).value;
               if (user != null) {
-                ref.read(notificationsRepositoryProvider).markAsRead(user.uid, notification.id);
+                ref
+                    .read(notificationsRepositoryProvider)
+                    .markAsRead(user.uid, notification.id);
               }
             }
 
@@ -117,10 +132,16 @@ class _NotificationCard extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 CircleAvatar(
-                  backgroundColor: notification.type == 'otp_verification' ? vc.primaryContainer : vc.surfaceSecondary,
+                  backgroundColor: notification.type == 'otp_verification'
+                      ? vc.primaryContainer
+                      : vc.surfaceSecondary,
                   child: Icon(
-                    notification.type == 'otp_verification' ? Icons.security : Icons.notifications,
-                    color: notification.type == 'otp_verification' ? vc.primaryDefault : vc.textSecondary,
+                    notification.type == 'otp_verification'
+                        ? Icons.security
+                        : Icons.notifications,
+                    color: notification.type == 'otp_verification'
+                        ? vc.primaryDefault
+                        : vc.textSecondary,
                   ),
                 ),
                 const SizedBox(width: 16),
@@ -135,7 +156,9 @@ class _NotificationCard extends ConsumerWidget {
                             child: Text(
                               notification.title,
                               style: TextStyle(
-                                fontWeight: notification.isRead ? FontWeight.w500 : FontWeight.bold,
+                                fontWeight: notification.isRead
+                                    ? FontWeight.w500
+                                    : FontWeight.bold,
                                 color: vc.textPrimary,
                                 fontSize: 16,
                               ),
@@ -160,7 +183,10 @@ class _NotificationCard extends ConsumerWidget {
                       const SizedBox(height: 8),
                       Text(
                         dateStr,
-                        style: TextStyle(color: vc.textSecondary.withValues(alpha: 0.7), fontSize: 12),
+                        style: TextStyle(
+                          color: vc.textSecondary.withValues(alpha: 0.7),
+                          fontSize: 12,
+                        ),
                       ),
                     ],
                   ),
@@ -173,10 +199,17 @@ class _NotificationCard extends ConsumerWidget {
     );
   }
 
-  void _showOtpDialog(BuildContext context, NotificationEntity notification, VecinalSemanticColors vc, AppLocalizations l10n) {
+  void _showOtpDialog(
+    BuildContext context,
+    NotificationEntity notification,
+    VecinalSemanticColors vc,
+    AppLocalizations l10n,
+  ) {
     final name = notification.data['requesterName'] ?? '';
-    final lot = notification.data['requesterLot'] ?? notification.data['lot'] ?? '';
-    final house = notification.data['requesterHouse'] ?? notification.data['house'] ?? '';
+    final lot =
+        notification.data['requesterLot'] ?? notification.data['lot'] ?? '';
+    final house =
+        notification.data['requesterHouse'] ?? notification.data['house'] ?? '';
     final otp = notification.data['otp'] ?? '';
     final phone = notification.data['requesterPhone'] ?? '';
 
@@ -189,12 +222,27 @@ class _NotificationCard extends ConsumerWidget {
       context: context,
       builder: (context) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          titlePadding: const EdgeInsets.only(left: 24, right: 24, top: 24, bottom: 16),
-          contentPadding: const EdgeInsets.only(left: 24, right: 24, bottom: 24),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          titlePadding: const EdgeInsets.only(
+            left: 24,
+            right: 24,
+            top: 24,
+            bottom: 16,
+          ),
+          contentPadding: const EdgeInsets.only(
+            left: 24,
+            right: 24,
+            bottom: 24,
+          ),
           title: Text(
             l10n.adminOtpDialogTitle(name),
-            style: TextStyle(color: vc.textPrimary, fontWeight: FontWeight.bold, fontSize: 20),
+            style: TextStyle(
+              color: vc.textPrimary,
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+            ),
             textAlign: TextAlign.center,
           ),
           content: Column(
@@ -208,7 +256,10 @@ class _NotificationCard extends ConsumerWidget {
               if (phone.isNotEmpty) ...[
                 const SizedBox(height: 16),
                 Container(
-                  padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 8,
+                    horizontal: 16,
+                  ),
                   decoration: BoxDecoration(
                     color: vc.surfaceSecondary,
                     borderRadius: BorderRadius.circular(8),
@@ -253,7 +304,11 @@ class _NotificationCard extends ConsumerWidget {
               Text(
                 l10n.adminOtpDialogInstruction,
                 textAlign: TextAlign.center,
-                style: TextStyle(color: vc.textSecondary, fontSize: 13, height: 1.4),
+                style: TextStyle(
+                  color: vc.textSecondary,
+                  fontSize: 13,
+                  height: 1.4,
+                ),
               ),
             ],
           ),
@@ -261,7 +316,10 @@ class _NotificationCard extends ConsumerWidget {
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text(l10n.close, style: const TextStyle(fontWeight: FontWeight.bold)),
+              child: Text(
+                l10n.close,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
             ),
           ],
         );

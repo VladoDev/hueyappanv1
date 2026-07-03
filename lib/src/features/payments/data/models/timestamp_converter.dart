@@ -46,5 +46,6 @@ class NullableTimestampConverter implements JsonConverter<DateTime?, dynamic> {
   }
 
   @override
-  dynamic toJson(DateTime? date) => date != null ? Timestamp.fromDate(date) : null;
+  dynamic toJson(DateTime? date) =>
+      date != null ? Timestamp.fromDate(date) : null;
 }

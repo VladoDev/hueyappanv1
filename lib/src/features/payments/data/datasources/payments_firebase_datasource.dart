@@ -12,7 +12,7 @@ class PaymentsFirebaseDatasource {
   final FirebaseFirestore _firestore;
 
   PaymentsFirebaseDatasource({FirebaseFirestore? firestore})
-      : _firestore = firestore ?? FirebaseFirestore.instance;
+    : _firestore = firestore ?? FirebaseFirestore.instance;
 
   // ── Stream Readers ──
 
@@ -21,9 +21,11 @@ class PaymentsFirebaseDatasource {
         .collection('concepts')
         .orderBy('createdAt', descending: true)
         .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map((doc) => PaymentConceptModel.fromJson(doc.data()))
-            .toList());
+        .map(
+          (snapshot) => snapshot.docs
+              .map((doc) => PaymentConceptModel.fromJson(doc.data()))
+              .toList(),
+        );
   }
 
   Stream<List<ConceptItemModel>> watchConceptItems(String conceptId) {
@@ -33,19 +35,26 @@ class PaymentsFirebaseDatasource {
         .collection('items')
         .orderBy('order')
         .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map((doc) => ConceptItemModel.fromJson(doc.data()))
-            .toList());
+        .map(
+          (snapshot) => snapshot.docs
+              .map((doc) => ConceptItemModel.fromJson(doc.data()))
+              .toList(),
+        );
   }
 
-  Stream<List<HousingPaymentModel>> watchNeighborPayments(String lot, String house) {
+  Stream<List<HousingPaymentModel>> watchNeighborPayments(
+    String lot,
+    String house,
+  ) {
     return _firestore
         .collection('housing_payments')
         .where('lot', isEqualTo: lot)
         .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map((doc) => HousingPaymentModel.fromJson(doc.data()))
-            .toList());
+        .map(
+          (snapshot) => snapshot.docs
+              .map((doc) => HousingPaymentModel.fromJson(doc.data()))
+              .toList(),
+        );
   }
 
   Stream<List<HousingPaymentModel>> watchConceptPayments(String conceptId) {
@@ -53,22 +62,27 @@ class PaymentsFirebaseDatasource {
         .collection('housing_payments')
         .where('conceptId', isEqualTo: conceptId)
         .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map((doc) => HousingPaymentModel.fromJson(doc.data()))
-            .toList());
+        .map(
+          (snapshot) => snapshot.docs
+              .map((doc) => HousingPaymentModel.fromJson(doc.data()))
+              .toList(),
+        );
   }
 
   Stream<List<PaymentTransactionModel>> watchPaymentTransactions(
-      String housingPaymentId) {
+    String housingPaymentId,
+  ) {
     return _firestore
         .collection('housing_payments')
         .doc(housingPaymentId)
         .collection('transactions')
         .orderBy('createdAt', descending: true)
         .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map((doc) => PaymentTransactionModel.fromJson(doc.data()))
-            .toList());
+        .map(
+          (snapshot) => snapshot.docs
+              .map((doc) => PaymentTransactionModel.fromJson(doc.data()))
+              .toList(),
+        );
   }
 
   // ── Writers & Batch Actions ──
@@ -92,7 +106,9 @@ class PaymentsFirebaseDatasource {
 
     // 3. Save housing payments
     for (final payment in payments) {
-      final paymentRef = _firestore.collection('housing_payments').doc(payment.id);
+      final paymentRef = _firestore
+          .collection('housing_payments')
+          .doc(payment.id);
       batch.set(paymentRef, payment.toJson());
     }
 
@@ -100,7 +116,10 @@ class PaymentsFirebaseDatasource {
   }
 
   Future<void> updateConcept(PaymentConceptModel concept) async {
-    await _firestore.collection('concepts').doc(concept.id).update(concept.toJson());
+    await _firestore
+        .collection('concepts')
+        .doc(concept.id)
+        .update(concept.toJson());
   }
 
   Future<void> deleteConcept(String conceptId) async {
@@ -138,12 +157,15 @@ class PaymentsFirebaseDatasource {
     final batch = _firestore.batch();
 
     // 1. Update the parent housing payment
-    final paymentRef =
-        _firestore.collection('housing_payments').doc(updatedPayment.id);
+    final paymentRef = _firestore
+        .collection('housing_payments')
+        .doc(updatedPayment.id);
     batch.set(paymentRef, updatedPayment.toJson());
 
     // 2. Create the transaction record
-    final transactionRef = paymentRef.collection('transactions').doc(transaction.id);
+    final transactionRef = paymentRef
+        .collection('transactions')
+        .doc(transaction.id);
     batch.set(transactionRef, transaction.toJson());
 
     await batch.commit();
@@ -245,11 +267,7 @@ class PaymentsFirebaseDatasource {
       final payload = {
         'to': recipient,
         'priority': 'high',
-        'notification': {
-          'title': title,
-          'body': body,
-          'sound': 'default',
-        },
+        'notification': {'title': title, 'body': body, 'sound': 'default'},
         'android': {
           'priority': 'high',
           'notification': {
@@ -259,10 +277,7 @@ class PaymentsFirebaseDatasource {
         },
         'apns': {
           'payload': {
-            'aps': {
-              'sound': 'default',
-              'interruption-level': 'active',
-            },
+            'aps': {'sound': 'default', 'interruption-level': 'active'},
           },
         },
       };
@@ -274,7 +289,8 @@ class PaymentsFirebaseDatasource {
           body: json.encode(payload),
         );
         debugPrint(
-            '🔔 [FCM] Notification sent to $recipient. Status: ${response.statusCode}');
+          '🔔 [FCM] Notification sent to $recipient. Status: ${response.statusCode}',
+        );
       } catch (e) {
         debugPrint('❌ [FCM] Error sending message to $recipient: $e');
       }

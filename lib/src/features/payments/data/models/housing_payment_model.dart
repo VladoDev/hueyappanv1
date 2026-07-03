@@ -46,18 +46,18 @@ abstract class HousingPaymentModel with _$HousingPaymentModel {
 
 extension HousingPaymentModelX on HousingPaymentModel {
   HousingPaymentEntity toEntity() => HousingPaymentEntity(
-        id: id,
-        conceptId: conceptId,
-        residentUid: residentUid,
-        lot: lot,
-        house: house,
-        totalDue: totalDue,
-        amountPaid: amountPaid,
-        balance: balance,
-        paymentStatus: paymentStatus,
-        extraAmount: extraAmount,
-        paidAt: paidAt,
-        notes: notes,
-        hasPendingConfirmation: hasPendingConfirmation,
-      );
+    id: id,
+    conceptId: conceptId,
+    residentUid: residentUid,
+    lot: lot,
+    house: house,
+    totalDue: totalDue,
+    amountPaid: amountPaid,
+    balance: balance,
+    paymentStatus: paymentStatus,
+    extraAmount: extraAmount,
+    paidAt: paidAt,
+    notes: notes,
+    hasPendingConfirmation: hasPendingConfirmation,
+  );
 }

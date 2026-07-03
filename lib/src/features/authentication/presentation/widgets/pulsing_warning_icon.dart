@@ -31,9 +31,10 @@ class _PulsingWarningIconState extends State<PulsingWarningIcon>
   Widget build(BuildContext context) {
     final vc = context.vecinalColors;
     return ScaleTransition(
-      scale: Tween<double>(begin: 0.9, end: 1.15).animate(
-        CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-      ),
+      scale: Tween<double>(
+        begin: 0.9,
+        end: 1.15,
+      ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut)),
       child: Container(
         padding: const EdgeInsets.all(24),
         decoration: BoxDecoration(

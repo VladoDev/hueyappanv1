@@ -10,10 +10,7 @@ import '../providers/payments_provider.dart';
 class ConceptFormScreen extends ConsumerStatefulWidget {
   final String? conceptId;
 
-  const ConceptFormScreen({
-    super.key,
-    this.conceptId,
-  });
+  const ConceptFormScreen({super.key, this.conceptId});
 
   @override
   ConsumerState<ConceptFormScreen> createState() => _ConceptFormScreenState();
@@ -47,19 +44,25 @@ class _ConceptFormScreenState extends ConsumerState<ConceptFormScreen> {
         _titleController.text = concept.title;
         _descController.text = concept.description ?? '';
         _totalCostController.text = concept.totalAmount.toStringAsFixed(2);
-        _amountPerHouseController.text = concept.amountPerUnit.toStringAsFixed(2);
+        _amountPerHouseController.text = concept.amountPerUnit.toStringAsFixed(
+          2,
+        );
         _status = concept.status;
 
         // Fetch sub-items
         final items = await repo.watchConceptItems(widget.conceptId!).first;
         setState(() {
           for (final item in items) {
-            _subItems.add(_SubItemInput(
-              labelController: TextEditingController(text: item.label),
-              amountController: TextEditingController(
-                text: item.amount != null ? item.amount!.toStringAsFixed(2) : '',
+            _subItems.add(
+              _SubItemInput(
+                labelController: TextEditingController(text: item.label),
+                amountController: TextEditingController(
+                  text: item.amount != null
+                      ? item.amount!.toStringAsFixed(2)
+                      : '',
+                ),
               ),
-            ));
+            );
           }
         });
       });
@@ -84,7 +87,9 @@ class _ConceptFormScreenState extends ConsumerState<ConceptFormScreen> {
 
       final totalAmount = double.parse(_totalCostController.text);
       final amountPerHouse = double.parse(_amountPerHouseController.text);
-      final conceptId = _isEditing ? widget.conceptId! : DateTime.now().millisecondsSinceEpoch.toString();
+      final conceptId = _isEditing
+          ? widget.conceptId!
+          : DateTime.now().millisecondsSinceEpoch.toString();
 
       final concept = PaymentConceptEntity(
         id: conceptId,
@@ -104,16 +109,20 @@ class _ConceptFormScreenState extends ConsumerState<ConceptFormScreen> {
         final subItem = _subItems[i];
         final label = subItem.labelController.text.trim();
         final amountText = subItem.amountController.text.trim();
-        final amount = amountText.isNotEmpty ? double.tryParse(amountText) : null;
+        final amount = amountText.isNotEmpty
+            ? double.tryParse(amountText)
+            : null;
 
         if (label.isNotEmpty) {
-          items.add(ConceptItemEntity(
-            id: '${conceptId}_item_$i',
-            conceptId: conceptId,
-            label: label,
-            amount: amount,
-            order: i,
-          ));
+          items.add(
+            ConceptItemEntity(
+              id: '${conceptId}_item_$i',
+              conceptId: conceptId,
+              label: label,
+              amount: amount,
+              order: i,
+            ),
+          );
         }
       }
 
@@ -123,7 +132,11 @@ class _ConceptFormScreenState extends ConsumerState<ConceptFormScreen> {
 
       if (mounted && success) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(_isEditing ? 'Concepto actualizado' : 'Concepto creado')),
+          SnackBar(
+            content: Text(
+              _isEditing ? 'Concepto actualizado' : 'Concepto creado',
+            ),
+          ),
         );
         context.pop();
       }
@@ -158,20 +171,26 @@ class _ConceptFormScreenState extends ConsumerState<ConceptFormScreen> {
             TextFormField(
               controller: _titleController,
               enabled: !isLoading,
+              textCapitalization: TextCapitalization.words,
               decoration: InputDecoration(
                 labelText: l10n.conceptTitleLabel,
                 prefixIcon: Icon(Icons.title, color: vc.primaryDefault),
               ),
-              validator: (val) => val == null || val.trim().isEmpty ? l10n.fieldRequired : null,
+              validator: (val) =>
+                  val == null || val.trim().isEmpty ? l10n.fieldRequired : null,
             ),
             const SizedBox(height: 16),
             TextFormField(
               controller: _descController,
               enabled: !isLoading,
               maxLines: 2,
+              textCapitalization: TextCapitalization.sentences,
               decoration: InputDecoration(
                 labelText: l10n.conceptDescLabel,
-                prefixIcon: Icon(Icons.description_outlined, color: vc.primaryDefault),
+                prefixIcon: Icon(
+                  Icons.description_outlined,
+                  color: vc.primaryDefault,
+                ),
               ),
             ),
             const SizedBox(height: 16),
@@ -181,14 +200,20 @@ class _ConceptFormScreenState extends ConsumerState<ConceptFormScreen> {
                   child: TextFormField(
                     controller: _totalCostController,
                     enabled: !isLoading,
-                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
                     decoration: InputDecoration(
                       labelText: l10n.conceptTotalCost,
-                      prefixIcon: Icon(Icons.monetization_on_outlined, color: vc.primaryDefault),
+                      prefixIcon: Icon(
+                        Icons.monetization_on_outlined,
+                        color: vc.primaryDefault,
+                      ),
                     ),
                     validator: (val) {
                       if (val == null || val.isEmpty) return l10n.fieldRequired;
-                      if (double.tryParse(val) == null) return l10n.invalidAmount;
+                      if (double.tryParse(val) == null)
+                        return l10n.invalidAmount;
                       return null;
                     },
                   ),
@@ -198,14 +223,20 @@ class _ConceptFormScreenState extends ConsumerState<ConceptFormScreen> {
                   child: TextFormField(
                     controller: _amountPerHouseController,
                     enabled: !isLoading,
-                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
                     decoration: InputDecoration(
                       labelText: l10n.amountPerHouseLabel,
-                      prefixIcon: Icon(Icons.home_outlined, color: vc.primaryDefault),
+                      prefixIcon: Icon(
+                        Icons.home_outlined,
+                        color: vc.primaryDefault,
+                      ),
                     ),
                     validator: (val) {
                       if (val == null || val.isEmpty) return l10n.fieldRequired;
-                      if (double.tryParse(val) == null) return l10n.invalidAmount;
+                      if (double.tryParse(val) == null)
+                        return l10n.invalidAmount;
                       return null;
                     },
                   ),
@@ -218,14 +249,28 @@ class _ConceptFormScreenState extends ConsumerState<ConceptFormScreen> {
                 initialValue: _status,
                 decoration: InputDecoration(
                   labelText: 'Estado',
-                  prefixIcon: Icon(Icons.info_outline, color: vc.primaryDefault),
+                  prefixIcon: Icon(
+                    Icons.info_outline,
+                    color: vc.primaryDefault,
+                  ),
                 ),
                 items: [
-                  DropdownMenuItem(value: 'active', child: Text(l10n.activeStatus)),
-                  DropdownMenuItem(value: 'closed', child: Text(l10n.closedStatus)),
-                  DropdownMenuItem(value: 'cancelled', child: Text(l10n.cancelledStatus)),
+                  DropdownMenuItem(
+                    value: 'active',
+                    child: Text(l10n.activeStatus),
+                  ),
+                  DropdownMenuItem(
+                    value: 'closed',
+                    child: Text(l10n.closedStatus),
+                  ),
+                  DropdownMenuItem(
+                    value: 'cancelled',
+                    child: Text(l10n.cancelledStatus),
+                  ),
                 ],
-                onChanged: isLoading ? null : (val) => setState(() => _status = val!),
+                onChanged: isLoading
+                    ? null
+                    : (val) => setState(() => _status = val!),
               ),
             ],
             const SizedBox(height: 24),
@@ -234,16 +279,22 @@ class _ConceptFormScreenState extends ConsumerState<ConceptFormScreen> {
               children: [
                 Text(
                   l10n.subItemsLabel,
-                  style: VecinalTextStyles.headlineSmall.copyWith(fontWeight: FontWeight.bold),
+                  style: VecinalTextStyles.headlineSmall.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 if (!_isEditing)
                   TextButton.icon(
                     onPressed: isLoading
                         ? null
-                        : () => setState(() => _subItems.add(_SubItemInput(
-                              labelController: TextEditingController(),
-                              amountController: TextEditingController(),
-                            ))),
+                        : () => setState(
+                            () => _subItems.add(
+                              _SubItemInput(
+                                labelController: TextEditingController(),
+                                amountController: TextEditingController(),
+                              ),
+                            ),
+                          ),
                     icon: const Icon(Icons.add),
                     label: Text(l10n.addSubItem),
                   ),
@@ -255,11 +306,16 @@ class _ConceptFormScreenState extends ConsumerState<ConceptFormScreen> {
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: Text(
                   'Sin desglose de costos.',
-                  style: VecinalTextStyles.bodyMedium.copyWith(color: vc.textHint),
+                  style: VecinalTextStyles.bodyMedium.copyWith(
+                    color: vc.textHint,
+                  ),
                 ),
               )
             else
-              ...List.generate(_subItems.length, (idx) => _buildSubItemRow(idx, vc, l10n, isLoading)),
+              ...List.generate(
+                _subItems.length,
+                (idx) => _buildSubItemRow(idx, vc, l10n, isLoading),
+              ),
             const SizedBox(height: 32),
             SizedBox(
               width: double.infinity,
@@ -269,11 +325,19 @@ class _ConceptFormScreenState extends ConsumerState<ConceptFormScreen> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: vc.primaryDefault,
                   foregroundColor: vc.textOnPrimary,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(VecinalRadius.md)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(VecinalRadius.md),
+                  ),
                 ),
                 child: isLoading
                     ? const CircularProgressIndicator(color: Colors.white)
-                    : Text(l10n.save, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                    : Text(
+                        l10n.save,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
               ),
             ),
           ],
@@ -282,7 +346,12 @@ class _ConceptFormScreenState extends ConsumerState<ConceptFormScreen> {
     );
   }
 
-  Widget _buildSubItemRow(int index, VecinalSemanticColors vc, AppLocalizations l10n, bool isLoading) {
+  Widget _buildSubItemRow(
+    int index,
+    VecinalSemanticColors vc,
+    AppLocalizations l10n,
+    bool isLoading,
+  ) {
     final subItem = _subItems[index];
     return Padding(
       padding: const EdgeInsets.only(bottom: 12.0),
@@ -293,9 +362,13 @@ class _ConceptFormScreenState extends ConsumerState<ConceptFormScreen> {
             child: TextFormField(
               controller: subItem.labelController,
               enabled: !isLoading && !_isEditing,
+              textCapitalization: TextCapitalization.words,
               decoration: InputDecoration(
                 labelText: l10n.itemLabel,
-                contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 8,
+                ),
               ),
             ),
           ),
@@ -304,10 +377,15 @@ class _ConceptFormScreenState extends ConsumerState<ConceptFormScreen> {
             child: TextFormField(
               controller: subItem.amountController,
               enabled: !isLoading && !_isEditing,
-              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
               decoration: InputDecoration(
                 labelText: l10n.itemAmount,
-                contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 8,
+                ),
               ),
             ),
           ),
@@ -343,7 +421,10 @@ class _ConceptFormScreenState extends ConsumerState<ConceptFormScreen> {
             Expanded(
               child: Text(
                 text,
-                style: VecinalTextStyles.bodyMedium.copyWith(color: vc.destructive, fontWeight: FontWeight.w500),
+                style: VecinalTextStyles.bodyMedium.copyWith(
+                  color: vc.destructive,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
           ],

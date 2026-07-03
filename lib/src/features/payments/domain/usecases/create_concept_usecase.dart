@@ -7,7 +7,10 @@ class CreateConceptUsecase {
 
   CreateConceptUsecase(this._repository);
 
-  Future<void> execute(PaymentConceptEntity concept, List<ConceptItemEntity> items) {
+  Future<void> execute(
+    PaymentConceptEntity concept,
+    List<ConceptItemEntity> items,
+  ) {
     return _repository.createConcept(concept, items);
   }
 }

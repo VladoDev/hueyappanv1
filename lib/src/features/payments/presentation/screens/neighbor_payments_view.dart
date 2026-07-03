@@ -24,12 +24,18 @@ class NeighborPaymentsView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final vc = context.vecinalColors;
     final l10n = AppLocalizations.of(context)!;
-    final paymentsAsync = ref.watch(neighborPaymentsStreamProvider((lot: lot, house: house)));
-    final transactionsAsync = ref.watch(neighborTransactionsStreamProvider((lot: lot, house: house)));
+    final paymentsAsync = ref.watch(
+      neighborPaymentsStreamProvider((lot: lot, house: house)),
+    );
+    final transactionsAsync = ref.watch(
+      neighborTransactionsStreamProvider((lot: lot, house: house)),
+    );
 
     final bodyContent = paymentsAsync.when(
       data: (payments) {
-        final pending = payments.where((p) => p.paymentStatus != 'paid').toList();
+        final pending = payments
+            .where((p) => p.paymentStatus != 'paid')
+            .toList();
 
         return ListView(
           padding: EdgeInsets.only(
@@ -50,13 +56,21 @@ class NeighborPaymentsView extends ConsumerWidget {
             ),
             const SizedBox(height: 12),
             if (pending.isEmpty)
-              _buildEmptyState(l10n.noPendingPayments, Icons.check_circle_outline, vc)
+              _buildEmptyState(
+                l10n.noPendingPayments,
+                Icons.check_circle_outline,
+                vc,
+              )
             else
               ...pending.map((p) => _NeighborPaymentCard(payment: p)),
             transactionsAsync.when(
               data: (transactions) {
-                final pendingConfirmations = transactions.where((t) => !t.isConfirmed).toList();
-                final confirmedHistory = transactions.where((t) => t.isConfirmed).toList();
+                final pendingConfirmations = transactions
+                    .where((t) => !t.isConfirmed)
+                    .toList();
+                final confirmedHistory = transactions
+                    .where((t) => t.isConfirmed)
+                    .toList();
 
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -71,7 +85,9 @@ class NeighborPaymentsView extends ConsumerWidget {
                         ),
                       ),
                       const SizedBox(height: 12),
-                      ...pendingConfirmations.map((t) => _NeighborPendingConfirmationCard(transaction: t)),
+                      ...pendingConfirmations.map(
+                        (t) => _NeighborPendingConfirmationCard(transaction: t),
+                      ),
                       const SizedBox(height: 24),
                     ],
                     Text(
@@ -83,9 +99,15 @@ class NeighborPaymentsView extends ConsumerWidget {
                     ),
                     const SizedBox(height: 12),
                     if (confirmedHistory.isEmpty)
-                      _buildEmptyState(l10n.noPaymentsFound, Icons.history_outlined, vc)
+                      _buildEmptyState(
+                        l10n.noPaymentsFound,
+                        Icons.history_outlined,
+                        vc,
+                      )
                     else
-                      ...confirmedHistory.map((t) => _NeighborHistoryCard(transaction: t)),
+                      ...confirmedHistory.map(
+                        (t) => _NeighborHistoryCard(transaction: t),
+                      ),
                   ],
                 );
               },
@@ -123,7 +145,11 @@ class NeighborPaymentsView extends ConsumerWidget {
     );
   }
 
-  Widget _buildEmptyState(String text, IconData icon, VecinalSemanticColors vc) {
+  Widget _buildEmptyState(
+    String text,
+    IconData icon,
+    VecinalSemanticColors vc,
+  ) {
     return Card(
       elevation: 0,
       color: vc.surfaceSecondary,
@@ -167,7 +193,9 @@ class NeighborPaymentsView extends ConsumerWidget {
         SnackBar(
           content: Text(successMsg),
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(VecinalRadius.md)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(VecinalRadius.md),
+          ),
         ),
       );
     }
@@ -186,7 +214,11 @@ class NeighborPaymentsView extends ConsumerWidget {
           children: [
             Row(
               children: [
-                Icon(Icons.account_balance_outlined, color: vc.paymentIcon, size: 24),
+                Icon(
+                  Icons.account_balance_outlined,
+                  color: vc.paymentIcon,
+                  size: 24,
+                ),
                 const SizedBox(width: 8),
                 Text(
                   l10n.transferDetails,
@@ -204,16 +236,22 @@ class NeighborPaymentsView extends ConsumerWidget {
               l10n.clabeLabel,
               clabe,
               vc,
-              onCopy: () => copyToClipboard(clabe.replaceAll(' ', ''), l10n.copySuccess),
+              onCopy: () =>
+                  copyToClipboard(clabe.replaceAll(' ', ''), l10n.copySuccess),
             ),
             const SizedBox(height: 10),
-            _buildTransferRow(l10n.beneficiaryLabel, 'Privada Convento Hueyapan AC', vc),
+            _buildTransferRow(
+              l10n.beneficiaryLabel,
+              'Privada Convento Hueyapan AC',
+              vc,
+            ),
             const SizedBox(height: 10),
             _buildTransferRow(
               l10n.bankTransferReference,
               reference,
               vc,
-              onCopy: () => copyToClipboard(reference, l10n.referenceCopySuccess),
+              onCopy: () =>
+                  copyToClipboard(reference, l10n.referenceCopySuccess),
             ),
           ],
         ),
@@ -221,7 +259,12 @@ class NeighborPaymentsView extends ConsumerWidget {
     );
   }
 
-  Widget _buildTransferRow(String label, String value, VecinalSemanticColors vc, {VoidCallback? onCopy}) {
+  Widget _buildTransferRow(
+    String label,
+    String value,
+    VecinalSemanticColors vc, {
+    VoidCallback? onCopy,
+  }) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -254,7 +297,7 @@ class NeighborPaymentsView extends ConsumerWidget {
                   onTap: onCopy,
                   child: Icon(Icons.copy, size: 16, color: vc.paymentIcon),
                 ),
-              ]
+              ],
             ],
           ),
         ),
@@ -326,10 +369,13 @@ class _NeighborPaymentCard extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (concept?.description != null && concept!.description!.isNotEmpty) ...[
+              if (concept?.description != null &&
+                  concept!.description!.isNotEmpty) ...[
                 Text(
                   concept.description!,
-                  style: VecinalTextStyles.bodyMedium.copyWith(color: vc.textSecondary),
+                  style: VecinalTextStyles.bodyMedium.copyWith(
+                    color: vc.textSecondary,
+                  ),
                 ),
                 const SizedBox(height: 6),
               ],
@@ -342,14 +388,18 @@ class _NeighborPaymentCard extends ConsumerWidget {
                       children: [
                         Text(
                           '${l10n.amountPerHouseLabel}: \$${payment.totalDue.toStringAsFixed(2)}',
-                          style: VecinalTextStyles.bodySmall.copyWith(color: vc.textHint),
+                          style: VecinalTextStyles.bodySmall.copyWith(
+                            color: vc.textHint,
+                          ),
                           overflow: TextOverflow.ellipsis,
                         ),
                         if (concept != null) ...[
                           const SizedBox(height: 2),
                           Text(
                             '${l10n.conceptTotalCost} (Ref): \$${concept.totalAmount.toStringAsFixed(2)}',
-                            style: VecinalTextStyles.bodySmall.copyWith(color: vc.textHint),
+                            style: VecinalTextStyles.bodySmall.copyWith(
+                              color: vc.textHint,
+                            ),
                             overflow: TextOverflow.ellipsis,
                           ),
                         ],
@@ -371,7 +421,11 @@ class _NeighborPaymentCard extends ConsumerWidget {
         ),
         children: [
           Padding(
-            padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
+            padding: const EdgeInsets.only(
+              left: 16.0,
+              right: 16.0,
+              bottom: 16.0,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -389,7 +443,9 @@ class _NeighborPaymentCard extends ConsumerWidget {
                     if (items.isEmpty) {
                       return Text(
                         'Sin desglose adicional.',
-                        style: VecinalTextStyles.bodyMedium.copyWith(color: vc.textHint),
+                        style: VecinalTextStyles.bodyMedium.copyWith(
+                          color: vc.textHint,
+                        ),
                       );
                     }
                     return Column(
@@ -399,7 +455,10 @@ class _NeighborPaymentCard extends ConsumerWidget {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(item.label, style: VecinalTextStyles.bodyMedium),
+                              Text(
+                                item.label,
+                                style: VecinalTextStyles.bodyMedium,
+                              ),
                               if (item.amount != null)
                                 Text(
                                   '\$${item.amount!.toStringAsFixed(2)}',
@@ -443,7 +502,13 @@ class _NeighborPaymentCard extends ConsumerWidget {
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton.icon(
-                      onPressed: () => _showReportPaymentDialog(context, ref, payment, concept?.title, vc),
+                      onPressed: () => _showReportPaymentDialog(
+                        context,
+                        ref,
+                        payment,
+                        concept?.title,
+                        vc,
+                      ),
                       icon: const Icon(Icons.receipt_long, size: 18),
                       label: const Text(
                         'Reportar Pago',
@@ -455,15 +520,18 @@ class _NeighborPaymentCard extends ConsumerWidget {
                         elevation: 0,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(VecinalRadius.md),
-                          side: BorderSide(color: vc.primaryDefault, width: 1.5),
+                          side: BorderSide(
+                            color: vc.primaryDefault,
+                            width: 1.5,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ]
+                ],
               ],
             ),
-          )
+          ),
         ],
       ),
     );
@@ -476,7 +544,9 @@ class _NeighborPaymentCard extends ConsumerWidget {
     String? conceptTitle,
     VecinalSemanticColors vc,
   ) {
-    final amountController = TextEditingController(text: payment.balance.toStringAsFixed(2));
+    final amountController = TextEditingController(
+      text: payment.balance.toStringAsFixed(2),
+    );
     final notesController = TextEditingController();
     bool isLoading = false;
 
@@ -485,7 +555,10 @@ class _NeighborPaymentCard extends ConsumerWidget {
       builder: (dialogCtx) => StatefulBuilder(
         builder: (ctx, setState) {
           return AlertDialog(
-            title: const Text('Reportar Pago', style: TextStyle(fontWeight: FontWeight.bold)),
+            title: const Text(
+              'Reportar Pago',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
             content: SingleChildScrollView(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -498,11 +571,15 @@ class _NeighborPaymentCard extends ConsumerWidget {
                   const SizedBox(height: 16),
                   TextField(
                     controller: amountController,
-                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
                     decoration: InputDecoration(
                       labelText: 'Monto Abonado',
                       prefixText: '\$ ',
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -510,7 +587,9 @@ class _NeighborPaymentCard extends ConsumerWidget {
                     controller: notesController,
                     decoration: InputDecoration(
                       labelText: 'Notas / Referencia (Opcional)',
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                     ),
                     maxLines: 2,
                   ),
@@ -526,14 +605,20 @@ class _NeighborPaymentCard extends ConsumerWidget {
                 : [
                     TextButton(
                       onPressed: () => Navigator.pop(dialogCtx),
-                      child: Text('Cancelar', style: TextStyle(color: vc.textSecondary)),
+                      child: Text(
+                        'Cancelar',
+                        style: TextStyle(color: vc.textSecondary),
+                      ),
                     ),
                     ElevatedButton(
                       onPressed: () async {
-                        final amount = double.tryParse(amountController.text) ?? 0.0;
+                        final amount =
+                            double.tryParse(amountController.text) ?? 0.0;
                         if (amount <= 0) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('El monto debe ser mayor a 0')),
+                            const SnackBar(
+                              content: Text('El monto debe ser mayor a 0'),
+                            ),
                           );
                           return;
                         }
@@ -543,7 +628,9 @@ class _NeighborPaymentCard extends ConsumerWidget {
                         final authState = ref.read(authStateProvider);
                         final user = authState.value;
 
-                        final type = amount >= payment.balance ? 'complete' : 'partial';
+                        final type = amount >= payment.balance
+                            ? 'complete'
+                            : 'partial';
 
                         final success = await ref
                             .read(paymentsControllerProvider.notifier)
@@ -553,18 +640,26 @@ class _NeighborPaymentCard extends ConsumerWidget {
                               type: type,
                               createdBy: user?.name ?? 'Vecino',
                               isAdmin: false,
-                              notes: notesController.text.trim().isEmpty ? null : notesController.text.trim(),
+                              notes: notesController.text.trim().isEmpty
+                                  ? null
+                                  : notesController.text.trim(),
                             );
 
                         if (context.mounted) {
                           Navigator.pop(dialogCtx);
                           if (success) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Pago reportado exitosamente. Esperando confirmación del administrador.')),
+                              const SnackBar(
+                                content: Text(
+                                  'Pago reportado exitosamente. Esperando confirmación del administrador.',
+                                ),
+                              ),
                             );
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Error al reportar el pago.')),
+                              const SnackBar(
+                                content: Text('Error al reportar el pago.'),
+                              ),
                             );
                           }
                         }
@@ -595,7 +690,8 @@ class _NeighborHistoryCard extends ConsumerWidget {
     final vc = context.vecinalColors;
     final l10n = AppLocalizations.of(context)!;
 
-    final dateStr = '${transaction.createdAt.day}/${transaction.createdAt.month}/${transaction.createdAt.year}';
+    final dateStr =
+        '${transaction.createdAt.day}/${transaction.createdAt.month}/${transaction.createdAt.year}';
 
     return Card(
       elevation: 0,
@@ -605,10 +701,16 @@ class _NeighborHistoryCard extends ConsumerWidget {
         side: BorderSide(color: vc.borderDefault, width: 0.5),
       ),
       child: ListTile(
-        leading: Icon(Icons.check_circle, color: vc.paymentSuccessText, size: 28),
+        leading: Icon(
+          Icons.check_circle,
+          color: vc.paymentSuccessText,
+          size: 28,
+        ),
         title: Text(
           transaction.conceptTitle ?? l10n.conceptDetails,
-          style: VecinalTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.bold),
+          style: VecinalTextStyles.bodyMedium.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
         ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -622,7 +724,10 @@ class _NeighborHistoryCard extends ConsumerWidget {
               const SizedBox(height: 2),
               Text(
                 transaction.notes!,
-                style: VecinalTextStyles.bodySmall.copyWith(color: vc.textSecondary, fontStyle: FontStyle.italic),
+                style: VecinalTextStyles.bodySmall.copyWith(
+                  color: vc.textSecondary,
+                  fontStyle: FontStyle.italic,
+                ),
               ),
             ],
           ],
@@ -659,10 +764,12 @@ class _NeighborPendingConfirmationCard extends ConsumerStatefulWidget {
   const _NeighborPendingConfirmationCard({required this.transaction});
 
   @override
-  ConsumerState<_NeighborPendingConfirmationCard> createState() => _NeighborPendingConfirmationCardState();
+  ConsumerState<_NeighborPendingConfirmationCard> createState() =>
+      _NeighborPendingConfirmationCardState();
 }
 
-class _NeighborPendingConfirmationCardState extends ConsumerState<_NeighborPendingConfirmationCard> {
+class _NeighborPendingConfirmationCardState
+    extends ConsumerState<_NeighborPendingConfirmationCard> {
   bool _isConfirming = false;
 
   @override
@@ -670,8 +777,9 @@ class _NeighborPendingConfirmationCardState extends ConsumerState<_NeighborPendi
     final vc = context.vecinalColors;
     final l10n = AppLocalizations.of(context)!;
     final t = widget.transaction;
-    
-    final dateStr = '${t.createdAt.day}/${t.createdAt.month}/${t.createdAt.year}';
+
+    final dateStr =
+        '${t.createdAt.day}/${t.createdAt.month}/${t.createdAt.year}';
 
     return Card(
       elevation: 0,
@@ -692,7 +800,9 @@ class _NeighborPendingConfirmationCardState extends ConsumerState<_NeighborPendi
                 Expanded(
                   child: Text(
                     t.conceptTitle ?? l10n.conceptDetails,
-                    style: VecinalTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.bold),
+                    style: VecinalTextStyles.bodyMedium.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
                 Text(
@@ -710,7 +820,9 @@ class _NeighborPendingConfirmationCardState extends ConsumerState<_NeighborPendi
               children: [
                 Text(
                   'Registrado el $dateStr',
-                  style: VecinalTextStyles.bodySmall.copyWith(color: vc.textHint),
+                  style: VecinalTextStyles.bodySmall.copyWith(
+                    color: vc.textHint,
+                  ),
                 ),
                 if (t.extraAmount > 0)
                   Text(
@@ -726,7 +838,10 @@ class _NeighborPendingConfirmationCardState extends ConsumerState<_NeighborPendi
               const SizedBox(height: 8),
               Text(
                 t.notes!,
-                style: VecinalTextStyles.bodySmall.copyWith(color: vc.textSecondary, fontStyle: FontStyle.italic),
+                style: VecinalTextStyles.bodySmall.copyWith(
+                  color: vc.textSecondary,
+                  fontStyle: FontStyle.italic,
+                ),
               ),
             ],
             const SizedBox(height: 12),
@@ -739,12 +854,23 @@ class _NeighborPendingConfirmationCardState extends ConsumerState<_NeighborPendi
                         showDialog(
                           context: context,
                           builder: (dialogCtx) => AlertDialog(
-                            title: const Text('Confirmar Pago', style: TextStyle(fontWeight: FontWeight.bold)),
-                            content: Text('¿Confirmas que realizaste el pago de \$${t.amount.toStringAsFixed(2)} para el concepto "${t.conceptTitle ?? 'Cuota'}"?'),
+                            title: const Text(
+                              'Confirmar Pago',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            content: Text(
+                              '¿Confirmas que realizaste el pago de \$${t.amount.toStringAsFixed(2)} para el concepto "${t.conceptTitle ?? 'Cuota'}"?',
+                            ),
                             actions: [
                               TextButton(
                                 onPressed: () => Navigator.pop(dialogCtx),
-                                child: Text('Cancelar', style: TextStyle(color: vc.textSecondary, fontWeight: FontWeight.w600)),
+                                child: Text(
+                                  'Cancelar',
+                                  style: TextStyle(
+                                    color: vc.textSecondary,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
                               ),
                               ElevatedButton(
                                 onPressed: () async {
@@ -752,7 +878,9 @@ class _NeighborPendingConfirmationCardState extends ConsumerState<_NeighborPendi
                                   setState(() {
                                     _isConfirming = true;
                                   });
-                                  final messenger = ScaffoldMessenger.of(context);
+                                  final messenger = ScaffoldMessenger.of(
+                                    context,
+                                  );
                                   final success = await ref
                                       .read(paymentsControllerProvider.notifier)
                                       .confirmPaymentTransaction(
@@ -765,11 +893,19 @@ class _NeighborPendingConfirmationCardState extends ConsumerState<_NeighborPendi
                                     });
                                     if (success) {
                                       messenger.showSnackBar(
-                                        const SnackBar(content: Text('Pago confirmado con éxito')),
+                                        const SnackBar(
+                                          content: Text(
+                                            'Pago confirmado con éxito',
+                                          ),
+                                        ),
                                       );
                                     } else {
                                       messenger.showSnackBar(
-                                        const SnackBar(content: Text('Error al confirmar el pago')),
+                                        const SnackBar(
+                                          content: Text(
+                                            'Error al confirmar el pago',
+                                          ),
+                                        ),
                                       );
                                     }
                                   }
@@ -778,7 +914,10 @@ class _NeighborPendingConfirmationCardState extends ConsumerState<_NeighborPendi
                                   backgroundColor: vc.primaryDefault,
                                   foregroundColor: vc.textOnPrimary,
                                 ),
-                                child: const Text('Confirmar', style: TextStyle(fontWeight: FontWeight.bold)),
+                                child: const Text(
+                                  'Confirmar',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
                               ),
                             ],
                           ),
@@ -792,7 +931,9 @@ class _NeighborPendingConfirmationCardState extends ConsumerState<_NeighborPendi
                 style: ElevatedButton.styleFrom(
                   backgroundColor: vc.primaryDefault,
                   foregroundColor: vc.textOnPrimary,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(VecinalRadius.md)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(VecinalRadius.md),
+                  ),
                 ),
               ),
             ),

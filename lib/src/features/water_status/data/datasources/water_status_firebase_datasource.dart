@@ -9,11 +9,11 @@ class WaterStatusFirebaseDatasource {
         .doc('water_status')
         .snapshots()
         .map((snapshot) {
-      if (snapshot.exists && snapshot.data() != null) {
-        return snapshot.data()!;
-      }
-      return {'status': 'auto'};
-    });
+          if (snapshot.exists && snapshot.data() != null) {
+            return snapshot.data()!;
+          }
+          return {'status': 'auto'};
+        });
   }
 
   Future<void> updateWaterStatus(String status, String uid) async {

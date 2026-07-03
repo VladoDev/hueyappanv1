@@ -11,16 +11,15 @@ import 'payment_register_dialog.dart';
 class ConceptDetailScreen extends ConsumerStatefulWidget {
   final String conceptId;
 
-  const ConceptDetailScreen({
-    super.key,
-    required this.conceptId,
-  });
+  const ConceptDetailScreen({super.key, required this.conceptId});
 
   @override
-  ConsumerState<ConceptDetailScreen> createState() => _ConceptDetailScreenState();
+  ConsumerState<ConceptDetailScreen> createState() =>
+      _ConceptDetailScreenState();
 }
 
-class _ConceptDetailScreenState extends ConsumerState<ConceptDetailScreen> with SingleTickerProviderStateMixin {
+class _ConceptDetailScreenState extends ConsumerState<ConceptDetailScreen>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   @override
@@ -35,25 +34,40 @@ class _ConceptDetailScreenState extends ConsumerState<ConceptDetailScreen> with 
     super.dispose();
   }
 
-  void _showUpdateExpenseDialog(PaymentConceptEntity concept, VecinalSemanticColors vc, AppLocalizations l10n) {
-    final controller = TextEditingController(text: concept.recordedExpense.toStringAsFixed(2));
+  void _showUpdateExpenseDialog(
+    PaymentConceptEntity concept,
+    VecinalSemanticColors vc,
+    AppLocalizations l10n,
+  ) {
+    final controller = TextEditingController(
+      text: concept.recordedExpense.toStringAsFixed(2),
+    );
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text(l10n.updateExpense, style: const TextStyle(fontWeight: FontWeight.bold)),
+          title: Text(
+            l10n.updateExpense,
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
           content: TextField(
             controller: controller,
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
             decoration: InputDecoration(
               labelText: l10n.itemAmount,
-              prefixIcon: Icon(Icons.monetization_on_outlined, color: vc.primaryDefault),
+              prefixIcon: Icon(
+                Icons.monetization_on_outlined,
+                color: vc.primaryDefault,
+              ),
             ),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text(l10n.cancel, style: TextStyle(color: vc.textSecondary)),
+              child: Text(
+                l10n.cancel,
+                style: TextStyle(color: vc.textSecondary),
+              ),
             ),
             ElevatedButton(
               onPressed: () async {
@@ -61,10 +75,19 @@ class _ConceptDetailScreenState extends ConsumerState<ConceptDetailScreen> with 
                 Navigator.of(context).pop();
                 await ref
                     .read(paymentsControllerProvider.notifier)
-                    .updateRecordedExpense(conceptId: concept.id, expense: expense);
+                    .updateRecordedExpense(
+                      conceptId: concept.id,
+                      expense: expense,
+                    );
               },
-              style: ElevatedButton.styleFrom(backgroundColor: vc.primaryDefault, foregroundColor: vc.textOnPrimary),
-              child: Text(l10n.save, style: const TextStyle(fontWeight: FontWeight.bold)),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: vc.primaryDefault,
+                foregroundColor: vc.textOnPrimary,
+              ),
+              child: Text(
+                l10n.save,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
             ),
           ],
         );
@@ -78,13 +101,19 @@ class _ConceptDetailScreenState extends ConsumerState<ConceptDetailScreen> with 
     final l10n = AppLocalizations.of(context)!;
 
     final conceptsAsync = ref.watch(conceptsStreamProvider);
-    final paymentsAsync = ref.watch(conceptPaymentsStreamProvider(widget.conceptId));
+    final paymentsAsync = ref.watch(
+      conceptPaymentsStreamProvider(widget.conceptId),
+    );
 
     return conceptsAsync.when(
       data: (concepts) {
-        final concept = concepts.where((c) => c.id == widget.conceptId).firstOrNull;
+        final concept = concepts
+            .where((c) => c.id == widget.conceptId)
+            .firstOrNull;
         if (concept == null) {
-          return const Scaffold(body: Center(child: Text('Concepto no encontrado')));
+          return const Scaffold(
+            body: Center(child: Text('Concepto no encontrado')),
+          );
         }
 
         return Scaffold(
@@ -99,18 +128,41 @@ class _ConceptDetailScreenState extends ConsumerState<ConceptDetailScreen> with 
           ),
           body: paymentsAsync.when(
             data: (payments) {
-              final paid = payments.where((p) => p.paymentStatus == 'paid').toList();
-              final pending = payments.where((p) => p.paymentStatus != 'paid').toList();
+              final paid = payments
+                  .where((p) => p.paymentStatus == 'paid')
+                  .toList();
+              final pending = payments
+                  .where((p) => p.paymentStatus != 'paid')
+                  .toList();
 
-              final totalCollected = payments.fold<double>(0, (sum, p) => sum + p.amountPaid);
-              final totalExtraCollected = payments.fold<double>(0, (sum, p) => sum + p.extraAmount);
-              final totalPending = payments.fold<double>(0, (sum, p) => sum + p.balance);
+              final totalCollected = payments.fold<double>(
+                0,
+                (sum, p) => sum + p.amountPaid,
+              );
+              final totalExtraCollected = payments.fold<double>(
+                0,
+                (sum, p) => sum + p.extraAmount,
+              );
+              final totalPending = payments.fold<double>(
+                0,
+                (sum, p) => sum + p.balance,
+              );
               final recordedExpense = concept.recordedExpense;
-              final availableBalance = totalCollected + totalExtraCollected - recordedExpense;
+              final availableBalance =
+                  totalCollected + totalExtraCollected - recordedExpense;
 
               return Column(
                 children: [
-                  _buildFinancialSummary(totalCollected, totalExtraCollected, totalPending, recordedExpense, availableBalance, () => _showUpdateExpenseDialog(concept, vc, l10n), vc, l10n),
+                  _buildFinancialSummary(
+                    totalCollected,
+                    totalExtraCollected,
+                    totalPending,
+                    recordedExpense,
+                    availableBalance,
+                    () => _showUpdateExpenseDialog(concept, vc, l10n),
+                    vc,
+                    l10n,
+                  ),
                   TabBar(
                     controller: _tabController,
                     labelColor: vc.primaryDefault,
@@ -150,13 +202,22 @@ class _ConceptDetailScreenState extends ConsumerState<ConceptDetailScreen> with 
           ),
         );
       },
-      loading: () => const Scaffold(body: Center(child: CircularProgressIndicator())),
+      loading: () =>
+          const Scaffold(body: Center(child: CircularProgressIndicator())),
       error: (err, stack) => Scaffold(body: Center(child: Text('Error: $err'))),
     );
   }
 
   Widget _buildFinancialSummary(
-      double collected, double extraCollected, double pending, double expense, double balance, VoidCallback onUpdateExpense, VecinalSemanticColors vc, AppLocalizations l10n) {
+    double collected,
+    double extraCollected,
+    double pending,
+    double expense,
+    double balance,
+    VoidCallback onUpdateExpense,
+    VecinalSemanticColors vc,
+    AppLocalizations l10n,
+  ) {
     return Container(
       color: vc.surfaceSecondary,
       padding: const EdgeInsets.all(VecinalSpacing.xl),
@@ -169,18 +230,35 @@ class _ConceptDetailScreenState extends ConsumerState<ConceptDetailScreen> with 
                 collected,
                 vc.paymentSuccessText,
                 vc,
-                subtitle: extraCollected > 0 ? '${l10n.extraAmountLabel}: +\$${extraCollected.toStringAsFixed(2)}' : null,
+                subtitle: extraCollected > 0
+                    ? '${l10n.extraAmountLabel}: +\$${extraCollected.toStringAsFixed(2)}'
+                    : null,
               ),
               const SizedBox(width: 16),
-              _buildSummaryItem(l10n.totalPendingLabel, pending, vc.destructive, vc),
+              _buildSummaryItem(
+                l10n.totalPendingLabel,
+                pending,
+                vc.destructive,
+                vc,
+              ),
             ],
           ),
           const SizedBox(height: 16),
           Row(
             children: [
-              _buildSummaryItem(l10n.recordedExpenseLabel, expense, vc.textPrimary, vc),
+              _buildSummaryItem(
+                l10n.recordedExpenseLabel,
+                expense,
+                vc.textPrimary,
+                vc,
+              ),
               const SizedBox(width: 16),
-              _buildSummaryItem(l10n.availableBalanceLabel, balance, balance >= 0 ? vc.paymentSuccessText : vc.destructive, vc),
+              _buildSummaryItem(
+                l10n.availableBalanceLabel,
+                balance,
+                balance >= 0 ? vc.paymentSuccessText : vc.destructive,
+                vc,
+              ),
             ],
           ),
           const SizedBox(height: 16),
@@ -190,23 +268,34 @@ class _ConceptDetailScreenState extends ConsumerState<ConceptDetailScreen> with 
                 child: OutlinedButton.icon(
                   onPressed: onUpdateExpense,
                   icon: const Icon(Icons.edit_outlined, size: 18),
-                  label: Text(l10n.updateExpense, style: const TextStyle(fontWeight: FontWeight.bold)),
+                  label: Text(
+                    l10n.updateExpense,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
                   style: OutlinedButton.styleFrom(
                     side: BorderSide(color: vc.borderDefault),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(VecinalRadius.md)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(VecinalRadius.md),
+                    ),
                   ),
                 ),
               ),
               const SizedBox(width: 8),
               Expanded(
                 child: FilledButton.icon(
-                  onPressed: () => context.push('/payments/map/${widget.conceptId}'),
+                  onPressed: () =>
+                      context.push('/payments/map/${widget.conceptId}'),
                   icon: const Icon(Icons.map_outlined, size: 18),
-                  label: const Text('Mapa de Pagos', style: TextStyle(fontWeight: FontWeight.bold)),
+                  label: const Text(
+                    'Mapa de Pagos',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
                   style: FilledButton.styleFrom(
                     backgroundColor: vc.primaryDefault,
                     foregroundColor: vc.textOnPrimary,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(VecinalRadius.md)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(VecinalRadius.md),
+                    ),
                   ),
                 ),
               ),
@@ -217,7 +306,13 @@ class _ConceptDetailScreenState extends ConsumerState<ConceptDetailScreen> with 
     );
   }
 
-  Widget _buildSummaryItem(String label, double value, Color valueColor, VecinalSemanticColors vc, {String? subtitle}) {
+  Widget _buildSummaryItem(
+    String label,
+    double value,
+    Color valueColor,
+    VecinalSemanticColors vc, {
+    String? subtitle,
+  }) {
     return Expanded(
       child: Container(
         padding: const EdgeInsets.all(12),
@@ -229,7 +324,10 @@ class _ConceptDetailScreenState extends ConsumerState<ConceptDetailScreen> with 
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(label, style: VecinalTextStyles.bodySmall.copyWith(color: vc.textHint)),
+            Text(
+              label,
+              style: VecinalTextStyles.bodySmall.copyWith(color: vc.textHint),
+            ),
             const SizedBox(height: 4),
             Text(
               '\$${value.toStringAsFixed(2)}',
@@ -242,7 +340,10 @@ class _ConceptDetailScreenState extends ConsumerState<ConceptDetailScreen> with 
               const SizedBox(height: 4),
               Text(
                 subtitle,
-                style: VecinalTextStyles.bodySmall.copyWith(color: vc.primaryDefault, fontWeight: FontWeight.bold),
+                style: VecinalTextStyles.bodySmall.copyWith(
+                  color: vc.primaryDefault,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ],
           ],
@@ -251,7 +352,11 @@ class _ConceptDetailScreenState extends ConsumerState<ConceptDetailScreen> with 
     );
   }
 
-  Widget _buildPaymentList(List<HousingPaymentEntity> list, VecinalSemanticColors vc, AppLocalizations l10n) {
+  Widget _buildPaymentList(
+    List<HousingPaymentEntity> list,
+    VecinalSemanticColors vc,
+    AppLocalizations l10n,
+  ) {
     if (list.isEmpty) {
       return Center(
         child: Text(
@@ -284,7 +389,9 @@ class _PaymentListRow extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final vc = context.vecinalColors;
     final l10n = AppLocalizations.of(context)!;
-    final residentNameAsync = ref.watch(residentNameProvider(payment.residentUid));
+    final residentNameAsync = ref.watch(
+      residentNameProvider(payment.residentUid),
+    );
 
     final isPaid = payment.paymentStatus == 'paid';
     final isPartial = payment.paymentStatus == 'partial';
@@ -303,7 +410,9 @@ class _PaymentListRow extends ConsumerWidget {
           Expanded(
             child: Text(
               'Lote ${payment.lot}-${payment.house}',
-              style: VecinalTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.bold),
+              style: VecinalTextStyles.bodyLarge.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
               softWrap: true,
             ),
           ),
@@ -347,9 +456,24 @@ class _PaymentListRow extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             residentNameAsync.when(
-              data: (name) => Text(name, style: VecinalTextStyles.bodyMedium.copyWith(color: vc.textSecondary)),
-              loading: () => Text('Cargando...', style: VecinalTextStyles.bodyMedium.copyWith(color: vc.textHint)),
-              error: (err, stack) => Text('Residente', style: VecinalTextStyles.bodyMedium.copyWith(color: vc.textHint)),
+              data: (name) => Text(
+                name,
+                style: VecinalTextStyles.bodyMedium.copyWith(
+                  color: vc.textSecondary,
+                ),
+              ),
+              loading: () => Text(
+                'Cargando...',
+                style: VecinalTextStyles.bodyMedium.copyWith(
+                  color: vc.textHint,
+                ),
+              ),
+              error: (err, stack) => Text(
+                'Residente',
+                style: VecinalTextStyles.bodyMedium.copyWith(
+                  color: vc.textHint,
+                ),
+              ),
             ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
@@ -357,7 +481,10 @@ class _PaymentListRow extends ConsumerWidget {
                 if (isPaid)
                   Text(
                     'Pagó: \$${payment.amountPaid.toStringAsFixed(2)}',
-                    style: VecinalTextStyles.bodyMedium.copyWith(color: vc.paymentSuccessText, fontWeight: FontWeight.bold),
+                    style: VecinalTextStyles.bodyMedium.copyWith(
+                      color: vc.paymentSuccessText,
+                      fontWeight: FontWeight.bold,
+                    ),
                   )
                 else
                   Text(

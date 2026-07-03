@@ -14,7 +14,7 @@ class VecinalColors {
   VecinalColors._();
 
   // ── Primario: Teal (identidad, navegación, acciones principales)
-  static const teal50  = Color(0xFFE1F5EE);
+  static const teal50 = Color(0xFFE1F5EE);
   static const teal100 = Color(0xFF9FE1CB);
   static const teal200 = Color(0xFF5DCAA5);
   static const teal400 = Color(0xFF1D9E75);
@@ -23,7 +23,7 @@ class VecinalColors {
   static const teal900 = Color(0xFF04342C);
 
   // ── Rojo (emergencias, alertas críticas — uso reservado)
-  static const red50  = Color(0xFFFCEBEB);
+  static const red50 = Color(0xFFFCEBEB);
   static const red100 = Color(0xFFF7C1C1);
   static const red200 = Color(0xFFF09595);
   static const red400 = Color(0xFFE24B4A);
@@ -32,7 +32,7 @@ class VecinalColors {
   static const red900 = Color(0xFF501313);
 
   // ── Ámbar (avisos, recordatorios, tickets en progreso)
-  static const amber50  = Color(0xFFFAEEDA);
+  static const amber50 = Color(0xFFFAEEDA);
   static const amber100 = Color(0xFFFAC775);
   static const amber200 = Color(0xFFEF9F27);
   static const amber400 = Color(0xFFBA7517);
@@ -41,7 +41,7 @@ class VecinalColors {
   static const amber900 = Color(0xFF412402);
 
   // ── Azul (información, pagos, historial)
-  static const blue50  = Color(0xFFE6F1FB);
+  static const blue50 = Color(0xFFE6F1FB);
   static const blue100 = Color(0xFFB5D4F4);
   static const blue200 = Color(0xFF85B7EB);
   static const blue400 = Color(0xFF378ADD);
@@ -50,7 +50,7 @@ class VecinalColors {
   static const blue900 = Color(0xFF042C53);
 
   // ── Verde (éxito, pagos confirmados, tickets resueltos)
-  static const green50  = Color(0xFFEAF3DE);
+  static const green50 = Color(0xFFEAF3DE);
   static const green100 = Color(0xFFC0DD97);
   static const green200 = Color(0xFF97C459);
   static const green400 = Color(0xFF639922);
@@ -59,7 +59,7 @@ class VecinalColors {
   static const green900 = Color(0xFF173404);
 
   // ── Purple (reuniones, eventos de comunidad)
-  static const purple50  = Color(0xFFEEEDFE);
+  static const purple50 = Color(0xFFEEEDFE);
   static const purple100 = Color(0xFFCECBF6);
   static const purple200 = Color(0xFFAFA9EC);
   static const purple400 = Color(0xFF7F77DD);
@@ -68,7 +68,7 @@ class VecinalColors {
   static const purple900 = Color(0xFF26215C);
 
   // ── Grises neutros
-  static const gray50  = Color(0xFFF1EFE8);
+  static const gray50 = Color(0xFFF1EFE8);
   static const gray100 = Color(0xFFD3D1C7);
   static const gray200 = Color(0xFFB4B2A9);
   static const gray400 = Color(0xFF888780);
@@ -87,100 +87,81 @@ class VecinalColors {
 
 class VecinalSemanticColors extends ThemeExtension<VecinalSemanticColors> {
   final Color // ── Módulo: Emergencias
-      emergencyBg,
+  emergencyBg,
       emergencyText,
       emergencyBorder,
       emergencyIcon,
-
       // ── Módulo: Avisos / Notificaciones
       noticeBg,
       noticeText,
       noticeBorder,
       noticeIcon,
-
       // ── Módulo: Reuniones / Eventos
       meetingBg,
       meetingText,
       meetingBorder,
       meetingIcon,
-
       // ── Módulo: Pagos
       paymentBg,
       paymentText,
       paymentBorder,
       paymentIcon,
-
       // ── Estado: Pago pendiente
       paymentPendingBg,
       paymentPendingText,
-
       // ── Estado: Pago completado
       paymentSuccessBg,
       paymentSuccessText,
-
       // ── Estado: Pago vencido
       paymentOverdueBg,
       paymentOverdueText,
-
       // ── Módulo: Tickets / Desperfectos
       ticketBg,
       ticketText,
       ticketBorder,
       ticketIcon,
-
       // ── Estado de ticket: Abierto
       ticketOpenBg,
       ticketOpenText,
-
       // ── Estado de ticket: En progreso
       ticketInProgressBg,
       ticketInProgressText,
-
       // ── Estado de ticket: Resuelto
       ticketResolvedBg,
       ticketResolvedText,
-
       // ── Contactos de emergencia
       contactBg,
       contactText,
       contactBorder,
-
       // ── Superficies generales
       surfacePrimary,
       surfaceSecondary,
       surfaceTertiary,
       surfaceCard,
       surfaceModal,
-
       // ── Texto
       textPrimary,
       textSecondary,
       textHint,
       textOnPrimary,
       textOnEmergency,
-
       // ── Bordes
       borderDefault,
       borderStrong,
       borderFocus,
-
       // ── Primario (brand)
       primaryDefault,
       primaryLight,
       primaryDark,
       primaryContainer,
       onPrimaryContainer,
-
       // ── Acción destructiva
       destructive,
       destructiveBg,
-
       // ── Divider
       divider,
-
       // ── Overlay / Scrim
       scrim,
-
       // ── Bottom nav / AppBar
       navBackground,
       navSelected,
@@ -377,7 +358,10 @@ class VecinalSemanticColors extends ThemeExtension<VecinalSemanticColors> {
   }
 
   @override
-  VecinalSemanticColors lerp(ThemeExtension<VecinalSemanticColors>? other, double t) {
+  VecinalSemanticColors lerp(
+    ThemeExtension<VecinalSemanticColors>? other,
+    double t,
+  ) {
     if (other is! VecinalSemanticColors) return this;
     return VecinalSemanticColors(
       emergencyBg: Color.lerp(emergencyBg, other.emergencyBg, t)!,
@@ -396,27 +380,71 @@ class VecinalSemanticColors extends ThemeExtension<VecinalSemanticColors> {
       paymentText: Color.lerp(paymentText, other.paymentText, t)!,
       paymentBorder: Color.lerp(paymentBorder, other.paymentBorder, t)!,
       paymentIcon: Color.lerp(paymentIcon, other.paymentIcon, t)!,
-      paymentPendingBg: Color.lerp(paymentPendingBg, other.paymentPendingBg, t)!,
-      paymentPendingText: Color.lerp(paymentPendingText, other.paymentPendingText, t)!,
-      paymentSuccessBg: Color.lerp(paymentSuccessBg, other.paymentSuccessBg, t)!,
-      paymentSuccessText: Color.lerp(paymentSuccessText, other.paymentSuccessText, t)!,
-      paymentOverdueBg: Color.lerp(paymentOverdueBg, other.paymentOverdueBg, t)!,
-      paymentOverdueText: Color.lerp(paymentOverdueText, other.paymentOverdueText, t)!,
+      paymentPendingBg: Color.lerp(
+        paymentPendingBg,
+        other.paymentPendingBg,
+        t,
+      )!,
+      paymentPendingText: Color.lerp(
+        paymentPendingText,
+        other.paymentPendingText,
+        t,
+      )!,
+      paymentSuccessBg: Color.lerp(
+        paymentSuccessBg,
+        other.paymentSuccessBg,
+        t,
+      )!,
+      paymentSuccessText: Color.lerp(
+        paymentSuccessText,
+        other.paymentSuccessText,
+        t,
+      )!,
+      paymentOverdueBg: Color.lerp(
+        paymentOverdueBg,
+        other.paymentOverdueBg,
+        t,
+      )!,
+      paymentOverdueText: Color.lerp(
+        paymentOverdueText,
+        other.paymentOverdueText,
+        t,
+      )!,
       ticketBg: Color.lerp(ticketBg, other.ticketBg, t)!,
       ticketText: Color.lerp(ticketText, other.ticketText, t)!,
       ticketBorder: Color.lerp(ticketBorder, other.ticketBorder, t)!,
       ticketIcon: Color.lerp(ticketIcon, other.ticketIcon, t)!,
       ticketOpenBg: Color.lerp(ticketOpenBg, other.ticketOpenBg, t)!,
       ticketOpenText: Color.lerp(ticketOpenText, other.ticketOpenText, t)!,
-      ticketInProgressBg: Color.lerp(ticketInProgressBg, other.ticketInProgressBg, t)!,
-      ticketInProgressText: Color.lerp(ticketInProgressText, other.ticketInProgressText, t)!,
-      ticketResolvedBg: Color.lerp(ticketResolvedBg, other.ticketResolvedBg, t)!,
-      ticketResolvedText: Color.lerp(ticketResolvedText, other.ticketResolvedText, t)!,
+      ticketInProgressBg: Color.lerp(
+        ticketInProgressBg,
+        other.ticketInProgressBg,
+        t,
+      )!,
+      ticketInProgressText: Color.lerp(
+        ticketInProgressText,
+        other.ticketInProgressText,
+        t,
+      )!,
+      ticketResolvedBg: Color.lerp(
+        ticketResolvedBg,
+        other.ticketResolvedBg,
+        t,
+      )!,
+      ticketResolvedText: Color.lerp(
+        ticketResolvedText,
+        other.ticketResolvedText,
+        t,
+      )!,
       contactBg: Color.lerp(contactBg, other.contactBg, t)!,
       contactText: Color.lerp(contactText, other.contactText, t)!,
       contactBorder: Color.lerp(contactBorder, other.contactBorder, t)!,
       surfacePrimary: Color.lerp(surfacePrimary, other.surfacePrimary, t)!,
-      surfaceSecondary: Color.lerp(surfaceSecondary, other.surfaceSecondary, t)!,
+      surfaceSecondary: Color.lerp(
+        surfaceSecondary,
+        other.surfaceSecondary,
+        t,
+      )!,
       surfaceTertiary: Color.lerp(surfaceTertiary, other.surfaceTertiary, t)!,
       surfaceCard: Color.lerp(surfaceCard, other.surfaceCard, t)!,
       surfaceModal: Color.lerp(surfaceModal, other.surfaceModal, t)!,
@@ -431,8 +459,16 @@ class VecinalSemanticColors extends ThemeExtension<VecinalSemanticColors> {
       primaryDefault: Color.lerp(primaryDefault, other.primaryDefault, t)!,
       primaryLight: Color.lerp(primaryLight, other.primaryLight, t)!,
       primaryDark: Color.lerp(primaryDark, other.primaryDark, t)!,
-      primaryContainer: Color.lerp(primaryContainer, other.primaryContainer, t)!,
-      onPrimaryContainer: Color.lerp(onPrimaryContainer, other.onPrimaryContainer, t)!,
+      primaryContainer: Color.lerp(
+        primaryContainer,
+        other.primaryContainer,
+        t,
+      )!,
+      onPrimaryContainer: Color.lerp(
+        onPrimaryContainer,
+        other.onPrimaryContainer,
+        t,
+      )!,
       destructive: Color.lerp(destructive, other.destructive, t)!,
       destructiveBg: Color.lerp(destructiveBg, other.destructiveBg, t)!,
       divider: Color.lerp(divider, other.divider, t)!,
@@ -450,96 +486,96 @@ class VecinalSemanticColors extends ThemeExtension<VecinalSemanticColors> {
 
 const vecinalLightColors = VecinalSemanticColors(
   // Emergencias
-  emergencyBg:       VecinalColors.red50,
-  emergencyText:     VecinalColors.red800,
-  emergencyBorder:   VecinalColors.red400,
-  emergencyIcon:     VecinalColors.red600,
+  emergencyBg: VecinalColors.red50,
+  emergencyText: VecinalColors.red800,
+  emergencyBorder: VecinalColors.red400,
+  emergencyIcon: VecinalColors.red600,
 
   // Avisos
-  noticeBg:          VecinalColors.amber50,
-  noticeText:        VecinalColors.amber800,
-  noticeBorder:      VecinalColors.amber200,
-  noticeIcon:        VecinalColors.amber400,
+  noticeBg: VecinalColors.amber50,
+  noticeText: VecinalColors.amber800,
+  noticeBorder: VecinalColors.amber200,
+  noticeIcon: VecinalColors.amber400,
 
   // Reuniones
-  meetingBg:         VecinalColors.purple50,
-  meetingText:       VecinalColors.purple800,
-  meetingBorder:     VecinalColors.purple200,
-  meetingIcon:       VecinalColors.purple600,
+  meetingBg: VecinalColors.purple50,
+  meetingText: VecinalColors.purple800,
+  meetingBorder: VecinalColors.purple200,
+  meetingIcon: VecinalColors.purple600,
 
   // Pagos (módulo general)
-  paymentBg:         VecinalColors.blue50,
-  paymentText:       VecinalColors.blue800,
-  paymentBorder:     VecinalColors.blue200,
-  paymentIcon:       VecinalColors.blue600,
+  paymentBg: VecinalColors.blue50,
+  paymentText: VecinalColors.blue800,
+  paymentBorder: VecinalColors.blue200,
+  paymentIcon: VecinalColors.blue600,
 
   // Estados de pago
-  paymentPendingBg:  VecinalColors.amber50,
+  paymentPendingBg: VecinalColors.amber50,
   paymentPendingText: VecinalColors.amber800,
-  paymentSuccessBg:  VecinalColors.green50,
+  paymentSuccessBg: VecinalColors.green50,
   paymentSuccessText: VecinalColors.green800,
-  paymentOverdueBg:  VecinalColors.red50,
+  paymentOverdueBg: VecinalColors.red50,
   paymentOverdueText: VecinalColors.red800,
 
   // Tickets (módulo general)
-  ticketBg:          VecinalColors.teal50,
-  ticketText:        VecinalColors.teal800,
-  ticketBorder:      VecinalColors.teal200,
-  ticketIcon:        VecinalColors.teal600,
+  ticketBg: VecinalColors.teal50,
+  ticketText: VecinalColors.teal800,
+  ticketBorder: VecinalColors.teal200,
+  ticketIcon: VecinalColors.teal600,
 
   // Estados de ticket
-  ticketOpenBg:      VecinalColors.blue50,
-  ticketOpenText:    VecinalColors.blue800,
+  ticketOpenBg: VecinalColors.blue50,
+  ticketOpenText: VecinalColors.blue800,
   ticketInProgressBg: VecinalColors.amber50,
   ticketInProgressText: VecinalColors.amber800,
-  ticketResolvedBg:  VecinalColors.green50,
+  ticketResolvedBg: VecinalColors.green50,
   ticketResolvedText: VecinalColors.green800,
 
   // Contactos de emergencia
-  contactBg:         VecinalColors.red50,
-  contactText:       VecinalColors.red800,
-  contactBorder:     VecinalColors.red200,
+  contactBg: VecinalColors.red50,
+  contactText: VecinalColors.red800,
+  contactBorder: VecinalColors.red200,
 
   // Superficies
-  surfacePrimary:    VecinalColors.white,
-  surfaceSecondary:  VecinalColors.gray50,
-  surfaceTertiary:   Color(0xFFF7F6F1),
-  surfaceCard:       VecinalColors.white,
-  surfaceModal:      VecinalColors.white,
+  surfacePrimary: VecinalColors.white,
+  surfaceSecondary: VecinalColors.gray50,
+  surfaceTertiary: Color(0xFFF7F6F1),
+  surfaceCard: VecinalColors.white,
+  surfaceModal: VecinalColors.white,
 
   // Texto
-  textPrimary:       VecinalColors.gray900,
-  textSecondary:     VecinalColors.gray600,
-  textHint:          VecinalColors.gray400,
-  textOnPrimary:     VecinalColors.white,
-  textOnEmergency:   VecinalColors.white,
+  textPrimary: VecinalColors.gray900,
+  textSecondary: VecinalColors.gray600,
+  textHint: VecinalColors.gray400,
+  textOnPrimary: VecinalColors.white,
+  textOnEmergency: VecinalColors.white,
 
   // Bordes
-  borderDefault:     VecinalColors.gray100,
-  borderStrong:      VecinalColors.gray200,
-  borderFocus:       VecinalColors.teal400,
+  borderDefault: VecinalColors.gray100,
+  borderStrong: VecinalColors.gray200,
+  borderFocus: VecinalColors.teal400,
 
   // Brand primario
-  primaryDefault:    VecinalColors.teal400,
-  primaryLight:      VecinalColors.teal200,
-  primaryDark:       VecinalColors.teal600,
-  primaryContainer:  VecinalColors.teal50,
+  primaryDefault: VecinalColors.teal400,
+  primaryLight: VecinalColors.teal200,
+  primaryDark: VecinalColors.teal600,
+  primaryContainer: VecinalColors.teal50,
   onPrimaryContainer: VecinalColors.teal800,
 
   // Destructivo
-  destructive:       VecinalColors.red600,
-  destructiveBg:     VecinalColors.red50,
+  destructive: VecinalColors.red600,
+  destructiveBg: VecinalColors.red50,
 
   // Divider
-  divider:           VecinalColors.gray100,
+  divider: VecinalColors.gray100,
 
   // Scrim
-  scrim:             Color(0x662C2C2A),
+  scrim: Color(0x662C2C2A),
 
   // Navegación
-  navBackground:     VecinalColors.white,
-  navSelected:       VecinalColors.teal400,
-  navUnselected:     VecinalColors.gray400,
+  navBackground: VecinalColors.white,
+  navSelected: VecinalColors.teal400,
+  navUnselected: VecinalColors.gray400,
 );
 
 // ─────────────────────────────────────────────
@@ -548,96 +584,96 @@ const vecinalLightColors = VecinalSemanticColors(
 
 const vecinalDarkColors = VecinalSemanticColors(
   // Emergencias
-  emergencyBg:       VecinalColors.red900,
-  emergencyText:     VecinalColors.red100,
-  emergencyBorder:   VecinalColors.red600,
-  emergencyIcon:     VecinalColors.red200,
+  emergencyBg: VecinalColors.red900,
+  emergencyText: VecinalColors.red100,
+  emergencyBorder: VecinalColors.red600,
+  emergencyIcon: VecinalColors.red200,
 
   // Avisos
-  noticeBg:          VecinalColors.amber900,
-  noticeText:        VecinalColors.amber100,
-  noticeBorder:      VecinalColors.amber600,
-  noticeIcon:        VecinalColors.amber200,
+  noticeBg: VecinalColors.amber900,
+  noticeText: VecinalColors.amber100,
+  noticeBorder: VecinalColors.amber600,
+  noticeIcon: VecinalColors.amber200,
 
   // Reuniones
-  meetingBg:         VecinalColors.purple900,
-  meetingText:       VecinalColors.purple100,
-  meetingBorder:     VecinalColors.purple600,
-  meetingIcon:       VecinalColors.purple200,
+  meetingBg: VecinalColors.purple900,
+  meetingText: VecinalColors.purple100,
+  meetingBorder: VecinalColors.purple600,
+  meetingIcon: VecinalColors.purple200,
 
   // Pagos (módulo general)
-  paymentBg:         VecinalColors.blue900,
-  paymentText:       VecinalColors.blue100,
-  paymentBorder:     VecinalColors.blue600,
-  paymentIcon:       VecinalColors.blue200,
+  paymentBg: VecinalColors.blue900,
+  paymentText: VecinalColors.blue100,
+  paymentBorder: VecinalColors.blue600,
+  paymentIcon: VecinalColors.blue200,
 
   // Estados de pago
-  paymentPendingBg:  VecinalColors.amber900,
+  paymentPendingBg: VecinalColors.amber900,
   paymentPendingText: VecinalColors.amber100,
-  paymentSuccessBg:  VecinalColors.green900,
+  paymentSuccessBg: VecinalColors.green900,
   paymentSuccessText: VecinalColors.green100,
-  paymentOverdueBg:  VecinalColors.red900,
+  paymentOverdueBg: VecinalColors.red900,
   paymentOverdueText: VecinalColors.red100,
 
   // Tickets (módulo general)
-  ticketBg:          VecinalColors.teal900,
-  ticketText:        VecinalColors.teal100,
-  ticketBorder:      VecinalColors.teal600,
-  ticketIcon:        VecinalColors.teal200,
+  ticketBg: VecinalColors.teal900,
+  ticketText: VecinalColors.teal100,
+  ticketBorder: VecinalColors.teal600,
+  ticketIcon: VecinalColors.teal200,
 
   // Estados de ticket
-  ticketOpenBg:      VecinalColors.blue900,
-  ticketOpenText:    VecinalColors.blue100,
+  ticketOpenBg: VecinalColors.blue900,
+  ticketOpenText: VecinalColors.blue100,
   ticketInProgressBg: VecinalColors.amber900,
   ticketInProgressText: VecinalColors.amber100,
-  ticketResolvedBg:  VecinalColors.green900,
+  ticketResolvedBg: VecinalColors.green900,
   ticketResolvedText: VecinalColors.green100,
 
   // Contactos de emergencia
-  contactBg:         VecinalColors.red900,
-  contactText:       VecinalColors.red100,
-  contactBorder:     VecinalColors.red600,
+  contactBg: VecinalColors.red900,
+  contactText: VecinalColors.red100,
+  contactBorder: VecinalColors.red600,
 
   // Superficies
-  surfacePrimary:    Color(0xFF1A1A18),
-  surfaceSecondary:  Color(0xFF222220),
-  surfaceTertiary:   Color(0xFF2A2A28),
-  surfaceCard:       Color(0xFF242422),
-  surfaceModal:      Color(0xFF2C2C2A),
+  surfacePrimary: Color(0xFF1A1A18),
+  surfaceSecondary: Color(0xFF222220),
+  surfaceTertiary: Color(0xFF2A2A28),
+  surfaceCard: Color(0xFF242422),
+  surfaceModal: Color(0xFF2C2C2A),
 
   // Texto
-  textPrimary:       VecinalColors.gray50,
-  textSecondary:     VecinalColors.gray200,
-  textHint:          VecinalColors.gray600,
-  textOnPrimary:     VecinalColors.white,
-  textOnEmergency:   VecinalColors.white,
+  textPrimary: VecinalColors.gray50,
+  textSecondary: VecinalColors.gray200,
+  textHint: VecinalColors.gray600,
+  textOnPrimary: VecinalColors.white,
+  textOnEmergency: VecinalColors.white,
 
   // Bordes
-  borderDefault:     Color(0xFF3A3A38),
-  borderStrong:      VecinalColors.gray600,
-  borderFocus:       VecinalColors.teal200,
+  borderDefault: Color(0xFF3A3A38),
+  borderStrong: VecinalColors.gray600,
+  borderFocus: VecinalColors.teal200,
 
   // Brand primario
-  primaryDefault:    VecinalColors.teal200,
-  primaryLight:      VecinalColors.teal100,
-  primaryDark:       VecinalColors.teal400,
-  primaryContainer:  VecinalColors.teal900,
+  primaryDefault: VecinalColors.teal200,
+  primaryLight: VecinalColors.teal100,
+  primaryDark: VecinalColors.teal400,
+  primaryContainer: VecinalColors.teal900,
   onPrimaryContainer: VecinalColors.teal100,
 
   // Destructivo
-  destructive:       VecinalColors.red200,
-  destructiveBg:     VecinalColors.red900,
+  destructive: VecinalColors.red200,
+  destructiveBg: VecinalColors.red900,
 
   // Divider
-  divider:           Color(0xFF333331),
+  divider: Color(0xFF333331),
 
   // Scrim
-  scrim:             Color(0xCC000000),
+  scrim: Color(0xCC000000),
 
   // Navegación
-  navBackground:     Color(0xFF1A1A18),
-  navSelected:       VecinalColors.teal200,
-  navUnselected:     VecinalColors.gray600,
+  navBackground: Color(0xFF1A1A18),
+  navSelected: VecinalColors.teal200,
+  navUnselected: VecinalColors.gray600,
 );
 
 // ─────────────────────────────────────────────
@@ -742,23 +778,23 @@ class VecinalTextStyles {
 
 class VecinalSpacing {
   VecinalSpacing._();
-  static const double xs   = 4;
-  static const double sm   = 8;
-  static const double md   = 12;
+  static const double xs = 4;
+  static const double sm = 8;
+  static const double md = 12;
   static const double base = 16;
-  static const double lg   = 20;
-  static const double xl   = 24;
-  static const double xxl  = 32;
+  static const double lg = 20;
+  static const double xl = 24;
+  static const double xxl = 32;
   static const double xxxl = 48;
 }
 
 class VecinalRadius {
   VecinalRadius._();
-  static const double xs   = 4;
-  static const double sm   = 8;
-  static const double md   = 12;
-  static const double lg   = 16;
-  static const double xl   = 20;
+  static const double xs = 4;
+  static const double sm = 8;
+  static const double md = 12;
+  static const double lg = 16;
+  static const double xl = 20;
   static const double full = 999;
 }
 
@@ -770,40 +806,20 @@ class VecinalShadows {
   VecinalShadows._();
 
   static const List<BoxShadow> cardLight = [
-    BoxShadow(
-      color: Color(0x0A000000),
-      blurRadius: 8,
-      offset: Offset(0, 2),
-    ),
-    BoxShadow(
-      color: Color(0x06000000),
-      blurRadius: 2,
-      offset: Offset(0, 1),
-    ),
+    BoxShadow(color: Color(0x0A000000), blurRadius: 8, offset: Offset(0, 2)),
+    BoxShadow(color: Color(0x06000000), blurRadius: 2, offset: Offset(0, 1)),
   ];
 
   static const List<BoxShadow> cardDark = [
-    BoxShadow(
-      color: Color(0x33000000),
-      blurRadius: 8,
-      offset: Offset(0, 2),
-    ),
+    BoxShadow(color: Color(0x33000000), blurRadius: 8, offset: Offset(0, 2)),
   ];
 
   static const List<BoxShadow> modal = [
-    BoxShadow(
-      color: Color(0x29000000),
-      blurRadius: 32,
-      offset: Offset(0, 8),
-    ),
+    BoxShadow(color: Color(0x29000000), blurRadius: 32, offset: Offset(0, 8)),
   ];
 
   static const List<BoxShadow> emergencyBanner = [
-    BoxShadow(
-      color: Color(0x33E24B4A),
-      blurRadius: 12,
-      offset: Offset(0, 4),
-    ),
+    BoxShadow(color: Color(0x33E24B4A), blurRadius: 12, offset: Offset(0, 4)),
   ];
 }
 
@@ -815,40 +831,40 @@ ThemeData vecinalLightTheme() {
   final c = vecinalLightColors;
 
   final colorScheme = ColorScheme(
-    brightness:           Brightness.light,
-    primary:              c.primaryDefault,
-    onPrimary:            c.textOnPrimary,
-    primaryContainer:     c.primaryContainer,
-    onPrimaryContainer:   c.onPrimaryContainer,
-    secondary:            VecinalColors.purple600,
-    onSecondary:          VecinalColors.white,
-    secondaryContainer:   VecinalColors.purple50,
+    brightness: Brightness.light,
+    primary: c.primaryDefault,
+    onPrimary: c.textOnPrimary,
+    primaryContainer: c.primaryContainer,
+    onPrimaryContainer: c.onPrimaryContainer,
+    secondary: VecinalColors.purple600,
+    onSecondary: VecinalColors.white,
+    secondaryContainer: VecinalColors.purple50,
     onSecondaryContainer: VecinalColors.purple800,
-    tertiary:             VecinalColors.amber400,
-    onTertiary:           VecinalColors.white,
-    tertiaryContainer:    VecinalColors.amber50,
-    onTertiaryContainer:  VecinalColors.amber800,
-    error:                c.destructive,
-    onError:              VecinalColors.white,
-    errorContainer:       c.destructiveBg,
-    onErrorContainer:     VecinalColors.red800,
-    surface:              c.surfacePrimary,
-    onSurface:            c.textPrimary,
-    onSurfaceVariant:     c.textSecondary,
-    outline:              c.borderDefault,
-    outlineVariant:       c.borderStrong,
-    shadow:               VecinalColors.black,
-    scrim:                c.scrim,
-    inverseSurface:       VecinalColors.gray900,
-    onInverseSurface:     VecinalColors.gray50,
-    inversePrimary:       VecinalColors.teal200,
-    surfaceTint:          c.primaryDefault,
+    tertiary: VecinalColors.amber400,
+    onTertiary: VecinalColors.white,
+    tertiaryContainer: VecinalColors.amber50,
+    onTertiaryContainer: VecinalColors.amber800,
+    error: c.destructive,
+    onError: VecinalColors.white,
+    errorContainer: c.destructiveBg,
+    onErrorContainer: VecinalColors.red800,
+    surface: c.surfacePrimary,
+    onSurface: c.textPrimary,
+    onSurfaceVariant: c.textSecondary,
+    outline: c.borderDefault,
+    outlineVariant: c.borderStrong,
+    shadow: VecinalColors.black,
+    scrim: c.scrim,
+    inverseSurface: VecinalColors.gray900,
+    onInverseSurface: VecinalColors.gray50,
+    inversePrimary: VecinalColors.teal200,
+    surfaceTint: c.primaryDefault,
   );
 
   return ThemeData(
-    useMaterial3:   true,
-    brightness:     Brightness.light,
-    colorScheme:    colorScheme,
+    useMaterial3: true,
+    brightness: Brightness.light,
+    colorScheme: colorScheme,
 
     // Registrar los colores semánticos personalizados en las extensiones del tema
     extensions: <ThemeExtension<dynamic>>[c],
@@ -858,33 +874,33 @@ ThemeData vecinalLightTheme() {
 
     // ── AppBar
     appBarTheme: AppBarTheme(
-      centerTitle:        true,
-      backgroundColor:    c.surfacePrimary,
-      foregroundColor:    c.textPrimary,
-      elevation:          0,
+      centerTitle: true,
+      backgroundColor: c.surfacePrimary,
+      foregroundColor: c.textPrimary,
+      elevation: 0,
       scrolledUnderElevation: 1,
-      shadowColor:        c.scrim,
-      titleTextStyle:     VecinalTextStyles.headlineSmall.copyWith(
+      shadowColor: c.scrim,
+      titleTextStyle: VecinalTextStyles.headlineSmall.copyWith(
         color: c.textPrimary,
       ),
-      iconTheme:          IconThemeData(color: c.textPrimary, size: 24),
+      iconTheme: IconThemeData(color: c.textPrimary, size: 24),
     ),
 
     // ── Bottom Navigation Bar
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
-      backgroundColor:      c.navBackground,
-      selectedItemColor:    c.navSelected,
-      unselectedItemColor:  c.navUnselected,
-      type:                 BottomNavigationBarType.fixed,
-      elevation:            8,
-      selectedLabelStyle:   VecinalTextStyles.labelSmall,
+      backgroundColor: c.navBackground,
+      selectedItemColor: c.navSelected,
+      unselectedItemColor: c.navUnselected,
+      type: BottomNavigationBarType.fixed,
+      elevation: 8,
+      selectedLabelStyle: VecinalTextStyles.labelSmall,
       unselectedLabelStyle: VecinalTextStyles.labelSmall,
     ),
 
     // ── NavigationBar (M3)
     navigationBarTheme: NavigationBarThemeData(
-      backgroundColor:          c.navBackground,
-      indicatorColor:           c.primaryContainer,
+      backgroundColor: c.navBackground,
+      indicatorColor: c.primaryContainer,
       iconTheme: WidgetStateProperty.resolveWith((states) {
         if (states.contains(WidgetState.selected)) {
           return IconThemeData(color: c.navSelected, size: 24);
@@ -901,31 +917,31 @@ ThemeData vecinalLightTheme() {
 
     // ── Cards
     cardTheme: CardThemeData(
-      color:        c.surfaceCard,
-      elevation:    0,
-      shape:        RoundedRectangleBorder(
+      color: c.surfaceCard,
+      elevation: 0,
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(VecinalRadius.lg),
         side: BorderSide(color: c.borderDefault, width: 0.5),
       ),
-      margin:       const EdgeInsets.all(0),
+      margin: const EdgeInsets.all(0),
     ),
 
     // ── ElevatedButton
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        backgroundColor:   c.primaryDefault,
-        foregroundColor:   c.textOnPrimary,
+        backgroundColor: c.primaryDefault,
+        foregroundColor: c.textOnPrimary,
         disabledBackgroundColor: c.borderDefault,
         disabledForegroundColor: c.textHint,
-        elevation:         0,
-        padding:           const EdgeInsets.symmetric(
+        elevation: 0,
+        padding: const EdgeInsets.symmetric(
           horizontal: VecinalSpacing.xl,
           vertical: VecinalSpacing.md,
         ),
-        shape:             RoundedRectangleBorder(
+        shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(VecinalRadius.md),
         ),
-        textStyle:         VecinalTextStyles.labelLarge,
+        textStyle: VecinalTextStyles.labelLarge,
       ),
     ),
 
@@ -933,15 +949,15 @@ ThemeData vecinalLightTheme() {
     outlinedButtonTheme: OutlinedButtonThemeData(
       style: OutlinedButton.styleFrom(
         foregroundColor: c.primaryDefault,
-        side:            BorderSide(color: c.primaryDefault, width: 1.5),
-        padding:         const EdgeInsets.symmetric(
+        side: BorderSide(color: c.primaryDefault, width: 1.5),
+        padding: const EdgeInsets.symmetric(
           horizontal: VecinalSpacing.xl,
           vertical: VecinalSpacing.md,
         ),
-        shape:           RoundedRectangleBorder(
+        shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(VecinalRadius.md),
         ),
-        textStyle:       VecinalTextStyles.labelLarge,
+        textStyle: VecinalTextStyles.labelLarge,
       ),
     ),
 
@@ -949,8 +965,8 @@ ThemeData vecinalLightTheme() {
     textButtonTheme: TextButtonThemeData(
       style: TextButton.styleFrom(
         foregroundColor: c.primaryDefault,
-        textStyle:       VecinalTextStyles.labelLarge,
-        padding:         const EdgeInsets.symmetric(
+        textStyle: VecinalTextStyles.labelLarge,
+        padding: const EdgeInsets.symmetric(
           horizontal: VecinalSpacing.sm,
           vertical: VecinalSpacing.xs,
         ),
@@ -962,12 +978,12 @@ ThemeData vecinalLightTheme() {
       style: FilledButton.styleFrom(
         backgroundColor: c.destructive,
         foregroundColor: VecinalColors.white,
-        textStyle:       VecinalTextStyles.labelLarge,
-        padding:         const EdgeInsets.symmetric(
+        textStyle: VecinalTextStyles.labelLarge,
+        padding: const EdgeInsets.symmetric(
           horizontal: VecinalSpacing.xl,
           vertical: VecinalSpacing.md,
         ),
-        shape:           RoundedRectangleBorder(
+        shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(VecinalRadius.md),
         ),
       ),
@@ -975,19 +991,19 @@ ThemeData vecinalLightTheme() {
 
     // ── FAB
     floatingActionButtonTheme: FloatingActionButtonThemeData(
-      backgroundColor:   c.primaryDefault,
-      foregroundColor:   c.textOnPrimary,
-      elevation:         2,
-      shape:             RoundedRectangleBorder(
+      backgroundColor: c.primaryDefault,
+      foregroundColor: c.textOnPrimary,
+      elevation: 2,
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(VecinalRadius.lg),
       ),
     ),
 
     // ── InputDecoration
     inputDecorationTheme: InputDecorationTheme(
-      filled:            true,
-      fillColor:         c.surfaceSecondary,
-      contentPadding:    const EdgeInsets.symmetric(
+      filled: true,
+      fillColor: c.surfaceSecondary,
+      contentPadding: const EdgeInsets.symmetric(
         horizontal: VecinalSpacing.base,
         vertical: VecinalSpacing.md,
       ),
@@ -1007,62 +1023,54 @@ ThemeData vecinalLightTheme() {
         borderRadius: BorderRadius.circular(VecinalRadius.md),
         borderSide: BorderSide(color: c.destructive, width: 1),
       ),
-      hintStyle:         VecinalTextStyles.bodyMedium.copyWith(
-        color: c.textHint,
-      ),
-      labelStyle:        VecinalTextStyles.bodyMedium.copyWith(
-        color: c.textSecondary,
-      ),
-      prefixIconColor:   c.textSecondary,
-      suffixIconColor:   c.textSecondary,
+      hintStyle: VecinalTextStyles.bodyMedium.copyWith(color: c.textHint),
+      labelStyle: VecinalTextStyles.bodyMedium.copyWith(color: c.textSecondary),
+      prefixIconColor: c.textSecondary,
+      suffixIconColor: c.textSecondary,
     ),
 
     // ── Chip
     chipTheme: ChipThemeData(
-      backgroundColor:        c.surfaceSecondary,
-      selectedColor:          c.primaryContainer,
-      disabledColor:          c.borderDefault,
-      labelStyle:             VecinalTextStyles.labelMedium.copyWith(
+      backgroundColor: c.surfaceSecondary,
+      selectedColor: c.primaryContainer,
+      disabledColor: c.borderDefault,
+      labelStyle: VecinalTextStyles.labelMedium.copyWith(
         color: c.textSecondary,
       ),
-      secondaryLabelStyle:    VecinalTextStyles.labelMedium.copyWith(
+      secondaryLabelStyle: VecinalTextStyles.labelMedium.copyWith(
         color: c.onPrimaryContainer,
       ),
-      padding:                const EdgeInsets.symmetric(
+      padding: const EdgeInsets.symmetric(
         horizontal: VecinalSpacing.sm,
         vertical: VecinalSpacing.xs,
       ),
-      shape:                  RoundedRectangleBorder(
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(VecinalRadius.full),
         side: BorderSide(color: c.borderDefault, width: 0.5),
       ),
-      elevation:              0,
+      elevation: 0,
     ),
 
     // ── Divider
-    dividerTheme: DividerThemeData(
-      color:     c.divider,
-      thickness: 0.5,
-      space:     0,
-    ),
+    dividerTheme: DividerThemeData(color: c.divider, thickness: 0.5, space: 0),
 
     // ── ListTile
     listTileTheme: ListTileThemeData(
-      tileColor:         Colors.transparent,
+      tileColor: Colors.transparent,
       selectedTileColor: c.primaryContainer,
-      iconColor:         c.textSecondary,
-      textColor:         c.textPrimary,
+      iconColor: c.textSecondary,
+      textColor: c.textPrimary,
       subtitleTextStyle: VecinalTextStyles.bodySmall.copyWith(
         color: c.textSecondary,
       ),
-      titleTextStyle:    VecinalTextStyles.bodyMedium.copyWith(
+      titleTextStyle: VecinalTextStyles.bodyMedium.copyWith(
         color: c.textPrimary,
       ),
-      contentPadding:    const EdgeInsets.symmetric(
+      contentPadding: const EdgeInsets.symmetric(
         horizontal: VecinalSpacing.base,
         vertical: VecinalSpacing.xs,
       ),
-      shape:             RoundedRectangleBorder(
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(VecinalRadius.md),
       ),
     ),
@@ -1070,11 +1078,11 @@ ThemeData vecinalLightTheme() {
     // ── Dialog
     dialogTheme: DialogThemeData(
       backgroundColor: c.surfaceModal,
-      elevation:       0,
-      shape:           RoundedRectangleBorder(
+      elevation: 0,
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(VecinalRadius.xl),
       ),
-      titleTextStyle:  VecinalTextStyles.headlineSmall.copyWith(
+      titleTextStyle: VecinalTextStyles.headlineSmall.copyWith(
         color: c.textPrimary,
       ),
       contentTextStyle: VecinalTextStyles.bodyMedium.copyWith(
@@ -1084,10 +1092,10 @@ ThemeData vecinalLightTheme() {
 
     // ── BottomSheet
     bottomSheetTheme: BottomSheetThemeData(
-      backgroundColor:    c.surfaceModal,
+      backgroundColor: c.surfaceModal,
       modalBackgroundColor: c.surfaceModal,
-      elevation:          0,
-      shape:              RoundedRectangleBorder(
+      elevation: 0,
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(VecinalRadius.xl),
         ),
@@ -1096,13 +1104,13 @@ ThemeData vecinalLightTheme() {
 
     // ── SnackBar
     snackBarTheme: SnackBarThemeData(
-      backgroundColor:  VecinalColors.gray900,
+      backgroundColor: VecinalColors.gray900,
       contentTextStyle: VecinalTextStyles.bodyMedium.copyWith(
         color: VecinalColors.gray50,
       ),
-      actionTextColor:  VecinalColors.teal200,
-      behavior:         SnackBarBehavior.floating,
-      shape:            RoundedRectangleBorder(
+      actionTextColor: VecinalColors.teal200,
+      behavior: SnackBarBehavior.floating,
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(VecinalRadius.md),
       ),
     ),
@@ -1142,49 +1150,59 @@ ThemeData vecinalLightTheme() {
 
     // ── Tabs
     tabBarTheme: TabBarThemeData(
-      labelColor:         c.primaryDefault,
+      labelColor: c.primaryDefault,
       unselectedLabelColor: c.textSecondary,
-      indicatorColor:     c.primaryDefault,
-      indicatorSize:      TabBarIndicatorSize.tab,
-      labelStyle:         VecinalTextStyles.labelLarge,
+      indicatorColor: c.primaryDefault,
+      indicatorSize: TabBarIndicatorSize.tab,
+      labelStyle: VecinalTextStyles.labelLarge,
       unselectedLabelStyle: VecinalTextStyles.labelLarge,
-      dividerColor:       c.divider,
+      dividerColor: c.divider,
     ),
 
     // ── ProgressIndicator
     progressIndicatorTheme: ProgressIndicatorThemeData(
-      color:            c.primaryDefault,
+      color: c.primaryDefault,
       linearTrackColor: c.primaryContainer,
     ),
 
     // ── Badge
     badgeTheme: BadgeThemeData(
       backgroundColor: c.destructive,
-      textColor:       VecinalColors.white,
-      textStyle:       VecinalTextStyles.badge,
-      padding:         const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      textColor: VecinalColors.white,
+      textStyle: VecinalTextStyles.badge,
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
     ),
 
     // ── IconButton
     iconButtonTheme: IconButtonThemeData(
       style: IconButton.styleFrom(
         foregroundColor: c.textSecondary,
-        highlightColor:  c.primaryContainer,
+        highlightColor: c.primaryContainer,
       ),
     ),
 
     // ── Typography
     textTheme: TextTheme(
-      displayLarge:   VecinalTextStyles.displayLarge.copyWith(color: c.textPrimary),
-      headlineLarge:  VecinalTextStyles.headlineLarge.copyWith(color: c.textPrimary),
-      headlineMedium: VecinalTextStyles.headlineMedium.copyWith(color: c.textPrimary),
-      headlineSmall:  VecinalTextStyles.headlineSmall.copyWith(color: c.textPrimary),
-      bodyLarge:      VecinalTextStyles.bodyLarge.copyWith(color: c.textPrimary),
-      bodyMedium:     VecinalTextStyles.bodyMedium.copyWith(color: c.textPrimary),
-      bodySmall:      VecinalTextStyles.bodySmall.copyWith(color: c.textSecondary),
-      labelLarge:     VecinalTextStyles.labelLarge.copyWith(color: c.textPrimary),
-      labelMedium:    VecinalTextStyles.labelMedium.copyWith(color: c.textSecondary),
-      labelSmall:     VecinalTextStyles.labelSmall.copyWith(color: c.textSecondary),
+      displayLarge: VecinalTextStyles.displayLarge.copyWith(
+        color: c.textPrimary,
+      ),
+      headlineLarge: VecinalTextStyles.headlineLarge.copyWith(
+        color: c.textPrimary,
+      ),
+      headlineMedium: VecinalTextStyles.headlineMedium.copyWith(
+        color: c.textPrimary,
+      ),
+      headlineSmall: VecinalTextStyles.headlineSmall.copyWith(
+        color: c.textPrimary,
+      ),
+      bodyLarge: VecinalTextStyles.bodyLarge.copyWith(color: c.textPrimary),
+      bodyMedium: VecinalTextStyles.bodyMedium.copyWith(color: c.textPrimary),
+      bodySmall: VecinalTextStyles.bodySmall.copyWith(color: c.textSecondary),
+      labelLarge: VecinalTextStyles.labelLarge.copyWith(color: c.textPrimary),
+      labelMedium: VecinalTextStyles.labelMedium.copyWith(
+        color: c.textSecondary,
+      ),
+      labelSmall: VecinalTextStyles.labelSmall.copyWith(color: c.textSecondary),
     ),
   );
 }
@@ -1197,40 +1215,40 @@ ThemeData vecinalDarkTheme() {
   final c = vecinalDarkColors;
 
   final colorScheme = ColorScheme(
-    brightness:           Brightness.dark,
-    primary:              c.primaryDefault,
-    onPrimary:            VecinalColors.teal900,
-    primaryContainer:     c.primaryContainer,
-    onPrimaryContainer:   c.onPrimaryContainer,
-    secondary:            VecinalColors.purple200,
-    onSecondary:          VecinalColors.purple900,
-    secondaryContainer:   VecinalColors.purple900,
+    brightness: Brightness.dark,
+    primary: c.primaryDefault,
+    onPrimary: VecinalColors.teal900,
+    primaryContainer: c.primaryContainer,
+    onPrimaryContainer: c.onPrimaryContainer,
+    secondary: VecinalColors.purple200,
+    onSecondary: VecinalColors.purple900,
+    secondaryContainer: VecinalColors.purple900,
     onSecondaryContainer: VecinalColors.purple100,
-    tertiary:             VecinalColors.amber200,
-    onTertiary:           VecinalColors.amber900,
-    tertiaryContainer:    VecinalColors.amber900,
-    onTertiaryContainer:  VecinalColors.amber100,
-    error:                c.destructive,
-    onError:              VecinalColors.red900,
-    errorContainer:       c.destructiveBg,
-    onErrorContainer:     VecinalColors.red100,
-    surface:              c.surfacePrimary,
-    onSurface:            c.textPrimary,
-    onSurfaceVariant:     c.textSecondary,
-    outline:              c.borderDefault,
-    outlineVariant:       c.borderStrong,
-    shadow:               VecinalColors.black,
-    scrim:                c.scrim,
-    inverseSurface:       VecinalColors.gray100,
-    onInverseSurface:     VecinalColors.gray900,
-    inversePrimary:       VecinalColors.teal600,
-    surfaceTint:          c.primaryDefault,
+    tertiary: VecinalColors.amber200,
+    onTertiary: VecinalColors.amber900,
+    tertiaryContainer: VecinalColors.amber900,
+    onTertiaryContainer: VecinalColors.amber100,
+    error: c.destructive,
+    onError: VecinalColors.red900,
+    errorContainer: c.destructiveBg,
+    onErrorContainer: VecinalColors.red100,
+    surface: c.surfacePrimary,
+    onSurface: c.textPrimary,
+    onSurfaceVariant: c.textSecondary,
+    outline: c.borderDefault,
+    outlineVariant: c.borderStrong,
+    shadow: VecinalColors.black,
+    scrim: c.scrim,
+    inverseSurface: VecinalColors.gray100,
+    onInverseSurface: VecinalColors.gray900,
+    inversePrimary: VecinalColors.teal600,
+    surfaceTint: c.primaryDefault,
   );
 
   return ThemeData(
-    useMaterial3:   true,
-    brightness:     Brightness.dark,
-    colorScheme:    colorScheme,
+    useMaterial3: true,
+    brightness: Brightness.dark,
+    colorScheme: colorScheme,
 
     // Registrar los colores semánticos personalizados en las extensiones del tema
     extensions: <ThemeExtension<dynamic>>[c],
@@ -1238,31 +1256,31 @@ ThemeData vecinalDarkTheme() {
     scaffoldBackgroundColor: c.surfaceTertiary,
 
     appBarTheme: AppBarTheme(
-      centerTitle:        true,
-      backgroundColor:    c.surfacePrimary,
-      foregroundColor:    c.textPrimary,
-      elevation:          0,
+      centerTitle: true,
+      backgroundColor: c.surfacePrimary,
+      foregroundColor: c.textPrimary,
+      elevation: 0,
       scrolledUnderElevation: 1,
-      shadowColor:        c.scrim,
-      titleTextStyle:     VecinalTextStyles.headlineSmall.copyWith(
+      shadowColor: c.scrim,
+      titleTextStyle: VecinalTextStyles.headlineSmall.copyWith(
         color: c.textPrimary,
       ),
-      iconTheme:          IconThemeData(color: c.textPrimary, size: 24),
+      iconTheme: IconThemeData(color: c.textPrimary, size: 24),
     ),
 
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
-      backgroundColor:      c.navBackground,
-      selectedItemColor:    c.navSelected,
-      unselectedItemColor:  c.navUnselected,
-      type:                 BottomNavigationBarType.fixed,
-      elevation:            8,
-      selectedLabelStyle:   VecinalTextStyles.labelSmall,
+      backgroundColor: c.navBackground,
+      selectedItemColor: c.navSelected,
+      unselectedItemColor: c.navUnselected,
+      type: BottomNavigationBarType.fixed,
+      elevation: 8,
+      selectedLabelStyle: VecinalTextStyles.labelSmall,
       unselectedLabelStyle: VecinalTextStyles.labelSmall,
     ),
 
     navigationBarTheme: NavigationBarThemeData(
-      backgroundColor:          c.navBackground,
-      indicatorColor:           c.primaryContainer,
+      backgroundColor: c.navBackground,
+      indicatorColor: c.primaryContainer,
       iconTheme: WidgetStateProperty.resolveWith((states) {
         if (states.contains(WidgetState.selected)) {
           return IconThemeData(color: c.navSelected, size: 24);
@@ -1278,53 +1296,53 @@ ThemeData vecinalDarkTheme() {
     ),
 
     cardTheme: CardThemeData(
-      color:        c.surfaceCard,
-      elevation:    0,
-      shape:        RoundedRectangleBorder(
+      color: c.surfaceCard,
+      elevation: 0,
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(VecinalRadius.lg),
         side: BorderSide(color: c.borderDefault, width: 0.5),
       ),
-      margin:       const EdgeInsets.all(0),
+      margin: const EdgeInsets.all(0),
     ),
 
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        backgroundColor:   c.primaryDefault,
-        foregroundColor:   VecinalColors.teal900,
+        backgroundColor: c.primaryDefault,
+        foregroundColor: VecinalColors.teal900,
         disabledBackgroundColor: c.borderDefault,
         disabledForegroundColor: c.textHint,
-        elevation:         0,
-        padding:           const EdgeInsets.symmetric(
+        elevation: 0,
+        padding: const EdgeInsets.symmetric(
           horizontal: VecinalSpacing.xl,
           vertical: VecinalSpacing.md,
         ),
-        shape:             RoundedRectangleBorder(
+        shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(VecinalRadius.md),
         ),
-        textStyle:         VecinalTextStyles.labelLarge,
+        textStyle: VecinalTextStyles.labelLarge,
       ),
     ),
 
     outlinedButtonTheme: OutlinedButtonThemeData(
       style: OutlinedButton.styleFrom(
         foregroundColor: c.primaryDefault,
-        side:            BorderSide(color: c.primaryDefault, width: 1.5),
-        padding:         const EdgeInsets.symmetric(
+        side: BorderSide(color: c.primaryDefault, width: 1.5),
+        padding: const EdgeInsets.symmetric(
           horizontal: VecinalSpacing.xl,
           vertical: VecinalSpacing.md,
         ),
-        shape:           RoundedRectangleBorder(
+        shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(VecinalRadius.md),
         ),
-        textStyle:       VecinalTextStyles.labelLarge,
+        textStyle: VecinalTextStyles.labelLarge,
       ),
     ),
 
     textButtonTheme: TextButtonThemeData(
       style: TextButton.styleFrom(
         foregroundColor: c.primaryDefault,
-        textStyle:       VecinalTextStyles.labelLarge,
-        padding:         const EdgeInsets.symmetric(
+        textStyle: VecinalTextStyles.labelLarge,
+        padding: const EdgeInsets.symmetric(
           horizontal: VecinalSpacing.sm,
           vertical: VecinalSpacing.xs,
         ),
@@ -1335,30 +1353,30 @@ ThemeData vecinalDarkTheme() {
       style: FilledButton.styleFrom(
         backgroundColor: c.destructive,
         foregroundColor: VecinalColors.red900,
-        textStyle:       VecinalTextStyles.labelLarge,
-        padding:         const EdgeInsets.symmetric(
+        textStyle: VecinalTextStyles.labelLarge,
+        padding: const EdgeInsets.symmetric(
           horizontal: VecinalSpacing.xl,
           vertical: VecinalSpacing.md,
         ),
-        shape:           RoundedRectangleBorder(
+        shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(VecinalRadius.md),
         ),
       ),
     ),
 
     floatingActionButtonTheme: FloatingActionButtonThemeData(
-      backgroundColor:   c.primaryDefault,
-      foregroundColor:   VecinalColors.teal900,
-      elevation:         2,
-      shape:             RoundedRectangleBorder(
+      backgroundColor: c.primaryDefault,
+      foregroundColor: VecinalColors.teal900,
+      elevation: 2,
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(VecinalRadius.lg),
       ),
     ),
 
     inputDecorationTheme: InputDecorationTheme(
-      filled:            true,
-      fillColor:         c.surfaceSecondary,
-      contentPadding:    const EdgeInsets.symmetric(
+      filled: true,
+      fillColor: c.surfaceSecondary,
+      contentPadding: const EdgeInsets.symmetric(
         horizontal: VecinalSpacing.base,
         vertical: VecinalSpacing.md,
       ),
@@ -1378,70 +1396,62 @@ ThemeData vecinalDarkTheme() {
         borderRadius: BorderRadius.circular(VecinalRadius.md),
         borderSide: BorderSide(color: c.destructive, width: 1),
       ),
-      hintStyle:         VecinalTextStyles.bodyMedium.copyWith(
-        color: c.textHint,
-      ),
-      labelStyle:        VecinalTextStyles.bodyMedium.copyWith(
-        color: c.textSecondary,
-      ),
-      prefixIconColor:   c.textSecondary,
-      suffixIconColor:   c.textSecondary,
+      hintStyle: VecinalTextStyles.bodyMedium.copyWith(color: c.textHint),
+      labelStyle: VecinalTextStyles.bodyMedium.copyWith(color: c.textSecondary),
+      prefixIconColor: c.textSecondary,
+      suffixIconColor: c.textSecondary,
     ),
 
     chipTheme: ChipThemeData(
-      backgroundColor:        c.surfaceSecondary,
-      selectedColor:          c.primaryContainer,
-      disabledColor:          c.borderDefault,
-      labelStyle:             VecinalTextStyles.labelMedium.copyWith(
+      backgroundColor: c.surfaceSecondary,
+      selectedColor: c.primaryContainer,
+      disabledColor: c.borderDefault,
+      labelStyle: VecinalTextStyles.labelMedium.copyWith(
         color: c.textSecondary,
       ),
-      secondaryLabelStyle:    VecinalTextStyles.labelMedium.copyWith(
+      secondaryLabelStyle: VecinalTextStyles.labelMedium.copyWith(
         color: c.onPrimaryContainer,
       ),
-      padding:                const EdgeInsets.symmetric(
+      padding: const EdgeInsets.symmetric(
         horizontal: VecinalSpacing.sm,
         vertical: VecinalSpacing.xs,
       ),
-      shape:                  RoundedRectangleBorder(
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(VecinalRadius.full),
         side: BorderSide(color: c.borderDefault, width: 0.5),
       ),
-      elevation:              0,
+      elevation: 0,
     ),
 
-    dividerTheme: DividerThemeData(
-      color:     c.divider,
-      thickness: 0.5,
-      space:     0,
-    ),
+    dividerTheme: DividerThemeData(color: c.divider, thickness: 0.5, space: 0),
 
     listTileTheme: ListTileThemeData(
-      tileColor:         Colors.transparent,
+      tileColor: Colors.transparent,
       selectedTileColor: c.primaryContainer,
-      iconColor:         c.textSecondary,
-      textColor:         c.textPrimary,
+      iconColor: c.textSecondary,
+      textColor: c.textPrimary,
       subtitleTextStyle: VecinalTextStyles.bodySmall.copyWith(
         color: c.textSecondary,
       ),
-      titleTextStyle:    VecinalTextStyles.bodyMedium.copyWith(
+      titleTextStyle: VecinalTextStyles.bodyMedium.copyWith(
         color: c.textPrimary,
       ),
-      contentPadding:    const EdgeInsets.symmetric(
+      contentPadding: const EdgeInsets.symmetric(
         horizontal: VecinalSpacing.base,
         vertical: VecinalSpacing.xs,
       ),
-      shape:             RoundedRectangleBorder(
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(VecinalRadius.md),
       ),
     ),
 
     dialogTheme: DialogThemeData(
       backgroundColor: c.surfaceModal,
-      elevation:       0,
-      shape:           RoundedRectangleBorder(
+      elevation: 0,
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(VecinalRadius.xl),
       ),
-      titleTextStyle:  VecinalTextStyles.headlineSmall.copyWith(
+      titleTextStyle: VecinalTextStyles.headlineSmall.copyWith(
         color: c.textPrimary,
       ),
       contentTextStyle: VecinalTextStyles.bodyMedium.copyWith(
@@ -1450,10 +1460,10 @@ ThemeData vecinalDarkTheme() {
     ),
 
     bottomSheetTheme: BottomSheetThemeData(
-      backgroundColor:    c.surfaceModal,
+      backgroundColor: c.surfaceModal,
       modalBackgroundColor: c.surfaceModal,
-      elevation:          0,
-      shape:              RoundedRectangleBorder(
+      elevation: 0,
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(VecinalRadius.xl),
         ),
@@ -1461,13 +1471,13 @@ ThemeData vecinalDarkTheme() {
     ),
 
     snackBarTheme: SnackBarThemeData(
-      backgroundColor:  VecinalColors.gray100,
+      backgroundColor: VecinalColors.gray100,
       contentTextStyle: VecinalTextStyles.bodyMedium.copyWith(
         color: VecinalColors.gray900,
       ),
-      actionTextColor:  VecinalColors.teal600,
-      behavior:         SnackBarBehavior.floating,
-      shape:            RoundedRectangleBorder(
+      actionTextColor: VecinalColors.teal600,
+      behavior: SnackBarBehavior.floating,
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(VecinalRadius.md),
       ),
     ),
@@ -1503,45 +1513,55 @@ ThemeData vecinalDarkTheme() {
     ),
 
     tabBarTheme: TabBarThemeData(
-      labelColor:         c.primaryDefault,
+      labelColor: c.primaryDefault,
       unselectedLabelColor: c.textSecondary,
-      indicatorColor:     c.primaryDefault,
-      indicatorSize:      TabBarIndicatorSize.tab,
-      labelStyle:         VecinalTextStyles.labelLarge,
+      indicatorColor: c.primaryDefault,
+      indicatorSize: TabBarIndicatorSize.tab,
+      labelStyle: VecinalTextStyles.labelLarge,
       unselectedLabelStyle: VecinalTextStyles.labelLarge,
-      dividerColor:       c.divider,
+      dividerColor: c.divider,
     ),
 
     progressIndicatorTheme: ProgressIndicatorThemeData(
-      color:            c.primaryDefault,
+      color: c.primaryDefault,
       linearTrackColor: c.primaryContainer,
     ),
 
     badgeTheme: BadgeThemeData(
       backgroundColor: c.destructive,
-      textColor:       VecinalColors.red900,
-      textStyle:       VecinalTextStyles.badge,
-      padding:         const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      textColor: VecinalColors.red900,
+      textStyle: VecinalTextStyles.badge,
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
     ),
 
     iconButtonTheme: IconButtonThemeData(
       style: IconButton.styleFrom(
         foregroundColor: c.textSecondary,
-        highlightColor:  c.primaryContainer,
+        highlightColor: c.primaryContainer,
       ),
     ),
 
     textTheme: TextTheme(
-      displayLarge:   VecinalTextStyles.displayLarge.copyWith(color: c.textPrimary),
-      headlineLarge:  VecinalTextStyles.headlineLarge.copyWith(color: c.textPrimary),
-      headlineMedium: VecinalTextStyles.headlineMedium.copyWith(color: c.textPrimary),
-      headlineSmall:  VecinalTextStyles.headlineSmall.copyWith(color: c.textPrimary),
-      bodyLarge:      VecinalTextStyles.bodyLarge.copyWith(color: c.textPrimary),
-      bodyMedium:     VecinalTextStyles.bodyMedium.copyWith(color: c.textPrimary),
-      bodySmall:      VecinalTextStyles.bodySmall.copyWith(color: c.textSecondary),
-      labelLarge:     VecinalTextStyles.labelLarge.copyWith(color: c.textPrimary),
-      labelMedium:    VecinalTextStyles.labelMedium.copyWith(color: c.textSecondary),
-      labelSmall:     VecinalTextStyles.labelSmall.copyWith(color: c.textSecondary),
+      displayLarge: VecinalTextStyles.displayLarge.copyWith(
+        color: c.textPrimary,
+      ),
+      headlineLarge: VecinalTextStyles.headlineLarge.copyWith(
+        color: c.textPrimary,
+      ),
+      headlineMedium: VecinalTextStyles.headlineMedium.copyWith(
+        color: c.textPrimary,
+      ),
+      headlineSmall: VecinalTextStyles.headlineSmall.copyWith(
+        color: c.textPrimary,
+      ),
+      bodyLarge: VecinalTextStyles.bodyLarge.copyWith(color: c.textPrimary),
+      bodyMedium: VecinalTextStyles.bodyMedium.copyWith(color: c.textPrimary),
+      bodySmall: VecinalTextStyles.bodySmall.copyWith(color: c.textSecondary),
+      labelLarge: VecinalTextStyles.labelLarge.copyWith(color: c.textPrimary),
+      labelMedium: VecinalTextStyles.labelMedium.copyWith(
+        color: c.textSecondary,
+      ),
+      labelSmall: VecinalTextStyles.labelSmall.copyWith(color: c.textSecondary),
     ),
   );
 }
@@ -1570,6 +1590,6 @@ ThemeData vecinalDarkTheme() {
 //  )
 
 extension VecinalThemeExtension on BuildContext {
-  VecinalSemanticColors get vecinalColors => 
+  VecinalSemanticColors get vecinalColors =>
       Theme.of(this).extension<VecinalSemanticColors>() ?? vecinalLightColors;
 }

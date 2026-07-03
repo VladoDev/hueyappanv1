@@ -15,11 +15,13 @@ abstract class NotificationModel with _$NotificationModel {
     required String body,
     required String type,
     required Map<String, dynamic> data,
-    @JsonKey(fromJson: _dateTimeFromTimestamp, toJson: _dateTimeToTimestamp) required DateTime createdAt,
+    @JsonKey(fromJson: _dateTimeFromTimestamp, toJson: _dateTimeToTimestamp)
+    required DateTime createdAt,
     @Default(false) bool isRead,
   }) = _NotificationModel;
 
-  factory NotificationModel.fromJson(Map<String, dynamic> json) => _$NotificationModelFromJson(json);
+  factory NotificationModel.fromJson(Map<String, dynamic> json) =>
+      _$NotificationModelFromJson(json);
 
   NotificationEntity toEntity() {
     return NotificationEntity(
