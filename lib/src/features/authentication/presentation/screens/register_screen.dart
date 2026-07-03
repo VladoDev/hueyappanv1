@@ -113,6 +113,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     final authState = ref.watch(authControllerProvider);
     final isLoading = authState.isLoading;
     final vc = context.vecinalColors;
+    final l10n = AppLocalizations.of(context)!;
 
     ref.listen<AsyncValue>(authControllerProvider, (previous, next) {
       if (next.hasError) {
@@ -131,10 +132,19 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     });
 
     return Scaffold(
+      backgroundColor: vc.surfacePrimary,
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
+        centerTitle: true,
+        title: Text(
+          l10n.registerHeaderTitle,
+          style: VecinalTextStyles.headlineSmall.copyWith(
+            color: vc.primaryDefault,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: vc.primaryDefault),
           onPressed: () async {
@@ -150,86 +160,111 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           },
         ),
       ),
-      body: Stack(
-        children: [
-          // Background Gradient and Blobs
-          const _BackgroundLayout(),
-          Center(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.only(
-                top: 100,
-                left: 24,
-                right: 24,
-                bottom: 24,
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(VecinalRadius.xl),
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                  child: Container(
-                    padding: const EdgeInsets.all(VecinalSpacing.xl),
-                    decoration: BoxDecoration(
-                      color: vc.surfaceCard.withValues(alpha: 0.85),
-                      borderRadius: BorderRadius.circular(VecinalRadius.xl),
-                      border: Border.all(
-                        color: vc.surfaceCard.withValues(alpha: 0.4),
-                        width: 1.5,
+      body: SafeArea(
+        child: Center(
+          child: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 24.0,
+              vertical: 40.0,
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Clean Solid Card
+                Container(
+                  padding: const EdgeInsets.all(32),
+                  decoration: BoxDecoration(
+                    color: vc.surfaceCard,
+                    borderRadius: BorderRadius.circular(24),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.05),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
                       ),
-                    ),
-                    child: Form(
-                      key: _formKey,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const _HeaderSection(),
-                          const SizedBox(height: 24),
-                          _buildNameFields(isLoading, vc),
-                          const SizedBox(height: 16),
-                          _buildDropdowns(isLoading, vc),
-                          const SizedBox(height: 16),
-                          _buildContactFields(isLoading, vc),
-                          const SizedBox(height: 16),
-                          _buildRecaptcha(vc),
-                          const SizedBox(height: 24),
-                          _buildSubmitButton(isLoading, vc),
-                        ],
-                      ),
+                    ],
+                  ),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        _buildNameFields(isLoading, vc),
+                        const SizedBox(height: 16),
+                        _buildDropdowns(isLoading, vc),
+                        const SizedBox(height: 16),
+                        _buildContactFields(isLoading, vc),
+                        const SizedBox(height: 16),
+                        _buildRecaptcha(vc),
+                        const SizedBox(height: 28),
+                        _buildSubmitButton(isLoading, vc),
+                      ],
                     ),
                   ),
                 ),
-              ),
+              ],
             ),
           ),
-        ],
+        ),
       ),
+    );
+  }
+
+  InputDecoration _commonInputDecoration(
+    String labelText,
+    IconData? prefixIcon,
+    VecinalSemanticColors vc,
+  ) {
+    return InputDecoration(
+      labelText: labelText,
+      labelStyle: TextStyle(color: vc.textSecondary),
+      prefixIcon: prefixIcon != null
+          ? Icon(prefixIcon, color: vc.primaryDefault)
+          : null,
+      filled: true,
+      fillColor: vc.surfacePrimary.withValues(alpha: 0.7),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: BorderSide.none,
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: BorderSide(color: vc.primaryDefault, width: 2),
+      ),
+      contentPadding: const EdgeInsets.symmetric(vertical: 18, horizontal: 20),
     );
   }
 
   Widget _buildNameFields(bool isLoading, VecinalSemanticColors vc) {
     final l10n = AppLocalizations.of(context)!;
-    return Row(
+    return Column(
       children: [
-        Expanded(
-          child: TextFormField(
-            controller: _firstNameController,
-            enabled: !isLoading,
-            decoration: InputDecoration(
-              labelText: l10n.firstNameLabel,
-              prefixIcon: Icon(Icons.person_outline, color: vc.primaryDefault),
-            ),
-            validator: (val) =>
-                val == null || val.trim().isEmpty ? l10n.requiredField : null,
+        TextFormField(
+          controller: _firstNameController,
+          enabled: !isLoading,
+          style: TextStyle(color: vc.textPrimary, fontWeight: FontWeight.w500),
+          decoration: _commonInputDecoration(
+            l10n.firstNameLabel,
+            Icons.person_outline,
+            vc,
           ),
+          validator: (val) =>
+              val == null || val.trim().isEmpty ? l10n.requiredField : null,
         ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: TextFormField(
-            controller: _lastNameController,
-            enabled: !isLoading,
-            decoration: InputDecoration(labelText: l10n.lastNameLabel),
-            validator: (val) =>
-                val == null || val.trim().isEmpty ? l10n.requiredField : null,
+        const SizedBox(height: 16),
+        TextFormField(
+          controller: _lastNameController,
+          enabled: !isLoading,
+          style: TextStyle(color: vc.textPrimary, fontWeight: FontWeight.w500),
+          decoration: _commonInputDecoration(
+            l10n.lastNameLabel,
+            Icons.person_outline,
+            vc,
           ),
+          validator: (val) =>
+              val == null || val.trim().isEmpty ? l10n.requiredField : null,
         ),
       ],
     );
@@ -244,12 +279,15 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             Expanded(
               child: DropdownButtonFormField<String>(
                 value: _selectedLot,
-                decoration: InputDecoration(
-                  labelText: l10n.lotLabel,
-                  prefixIcon: Icon(
-                    Icons.home_outlined,
-                    color: vc.primaryDefault,
-                  ),
+                dropdownColor: vc.surfaceCard,
+                style: TextStyle(
+                  color: vc.textPrimary,
+                  fontWeight: FontWeight.w500,
+                ),
+                decoration: _commonInputDecoration(
+                  l10n.lotLabel,
+                  Icons.home_outlined,
+                  vc,
                 ),
                 items: _lots
                     .map((l) => DropdownMenuItem(value: l, child: Text(l)))
@@ -272,7 +310,12 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             Expanded(
               child: DropdownButtonFormField<String>(
                 value: _selectedHouse,
-                decoration: InputDecoration(labelText: l10n.houseLabel),
+                dropdownColor: vc.surfaceCard,
+                style: TextStyle(
+                  color: vc.textPrimary,
+                  fontWeight: FontWeight.w500,
+                ),
+                decoration: _commonInputDecoration(l10n.houseLabel, null, vc),
                 items: _houses
                     .map((h) => DropdownMenuItem(value: h, child: Text(h)))
                     .toList(),
@@ -287,12 +330,12 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         const SizedBox(height: 16),
         DropdownButtonFormField<String>(
           initialValue: _selectedResidentType,
-          decoration: InputDecoration(
-            labelText: l10n.residentTypeLabel,
-            prefixIcon: Icon(
-              Icons.assignment_ind_outlined,
-              color: vc.primaryDefault,
-            ),
+          dropdownColor: vc.surfaceCard,
+          style: TextStyle(color: vc.textPrimary, fontWeight: FontWeight.w500),
+          decoration: _commonInputDecoration(
+            l10n.residentTypeLabel,
+            Icons.assignment_ind_outlined,
+            vc,
           ),
           items: _residentTypes.map((t) {
             final String label;
@@ -320,12 +363,11 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           controller: _phoneController,
           enabled: !isLoading,
           keyboardType: TextInputType.phone,
-          decoration: InputDecoration(
-            labelText: l10n.phoneLabel,
-            prefixIcon: Icon(
-              Icons.phone_android_outlined,
-              color: vc.primaryDefault,
-            ),
+          style: TextStyle(color: vc.textPrimary, fontWeight: FontWeight.w500),
+          decoration: _commonInputDecoration(
+            l10n.phoneLabel,
+            Icons.phone_android_outlined,
+            vc,
           ),
           validator: (val) {
             if (val == null || val.isEmpty) return l10n.phoneRequired;
@@ -339,9 +381,11 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           controller: _emailController,
           enabled: !isLoading && !_isPreAuthenticated,
           keyboardType: TextInputType.emailAddress,
-          decoration: InputDecoration(
-            labelText: l10n.emailLabel,
-            prefixIcon: Icon(Icons.email_outlined, color: vc.primaryDefault),
+          style: TextStyle(color: vc.textPrimary, fontWeight: FontWeight.w500),
+          decoration: _commonInputDecoration(
+            l10n.emailLabel,
+            Icons.email_outlined,
+            vc,
           ),
           validator: (val) {
             if (val == null || val.trim().isEmpty)
@@ -355,9 +399,11 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           controller: _passwordController,
           enabled: !isLoading && !_isPreAuthenticated,
           obscureText: true,
-          decoration: InputDecoration(
-            labelText: l10n.passwordLabel,
-            prefixIcon: Icon(Icons.lock_outline, color: vc.primaryDefault),
+          style: TextStyle(color: vc.textPrimary, fontWeight: FontWeight.w500),
+          decoration: _commonInputDecoration(
+            l10n.passwordLabel,
+            Icons.lock_outline,
+            vc,
           ),
           validator: (val) {
             if (val == null || val.isEmpty)
@@ -396,99 +442,35 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     final l10n = AppLocalizations.of(context)!;
     return SizedBox(
       width: double.infinity,
-      height: 54,
+      height: 56,
       child: ElevatedButton(
         onPressed: isLoading ? null : _submitForm,
         style: ElevatedButton.styleFrom(
           backgroundColor: vc.primaryDefault,
-          foregroundColor: vc.textOnPrimary,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(VecinalRadius.md),
-          ),
+          foregroundColor: Colors.white,
           elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
         ),
         child: isLoading
-            ? SizedBox(
+            ? const SizedBox(
                 width: 24,
                 height: 24,
                 child: CircularProgressIndicator(
                   strokeWidth: 2.5,
-                  color: vc.textOnPrimary,
+                  color: Colors.white,
                 ),
               )
             : Text(
                 l10n.registerButton,
                 style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 0.5,
                 ),
               ),
       ),
-    );
-  }
-}
-
-class _BackgroundLayout extends StatelessWidget {
-  const _BackgroundLayout();
-
-  @override
-  Widget build(BuildContext context) {
-    final vc = context.vecinalColors;
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [vc.primaryContainer, vc.surfaceSecondary, vc.primaryLight],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-      ),
-      child: Stack(
-        children: [
-          Positioned(
-            top: -100,
-            left: -50,
-            child: CircleAvatar(
-              radius: 150,
-              backgroundColor: vc.primaryDark.withValues(alpha: 0.25),
-            ),
-          ),
-          Positioned(
-            bottom: -50,
-            right: -50,
-            child: CircleAvatar(
-              radius: 180,
-              backgroundColor: vc.primaryDefault.withValues(alpha: 0.2),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _HeaderSection extends StatelessWidget {
-  const _HeaderSection();
-
-  @override
-  Widget build(BuildContext context) {
-    final vc = context.vecinalColors;
-    final l10n = AppLocalizations.of(context)!;
-    return Column(
-      children: [
-        CircleAvatar(
-          radius: 28,
-          backgroundColor: vc.primaryDefault,
-          child: Icon(Icons.shield, size: 30, color: vc.textOnPrimary),
-        ),
-        const SizedBox(height: 12),
-        Text(
-          l10n.registerHeaderTitle,
-          style: VecinalTextStyles.headlineMedium.copyWith(
-            color: vc.primaryDefault,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ],
     );
   }
 }

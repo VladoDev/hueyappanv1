@@ -13,19 +13,9 @@ import 'src/features/app_settings/presentation/providers/package_info_provider.d
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  if (Firebase.apps.isEmpty) {
-    try {
-      await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-    } catch (e) {
-      if (e.toString().contains('duplicate-app')) {
-        // Native SDK already initialized the default app (e.g. via GoogleService-Info.plist).
-        // Calling initializeApp without options binds the Dart side to the native default app.
-        await Firebase.initializeApp();
-      } else {
-        rethrow;
-      }
-    }
-  }
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
   FlutterError.onError = (errorDetails) {
     FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);

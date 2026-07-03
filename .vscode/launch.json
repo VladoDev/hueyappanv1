@@ -2,44 +2,30 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "HueyAPP - Development",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main_development.dart",
+      "args": [
+        "--flavor",
+        "development"
+      ]
+    },
+    {
+      "name": "HueyAPP - Production",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main_production.dart",
+      "args": [
+        "--flavor",
+        "production"
+      ]
+    },
+    {
       "name": "HueyAPP - Release (Auto)",
       "request": "launch",
       "type": "dart",
       "flutterMode": "release"
-    },
-    {
-      "name": "HueyAPP - Release (Android)",
-      "request": "launch",
-      "type": "dart",
-      "flutterMode": "release",
-      "args": [
-        "-d",
-        "android"
-      ]
-    },
-    {
-      "name": "HueyAPP - Release (iOS)",
-      "request": "launch",
-      "type": "dart",
-      "flutterMode": "release",
-      "args": [
-        "-d",
-        "ios"
-      ]
-    },
-    {
-      "name": "HueyAPP - Simulator iPhone 17 Pro (Release)",
-      "request": "launch",
-      "type": "dart",
-      "flutterMode": "release",
-      "deviceId": "181A083B-51D6-434A-B4C1-016DC031B735"
-    },
-    {
-      "name": "HueyAPP - Pixel 10 Pro (Release)",
-      "request": "launch",
-      "type": "dart",
-      "flutterMode": "release",
-      "deviceId": "5A140DLCH000TJ"
     },
     {
       "name": "HueyAPP - Simulator iPhone 17 Pro (Debug)",
@@ -54,22 +40,6 @@
       "type": "dart",
       "flutterMode": "debug",
       "deviceId": "5A140DLCH000TJ"
-    }
-  ],
-  "compounds": [
-    {
-      "name": "HueyAPP - Dual Launch (Release)",
-      "configurations": [
-        "HueyAPP - Simulator iPhone 17 Pro (Release)",
-        "HueyAPP - Pixel 10 Pro (Release)"
-      ]
-    },
-    {
-      "name": "HueyAPP - Dual Launch (Debug)",
-      "configurations": [
-        "HueyAPP - Simulator iPhone 17 Pro (Debug)",
-        "HueyAPP - Pixel 10 Pro (Debug)"
-      ]
     }
   ]
 }
