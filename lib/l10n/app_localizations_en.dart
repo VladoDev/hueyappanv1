@@ -9,7 +9,7 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appName => 'HueyAPPan';
+  String get appName => 'Hueyappan';
 
   @override
   String get loginPortalSubtitle => 'Convento Hueyapan Resident Portal';
@@ -619,4 +619,191 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get biometricToggle => 'Biometric Sign-In';
+
+  @override
+  String get noConceptsCreatedYet => 'No payment concepts created yet';
+
+  @override
+  String get errorLoadingInfo => 'Error loading information';
+
+  @override
+  String errorGeneric(Object error) {
+    return 'Error: $error';
+  }
+
+  @override
+  String get aResident => 'A resident';
+
+  @override
+  String criticalAlarm(Object name, Object lot) {
+    return 'Critical alarm: $name (Lot $lot)';
+  }
+
+  @override
+  String paymentMade(Object concept) {
+    return 'You made a payment: $concept';
+  }
+
+  @override
+  String newPaymentConcept(Object concept) {
+    return 'New payment concept: $concept';
+  }
+
+  @override
+  String get noRecentActivity => 'No recent activity';
+
+  @override
+  String get newContact => 'New Contact';
+
+  @override
+  String get contactAdded => 'Contact added successfully';
+
+  @override
+  String get addContact => 'Add Contact';
+
+  @override
+  String get add => 'Add';
+
+  @override
+  String get couldNotLaunchDialer => 'Could not launch dialer';
+
+  @override
+  String get conceptDeleted => 'Concept deleted successfully';
+
+  @override
+  String get conceptNotFound => 'Concept not found';
+
+  @override
+  String get toConfirm => 'To confirm';
+
+  @override
+  String get amountGreaterThanZero => 'Amount must be greater than 0';
+
+  @override
+  String get errorReportingPayment => 'Error reporting payment.';
+
+  @override
+  String get sendReport => 'Send Report';
+
+  @override
+  String get amountNotChanged => 'Amount has not changed';
+
+  @override
+  String get transactionRegistered => 'Transaction registered successfully';
+
+  @override
+  String get conceptUpdated => 'Concept updated';
+
+  @override
+  String get conceptCreated => 'Concept created';
+
+  @override
+  String get pollCreated => 'Poll created successfully';
+
+  @override
+  String get createPoll => 'Create Poll';
+
+  @override
+  String get options => 'Options';
+
+  @override
+  String get addOption => 'Add Option';
+
+  @override
+  String get noPollsAvailable => 'No polls available';
+
+  @override
+  String get newPoll => 'New Poll';
+
+  @override
+  String get neighborhoodPolls => 'Neighborhood Polls';
+
+  @override
+  String get revertRequests => 'Revert Requests';
+
+  @override
+  String get noPendingRequests => 'No pending requests';
+
+  @override
+  String pollLabel(Object title) {
+    return 'Poll: $title';
+  }
+
+  @override
+  String userLabel(Object name) {
+    return 'User: $name';
+  }
+
+  @override
+  String houseLotLabel(Object id) {
+    return 'House/Lot: $id';
+  }
+
+  @override
+  String dateLabel(Object date) {
+    return 'Date: $date';
+  }
+
+  @override
+  String get reject => 'Reject';
+
+  @override
+  String get approve => 'Approve';
+
+  @override
+  String get revertRequestSent => 'Revert request sent to administrator';
+
+  @override
+  String get closed => 'Closed';
+
+  @override
+  String get alreadyVoted => 'Already voted';
+
+  @override
+  String get requestRevertVote => 'Request to revert vote';
+
+  @override
+  String get vote => 'Vote';
+
+  @override
+  String get pollClosedNoVote => 'This poll is closed and you did not vote.';
+
+  @override
+  String get updateRequired => 'Update Required';
+
+  @override
+  String get updateRequiredDesc =>
+      'We have released a new version with important improvements. Please update the app to continue.';
+
+  @override
+  String get updateInStore => 'Update in Store';
+
+  @override
+  String alreadyVotedByOther(Object name, Object lot, Object house) {
+    return 'Someone else ($name) has already voted for Lot $lot, House $house';
+  }
+
+  @override
+  String get waterStatusMaintenanceTitle => 'Maintenance Reported';
+
+  @override
+  String get waterStatusMaintenanceBody =>
+      'Maintenance has been reported in the water network. The external service is temporarily interrupted.';
+
+  @override
+  String get waterStatusActiveTitle => 'Active Supply';
+
+  @override
+  String get waterStatusActiveBody =>
+      'According to the municipal calendar, the water supply is active today. We invite you to use it responsibly.';
+
+  @override
+  String get waterStatusInactiveTitle => 'No Scheduled Supply';
+
+  @override
+  String get waterStatusInactiveBody =>
+      'According to the municipal calendar, there is no water supply scheduled in the area today. We suggest you manage your reserves.';
+
+  @override
+  String get understood => 'Got it';
 }

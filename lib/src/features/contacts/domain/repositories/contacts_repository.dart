@@ -7,5 +7,7 @@ abstract class ContactsRepository {
     bool favoritesOnly = false,
   });
 
-  Future<void> toggleFavorite(int id, bool isFavorite);
+  Future<void> toggleFavorite(String id, bool isFavorite);
+  Future<void> addContact(ContactEntity contact);
+  Future<void> deleteContact(String contactId);
 }

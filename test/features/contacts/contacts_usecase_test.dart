@@ -1,26 +1,29 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hueyappanv1/src/features/contacts/domain/entities/contact_entity.dart';
 import 'package:hueyappanv1/src/features/contacts/domain/repositories/contacts_repository.dart';
+import 'package:hueyappanv1/src/features/contacts/domain/usecases/add_contact_usecase.dart';
 import 'package:hueyappanv1/src/features/contacts/domain/usecases/toggle_favorite_usecase.dart';
 import 'package:hueyappanv1/src/features/contacts/domain/usecases/watch_contacts_usecase.dart';
 
 class MockContactsRepository implements ContactsRepository {
   final List<ContactEntity> _contacts = [
     const ContactEntity(
-      id: 1,
+      id: '1',
       name: 'Caseta de Vigilancia',
       phoneNumber: '+527351234567',
       category: 'Security',
       isFavorite: false,
     ),
     const ContactEntity(
-      id: 2,
+      id: '2',
       name: 'Administración',
       phoneNumber: '+527357654321',
       category: 'Admin',
       isFavorite: true,
     ),
   ];
+
+  bool addContactCalled = false;
 
   @override
   Stream<List<ContactEntity>> watchContacts({
@@ -46,9 +49,15 @@ class MockContactsRepository implements ContactsRepository {
   }
 
   @override
-  Future<void> toggleFavorite(int id, bool isFavorite) async {
-    // Mock implementation doesn't need to write to DB
+  Future<void> toggleFavorite(String id, bool isFavorite) async {}
+
+  @override
+  Future<void> addContact(ContactEntity contact) async {
+    addContactCalled = true;
   }
+
+  @override
+  Future<void> deleteContact(String contactId) async {}
 }
 
 void main() {
@@ -56,11 +65,13 @@ void main() {
     late MockContactsRepository repository;
     late WatchContactsUseCase watchUseCase;
     late ToggleFavoriteUseCase toggleUseCase;
+    late AddContactUseCase addContactUseCase;
 
     setUp(() {
       repository = MockContactsRepository();
       watchUseCase = WatchContactsUseCase(repository);
       toggleUseCase = ToggleFavoriteUseCase(repository);
+      addContactUseCase = AddContactUseCase(repository);
     });
 
     test('watchContacts executes and streams favorites', () async {
@@ -76,7 +87,30 @@ void main() {
     });
 
     test('toggleFavorite validation throws on invalid ID', () {
-      expect(() => toggleUseCase.execute(-1, true), throwsArgumentError);
+      expect(() => toggleUseCase.execute('', true), throwsArgumentError);
+    });
+
+    test('addContact executes successfully', () async {
+      const contact = ContactEntity(
+        id: '',
+        name: 'Policia',
+        phoneNumber: '911',
+        category: 'Emergency',
+        isFavorite: false,
+      );
+      await addContactUseCase.execute(contact);
+      expect(repository.addContactCalled, isTrue);
+    });
+
+    test('addContact throws when name is empty', () {
+      const contact = ContactEntity(
+        id: '',
+        name: '',
+        phoneNumber: '911',
+        category: 'Emergency',
+        isFavorite: false,
+      );
+      expect(() => addContactUseCase.execute(contact), throwsArgumentError);
     });
   });
 }

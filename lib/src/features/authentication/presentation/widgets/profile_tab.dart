@@ -84,13 +84,29 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
   }
 
   Widget _buildAvatarSection(VecinalSemanticColors vc) {
+    final parts = widget.name.trim().split(RegExp(r'\s+'));
+    String initials = '';
+    if (parts.isNotEmpty && parts.first.isNotEmpty) {
+      initials = parts[0][0].toUpperCase();
+      if (parts.length > 1 && parts[1].isNotEmpty) {
+        initials += parts[1][0].toUpperCase();
+      }
+    }
+
     return Center(
       child: Column(
         children: [
           CircleAvatar(
             radius: 40,
             backgroundColor: vc.primaryContainer,
-            child: Icon(Icons.person, size: 48, color: vc.primaryDefault),
+            child: Text(
+              initials,
+              style: TextStyle(
+                fontSize: 32,
+                fontWeight: FontWeight.bold,
+                color: vc.primaryDefault,
+              ),
+            ),
           ),
           const SizedBox(height: 16),
           Text(
@@ -220,7 +236,7 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
             ElevatedButton(
               onPressed: () => Navigator.of(ctx).pop(controller.text),
               style: ElevatedButton.styleFrom(backgroundColor: vc.primaryDefault),
-              child: Text(l10n.save, style: TextStyle(color: Colors.white)),
+              child: Text(l10n.save, style: TextStyle(color: vc.surfacePrimary)),
             ),
           ],
         ),

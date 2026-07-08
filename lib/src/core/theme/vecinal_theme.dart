@@ -158,6 +158,8 @@ class VecinalSemanticColors extends ThemeExtension<VecinalSemanticColors> {
       // ── Acción destructiva
       destructive,
       destructiveBg,
+      warning,
+      success,
       // ── Divider
       divider,
       // ── Overlay / Scrim
@@ -223,6 +225,8 @@ class VecinalSemanticColors extends ThemeExtension<VecinalSemanticColors> {
     required this.onPrimaryContainer,
     required this.destructive,
     required this.destructiveBg,
+    required this.warning,
+    required this.success,
     required this.divider,
     required this.scrim,
     required this.navBackground,
@@ -287,6 +291,8 @@ class VecinalSemanticColors extends ThemeExtension<VecinalSemanticColors> {
     Color? onPrimaryContainer,
     Color? destructive,
     Color? destructiveBg,
+    Color? warning,
+    Color? success,
     Color? divider,
     Color? scrim,
     Color? navBackground,
@@ -349,6 +355,8 @@ class VecinalSemanticColors extends ThemeExtension<VecinalSemanticColors> {
       onPrimaryContainer: onPrimaryContainer ?? this.onPrimaryContainer,
       destructive: destructive ?? this.destructive,
       destructiveBg: destructiveBg ?? this.destructiveBg,
+      warning: warning ?? this.warning,
+      success: success ?? this.success,
       divider: divider ?? this.divider,
       scrim: scrim ?? this.scrim,
       navBackground: navBackground ?? this.navBackground,
@@ -471,6 +479,8 @@ class VecinalSemanticColors extends ThemeExtension<VecinalSemanticColors> {
       )!,
       destructive: Color.lerp(destructive, other.destructive, t)!,
       destructiveBg: Color.lerp(destructiveBg, other.destructiveBg, t)!,
+      warning: Color.lerp(warning, other.warning, t)!,
+      success: Color.lerp(success, other.success, t)!,
       divider: Color.lerp(divider, other.divider, t)!,
       scrim: Color.lerp(scrim, other.scrim, t)!,
       navBackground: Color.lerp(navBackground, other.navBackground, t)!,
@@ -565,6 +575,8 @@ const vecinalLightColors = VecinalSemanticColors(
   // Destructivo
   destructive: VecinalColors.red600,
   destructiveBg: VecinalColors.red50,
+  warning: VecinalColors.amber400,
+  success: VecinalColors.green400,
 
   // Divider
   divider: VecinalColors.gray100,
@@ -663,6 +675,8 @@ const vecinalDarkColors = VecinalSemanticColors(
   // Destructivo
   destructive: VecinalColors.red200,
   destructiveBg: VecinalColors.red900,
+  warning: VecinalColors.amber200,
+  success: VecinalColors.green200,
 
   // Divider
   divider: Color(0xFF333331),
