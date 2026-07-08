@@ -7,6 +7,8 @@ import 'package:hueyappanv1/src/features/contacts/presentation/screens/contacts_
 import 'package:hueyappanv1/src/features/contacts/presentation/providers/contacts_provider.dart';
 import 'package:hueyappanv1/src/features/contacts/domain/entities/contact_entity.dart';
 
+import 'package:hueyappanv1/src/features/authentication/presentation/providers/auth_provider.dart';
+
 class FakeFirebaseAnalytics extends Fake implements FirebaseAnalytics {
   @override
   dynamic noSuchMethod(Invocation invocation) {
@@ -20,7 +22,7 @@ void main() {
   ) async {
     final testContacts = [
       const ContactEntity(
-        id: 1,
+        id: '1',
         name: 'Caseta Test',
         phoneNumber: '1234567890',
         category: 'Security',
@@ -35,6 +37,7 @@ void main() {
             (ref) => Stream.value(testContacts),
           ),
           analyticsProvider.overrideWithValue(FakeFirebaseAnalytics()),
+          authStateProvider.overrideWith((ref) => Stream.value(null)),
         ],
         child: const MaterialApp(
           localizationsDelegates: AppLocalizations.localizationsDelegates,

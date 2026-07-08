@@ -1,3 +1,4 @@
+import 'package:hueyappanv1/src/core/theme/vecinal_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -44,7 +45,7 @@ class RevertRequestsPage extends ConsumerWidget {
                             onPressed: () {
                               ref.read(pollsNotifierProvider.notifier).processRevertRequest(req, false);
                             },
-                            child: const Text('Rechazar', style: TextStyle(color: Colors.red)),
+                            child: const Text('Rechazar', style: TextStyle(color: VecinalColors.red600)),
                           ),
                           const SizedBox(width: 8),
                           FilledButton(

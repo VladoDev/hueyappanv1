@@ -3,9 +3,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hueyappanv1/l10n/app_localizations.dart';
 import 'package:hueyappanv1/src/core/theme/vecinal_theme.dart';
+import 'package:hueyappanv1/src/core/widgets/vecinal_empty_state.dart';
 import '../../domain/entities/housing_payment_entity.dart';
 import '../../domain/entities/payment_transaction_entity.dart';
 import '../providers/payments_provider.dart';
+import '../providers/bank_details_provider.dart';
+import '../../domain/entities/bank_details_entity.dart';
 import '../../../authentication/presentation/providers/auth_provider.dart';
 
 class NeighborPaymentsView extends ConsumerWidget {
@@ -24,6 +27,8 @@ class NeighborPaymentsView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final vc = context.vecinalColors;
     final l10n = AppLocalizations.of(context)!;
+    final authState = ref.watch(authStateProvider);
+    final isAdmin = authState.value?.isAdmin ?? false;
     final paymentsAsync = ref.watch(
       neighborPaymentsStreamProvider((lot: lot, house: house)),
     );
@@ -45,7 +50,7 @@ class NeighborPaymentsView extends ConsumerWidget {
             bottom: isEmbedded ? 24 : 100,
           ),
           children: [
-            _buildTransferCard(context),
+            _buildTransferCard(context, ref, isAdmin),
             const SizedBox(height: 24),
             Text(
               l10n.paymentsPending,
@@ -117,14 +122,14 @@ class NeighborPaymentsView extends ConsumerWidget {
                   child: CircularProgressIndicator(),
                 ),
               ),
-              error: (err, stack) => Center(child: Text('Error: $err')),
+              error: (err, stack) => Center(child: Text(l10n.errorGeneric(err.toString()))),
             ),
             const SizedBox(height: 32),
           ],
         );
       },
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (err, stack) => Center(child: Text('Error: $err')),
+      error: (err, stack) => Center(child: Text(l10n.errorGeneric(err.toString()))),
     );
 
     if (isEmbedded) {
@@ -157,34 +162,18 @@ class NeighborPaymentsView extends ConsumerWidget {
         borderRadius: BorderRadius.circular(VecinalRadius.md),
         side: BorderSide(color: vc.borderDefault, width: 0.5),
       ),
-      child: SizedBox(
-        width: double.infinity,
-        child: Padding(
-          padding: const EdgeInsets.all(VecinalSpacing.xl),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(icon, size: 40, color: vc.textHint),
-              const SizedBox(height: 12),
-              Text(
-                text,
-                style: VecinalTextStyles.bodyMedium.copyWith(
-                  color: vc.textSecondary,
-                  fontWeight: FontWeight.w500,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
-        ),
+      child: VecinalEmptyState(
+        icon: icon,
+        message: text,
       ),
     );
   }
 
-  Widget _buildTransferCard(BuildContext context) {
+  Widget _buildTransferCard(BuildContext context, WidgetRef ref, bool isAdmin) {
     final vc = context.vecinalColors;
     final l10n = AppLocalizations.of(context)!;
-    const clabe = '0123 4567 8901 2345 67';
+    final bankDetailsAsync = ref.watch(bankDetailsStreamProvider);
+    
     final reference = l10n.housingUnitValue(lot, house);
 
     void copyToClipboard(String text, String successMsg) {
@@ -200,65 +189,97 @@ class NeighborPaymentsView extends ConsumerWidget {
       );
     }
 
-    return Card(
-      elevation: 0,
-      color: vc.paymentBg,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(VecinalRadius.lg),
-        side: BorderSide(color: vc.paymentBorder, width: 0.5),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(VecinalSpacing.xl),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
+    String _formatClabe(String clabe) {
+      final clean = clabe.replaceAll(RegExp(r'\s+'), '');
+      if (clean.isEmpty) return clabe;
+      final buffer = StringBuffer();
+      for (int i = 0; i < clean.length; i++) {
+        if (i > 0 && i % 4 == 0) buffer.write(' ');
+        buffer.write(clean[i]);
+      }
+      return buffer.toString();
+    }
+
+    return bankDetailsAsync.when(
+      data: (bankDetails) {
+        return Card(
+          elevation: 0,
+          color: vc.paymentBg,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(VecinalRadius.lg),
+            side: BorderSide(color: vc.paymentBorder, width: 0.5),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(VecinalSpacing.xl),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(
-                  Icons.account_balance_outlined,
-                  color: vc.paymentIcon,
-                  size: 24,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.account_balance_outlined,
+                          color: vc.paymentIcon,
+                          size: 24,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          l10n.transferDetails,
+                          style: VecinalTextStyles.headlineSmall.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: vc.paymentText,
+                          ),
+                        ),
+                      ],
+                    ),
+                    if (isAdmin)
+                      IconButton(
+                        icon: Icon(Icons.edit, color: vc.paymentText),
+                        onPressed: () => _showEditBankDetailsDialog(context, ref, bankDetails, vc),
+                      ),
+                  ],
                 ),
-                const SizedBox(width: 8),
-                Text(
-                  l10n.transferDetails,
-                  style: VecinalTextStyles.headlineSmall.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: vc.paymentText,
-                  ),
+                const Divider(height: 24, thickness: 0.5),
+                _buildTransferRow(l10n.bankNameLabel, bankDetails.bankName.isNotEmpty ? bankDetails.bankName : 'Not set', vc),
+                const SizedBox(height: 10),
+                _buildTransferRow(
+                  l10n.clabeLabel,
+                  bankDetails.clabe.isNotEmpty ? _formatClabe(bankDetails.clabe) : 'Not set',
+                  vc,
+                  onCopy: bankDetails.clabe.isNotEmpty ? () => copyToClipboard(bankDetails.clabe.replaceAll(' ', ''), l10n.copySuccess) : null,
+                ),
+                const SizedBox(height: 10),
+                _buildTransferRow(
+                  l10n.beneficiaryLabel,
+                  bankDetails.accountName.isNotEmpty ? bankDetails.accountName : 'Not set',
+                  vc,
+                ),
+                const SizedBox(height: 10),
+                _buildTransferRow(
+                  l10n.bankTransferReference,
+                  reference,
+                  vc,
+                  onCopy: () => copyToClipboard(reference, l10n.referenceCopySuccess),
                 ),
               ],
             ),
-            const Divider(height: 24, thickness: 0.5),
-            _buildTransferRow(l10n.bankNameLabel, 'BBVA Bancomer', vc),
-            const SizedBox(height: 10),
-            _buildTransferRow(
-              l10n.clabeLabel,
-              clabe,
-              vc,
-              onCopy: () =>
-                  copyToClipboard(clabe.replaceAll(' ', ''), l10n.copySuccess),
-            ),
-            const SizedBox(height: 10),
-            _buildTransferRow(
-              l10n.beneficiaryLabel,
-              'Privada Convento Hueyapan AC',
-              vc,
-            ),
-            const SizedBox(height: 10),
-            _buildTransferRow(
-              l10n.bankTransferReference,
-              reference,
-              vc,
-              onCopy: () =>
-                  copyToClipboard(reference, l10n.referenceCopySuccess),
-            ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (_, __) => const SizedBox.shrink(),
     );
   }
 
+  void _showEditBankDetailsDialog(BuildContext context, WidgetRef ref, bankDetails, VecinalSemanticColors vc) {
+    // We will implement this in a separate file and import it
+    showDialog(
+      context: context,
+      builder: (context) => _EditBankDetailsDialog(bankDetails: bankDetails),
+    );
+  }
   Widget _buildTransferRow(
     String label,
     String value,
@@ -473,7 +494,7 @@ class _NeighborPaymentCard extends ConsumerWidget {
                     );
                   },
                   loading: () => const LinearProgressIndicator(),
-                  error: (err, stack) => Text('Error: $err'),
+                  error: (err, stack) => Text(l10n.errorGeneric(err.toString())),
                 ),
                 if (payment.amountPaid > 0 || payment.extraAmount > 0) ...[
                   const SizedBox(height: 12),
@@ -549,6 +570,7 @@ class _NeighborPaymentCard extends ConsumerWidget {
     );
     final notesController = TextEditingController();
     bool isLoading = false;
+    final l10n = AppLocalizations.of(context)!;
 
     showDialog(
       context: context,
@@ -616,8 +638,8 @@ class _NeighborPaymentCard extends ConsumerWidget {
                             double.tryParse(amountController.text) ?? 0.0;
                         if (amount <= 0) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('El monto debe ser mayor a 0'),
+                            SnackBar(
+                              content: Text(l10n.amountGreaterThanZero),
                             ),
                           );
                           return;
@@ -657,8 +679,8 @@ class _NeighborPaymentCard extends ConsumerWidget {
                             );
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Error al reportar el pago.'),
+                              SnackBar(
+                                content: Text(l10n.errorReportingPayment),
                               ),
                             );
                           }
@@ -668,7 +690,7 @@ class _NeighborPaymentCard extends ConsumerWidget {
                         backgroundColor: vc.primaryDefault,
                         foregroundColor: vc.textOnPrimary,
                       ),
-                      child: const Text('Enviar Reporte'),
+                      child: Text(l10n.sendReport),
                     ),
                   ],
           );
@@ -940,6 +962,108 @@ class _NeighborPendingConfirmationCardState
           ],
         ),
       ),
+    );
+  }
+}
+
+class _EditBankDetailsDialog extends ConsumerStatefulWidget {
+  final BankDetailsEntity bankDetails;
+
+  const _EditBankDetailsDialog({required this.bankDetails});
+
+  @override
+  ConsumerState<_EditBankDetailsDialog> createState() => _EditBankDetailsDialogState();
+}
+
+class _EditBankDetailsDialogState extends ConsumerState<_EditBankDetailsDialog> {
+  late TextEditingController _bankNameCtrl;
+  late TextEditingController _accountNameCtrl;
+  late TextEditingController _clabeCtrl;
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _bankNameCtrl = TextEditingController(text: widget.bankDetails.bankName);
+    _accountNameCtrl = TextEditingController(text: widget.bankDetails.accountName);
+    _clabeCtrl = TextEditingController(text: widget.bankDetails.clabe);
+  }
+
+  @override
+  void dispose() {
+    _bankNameCtrl.dispose();
+    _accountNameCtrl.dispose();
+    _clabeCtrl.dispose();
+    super.dispose();
+  }
+
+  Future<void> _save() async {
+    setState(() => _isLoading = true);
+    final updated = widget.bankDetails.copyWith(
+      bankName: _bankNameCtrl.text.trim(),
+      accountName: _accountNameCtrl.text.trim(),
+      clabe: _clabeCtrl.text.trim(),
+    );
+    try {
+      await ref.read(updateBankDetailsProvider)(updated);
+      if (mounted) Navigator.pop(context);
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e')),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final vc = context.vecinalColors;
+    final l10n = AppLocalizations.of(context)!;
+
+    return AlertDialog(
+      title: Text("Editar Datos de Transferencia", style: TextStyle(color: vc.textPrimary)),
+      backgroundColor: vc.surfacePrimary,
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: _bankNameCtrl,
+              decoration: InputDecoration(labelText: l10n.bankNameLabel),
+              style: TextStyle(color: vc.textPrimary),
+            ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: _clabeCtrl,
+              decoration: InputDecoration(labelText: l10n.clabeLabel),
+              style: TextStyle(color: vc.textPrimary),
+            ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: _accountNameCtrl,
+              decoration: InputDecoration(labelText: l10n.beneficiaryLabel),
+              style: TextStyle(color: vc.textPrimary),
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: _isLoading ? null : () => Navigator.pop(context),
+          child: Text(l10n.cancel, style: TextStyle(color: vc.textSecondary)),
+        ),
+        ElevatedButton(
+          onPressed: _isLoading ? null : _save,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: vc.primaryDefault,
+            foregroundColor: vc.textOnPrimary,
+          ),
+          child: _isLoading ? const CircularProgressIndicator() : Text("Guardar"),
+        ),
+      ],
     );
   }
 }

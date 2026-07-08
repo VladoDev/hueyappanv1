@@ -1,3 +1,4 @@
+import 'package:hueyappanv1/src/core/theme/vecinal_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -144,7 +145,7 @@ class _CreatePollPageState extends ConsumerState<CreatePollPage> {
                             ),
                             if (_optionControllers.length > 2)
                               IconButton(
-                                icon: const Icon(Icons.remove_circle, color: Colors.red),
+                                icon: const Icon(Icons.remove_circle, color: VecinalColors.red600),
                                 onPressed: () => _removeOption(index),
                               )
                           ],

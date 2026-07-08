@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hueyappanv1/l10n/app_localizations.dart';
 import 'package:hueyappanv1/src/core/theme/vecinal_theme.dart';
+import 'package:hueyappanv1/src/core/widgets/vecinal_empty_state.dart';
 import '../providers/contacts_provider.dart';
 import '../widgets/contact_list_item.dart';
+import '../../../authentication/presentation/providers/auth_provider.dart';
+import '../widgets/add_contact_dialog.dart';
 
 class ContactsTab extends ConsumerStatefulWidget {
   const ContactsTab({super.key});
@@ -65,7 +68,28 @@ class _ContactsTabState extends ConsumerState<ContactsTab> {
           ],
         ),
       ),
+      floatingActionButton: _buildFab(),
     );
+  }
+
+  Widget? _buildFab() {
+    final user = ref.watch(authStateProvider).value;
+    if (user != null && user.role.toLowerCase() == 'admin') {
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 100.0),
+        child: FloatingActionButton.extended(
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (ctx) => const AddContactDialog(),
+            );
+          },
+          icon: const Icon(Icons.add),
+          label: Text(AppLocalizations.of(context)!.newContact),
+        ),
+      );
+    }
+    return null;
   }
 
   Widget _buildSearchBar(VecinalSemanticColors vc, AppLocalizations l10n) {
@@ -190,14 +214,12 @@ class _ContactsTabState extends ConsumerState<ContactsTab> {
 
     return contactsAsync.when(
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (err, stack) => Center(child: Text('Error: $err')),
+      error: (err, stack) => Center(child: Text(l10n.errorGeneric(err.toString()))),
       data: (contacts) {
         if (contacts.isEmpty) {
-          return Center(
-            child: Text(
-              l10n.noContactsFound,
-              style: VecinalTextStyles.bodyMedium.copyWith(color: vc.textHint),
-            ),
+          return VecinalEmptyState(
+            icon: Icons.contacts_outlined,
+            message: l10n.noContactsFound,
           );
         }
         return ListView.builder(
@@ -207,7 +229,6 @@ class _ContactsTabState extends ConsumerState<ContactsTab> {
             right: VecinalSpacing.xl,
             bottom: 100,
           ),
-          clipBehavior: Clip.none,
           itemBuilder: (context, index) {
             return ContactListItem(contact: contacts[index]);
           },

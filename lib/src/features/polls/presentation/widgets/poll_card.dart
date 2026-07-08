@@ -1,3 +1,4 @@
+import 'package:hueyappanv1/src/core/theme/vecinal_theme.dart';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -81,19 +82,19 @@ class _PollCardState extends ConsumerState<PollCard> {
                 ),
                 if (!widget.poll.isActive)
                   Chip(
-                    label: const Text('Cerrada', style: TextStyle(color: Colors.white)),
-                    backgroundColor: Colors.red.shade700,
+                    label: const Text('Cerrada', style: TextStyle(color: VecinalColors.white)),
+                    backgroundColor: VecinalColors.red800,
                   )
                 else if (hasVoted)
                   Chip(
-                    label: const Text('Ya votaste', style: TextStyle(color: Colors.white)),
-                    backgroundColor: Colors.green.shade700,
+                    label: const Text('Ya votaste', style: TextStyle(color: VecinalColors.white)),
+                    backgroundColor: VecinalColors.green800,
                   )
               ],
             ),
             if (widget.poll.description.isNotEmpty) ...[
               const SizedBox(height: 8),
-              Text(widget.poll.description, style: TextStyle(color: Colors.grey[400])),
+              Text(widget.poll.description, style: TextStyle(color: VecinalColors.gray400)),
             ],
             const SizedBox(height: 16),
 
@@ -104,17 +105,17 @@ class _PollCardState extends ConsumerState<PollCard> {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: Colors.orange.withValues(alpha: 0.15),
+                    color: VecinalColors.amber400.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Row(
                     children: [
-                      const Icon(Icons.info_outline, color: Colors.orange),
+                      Icon(Icons.info_outline, color: VecinalColors.amber400),
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
                           'El usuario $votedUserName ya emitió el voto por tu casa (Lote ${resident.lot} - Casa ${resident.house}).',
-                          style: const TextStyle(color: Colors.orange),
+                          style: TextStyle(color: VecinalColors.amber400),
                         ),
                       ),
                     ],
@@ -165,7 +166,7 @@ class _PollCardState extends ConsumerState<PollCard> {
                     onPressed: _isSubmitting ? null : () => _requestRevertVote(widget.poll.title),
                     child: _isSubmitting
                         ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
-                        : const Text('Solicitar revertir voto', style: TextStyle(color: Colors.red)),
+                        : const Text('Solicitar revertir voto', style: TextStyle(color: VecinalColors.red600)),
                   ),
                 ),
             ]
@@ -189,7 +190,7 @@ class _PollCardState extends ConsumerState<PollCard> {
                 child: FilledButton(
                   onPressed: _selectedOptionId == null || _isSubmitting ? null : _submitVote,
                   child: _isSubmitting
-                      ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+                      ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(color: VecinalColors.white, strokeWidth: 2))
                       : const Text('Votar'),
                 ),
               ),
@@ -250,7 +251,7 @@ class _PieChartPainter extends CustomPainter {
 
         // Draw separator line
         final separatorPaint = Paint()
-          ..color = Colors.black.withValues(alpha: 0.3)
+          ..color = VecinalColors.black.withValues(alpha: 0.3)
           ..style = PaintingStyle.stroke
           ..strokeWidth = 1.5;
 
@@ -273,11 +274,11 @@ class _PieChartPainter extends CustomPainter {
           final textPainter = TextPainter(
             text: TextSpan(
               text: '$percent%',
-              style: const TextStyle(
-                color: Colors.white,
+              style: TextStyle(
+                color: VecinalColors.white,
                 fontSize: 13,
                 fontWeight: FontWeight.bold,
-                shadows: [Shadow(blurRadius: 2, color: Colors.black54)],
+                shadows: [Shadow(blurRadius: 2, color: VecinalColors.gray600)],
               ),
             ),
             textDirection: TextDirection.ltr,

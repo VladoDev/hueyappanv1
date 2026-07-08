@@ -9,7 +9,7 @@ class AppLocalizationsEs extends AppLocalizations {
   AppLocalizationsEs([String locale = 'es']) : super(locale);
 
   @override
-  String get appName => 'HueyAPPan';
+  String get appName => 'Hueyappan';
 
   @override
   String get loginPortalSubtitle => 'Portal de Residentes Convento Hueyapan';
@@ -622,4 +622,193 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get biometricToggle => 'Inicio de Sesión con Biométrico';
+
+  @override
+  String get noConceptsCreatedYet => 'No hay conceptos de pago creados aún';
+
+  @override
+  String get errorLoadingInfo => 'Error al cargar la información';
+
+  @override
+  String errorGeneric(Object error) {
+    return 'Error: $error';
+  }
+
+  @override
+  String get aResident => 'Un residente';
+
+  @override
+  String criticalAlarm(Object name, Object lot) {
+    return 'Alarma crítica: $name (Lote $lot)';
+  }
+
+  @override
+  String paymentMade(Object concept) {
+    return 'Realizaste un pago: $concept';
+  }
+
+  @override
+  String newPaymentConcept(Object concept) {
+    return 'Nuevo concepto de pago: $concept';
+  }
+
+  @override
+  String get noRecentActivity => 'No hay actividad reciente';
+
+  @override
+  String get newContact => 'Nuevo Contacto';
+
+  @override
+  String get contactAdded => 'Contacto agregado exitosamente';
+
+  @override
+  String get addContact => 'Añadir Contacto';
+
+  @override
+  String get add => 'Añadir';
+
+  @override
+  String get couldNotLaunchDialer => 'No se pudo abrir el marcador telefónico';
+
+  @override
+  String get conceptDeleted => 'Concepto eliminado con éxito';
+
+  @override
+  String get conceptNotFound => 'Concepto no encontrado';
+
+  @override
+  String get toConfirm => 'Por confirmar';
+
+  @override
+  String get amountGreaterThanZero => 'El monto debe ser mayor a 0';
+
+  @override
+  String get errorReportingPayment => 'Error al reportar el pago.';
+
+  @override
+  String get sendReport => 'Enviar Reporte';
+
+  @override
+  String get amountNotChanged => 'El monto no ha cambiado';
+
+  @override
+  String get transactionRegistered => 'Transacción registrada con éxito';
+
+  @override
+  String get conceptUpdated => 'Concepto actualizado';
+
+  @override
+  String get conceptCreated => 'Concepto creado';
+
+  @override
+  String get pollCreated => 'Votación creada exitosamente';
+
+  @override
+  String get createPoll => 'Crear Votación';
+
+  @override
+  String get options => 'Opciones';
+
+  @override
+  String get addOption => 'Añadir Opción';
+
+  @override
+  String get noPollsAvailable => 'No hay votaciones disponibles';
+
+  @override
+  String get newPoll => 'Nueva Votación';
+
+  @override
+  String get neighborhoodPolls => 'Votaciones Vecinales';
+
+  @override
+  String get revertRequests => 'Solicitudes de Reversión';
+
+  @override
+  String get noPendingRequests => 'No hay solicitudes pendientes';
+
+  @override
+  String pollLabel(Object title) {
+    return 'Votación: $title';
+  }
+
+  @override
+  String userLabel(Object name) {
+    return 'Usuario: $name';
+  }
+
+  @override
+  String houseLotLabel(Object id) {
+    return 'Casa/Lote: $id';
+  }
+
+  @override
+  String dateLabel(Object date) {
+    return 'Fecha: $date';
+  }
+
+  @override
+  String get reject => 'Rechazar';
+
+  @override
+  String get approve => 'Aprobar';
+
+  @override
+  String get revertRequestSent =>
+      'Solicitud de reversión enviada al administrador';
+
+  @override
+  String get closed => 'Cerrada';
+
+  @override
+  String get alreadyVoted => 'Ya votaste';
+
+  @override
+  String get requestRevertVote => 'Solicitar revertir voto';
+
+  @override
+  String get vote => 'Votar';
+
+  @override
+  String get pollClosedNoVote =>
+      'Esta votación ha sido cerrada y no emitiste voto.';
+
+  @override
+  String get updateRequired => 'Actualización Requerida';
+
+  @override
+  String get updateRequiredDesc =>
+      'Hemos lanzado una nueva versión con mejoras importantes. Por favor, actualiza la aplicación para continuar.';
+
+  @override
+  String get updateInStore => 'Actualizar en la Tienda';
+
+  @override
+  String alreadyVotedByOther(Object name, Object lot, Object house) {
+    return 'Alguien más ($name) ya votó por el Lote $lot, Casa $house';
+  }
+
+  @override
+  String get waterStatusMaintenanceTitle => 'Mantenimiento Reportado';
+
+  @override
+  String get waterStatusMaintenanceBody =>
+      'Se ha reportado mantenimiento en la red de agua. El servicio externo se encuentra temporalmente interrumpido.';
+
+  @override
+  String get waterStatusActiveTitle => 'Suministro Activo';
+
+  @override
+  String get waterStatusActiveBody =>
+      'De acuerdo al calendario municipal, el suministro de agua se encuentra activo el día de hoy. Le invitamos a hacer un uso responsable.';
+
+  @override
+  String get waterStatusInactiveTitle => 'Sin Suministro Programado';
+
+  @override
+  String get waterStatusInactiveBody =>
+      'De acuerdo al calendario municipal, hoy no hay suministro de agua programado en la zona. Le sugerimos administrar sus reservas.';
+
+  @override
+  String get understood => 'Entendido';
 }

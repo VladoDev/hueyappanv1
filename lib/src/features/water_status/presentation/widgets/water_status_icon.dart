@@ -27,23 +27,20 @@ class WaterStatusIconWidget extends ConsumerWidget {
         String funnyMessage;
 
         if (isMaintenance) {
-          iconColor = const Color(0xFFB06000); // Dark orange
+          iconColor = vc.warning; // Dark orange
           icon = Icons.warning_amber_rounded;
-          statusTitle = "Mantenimiento Reportado";
-          funnyMessage =
-              "Se ha reportado mantenimiento en la red de agua. El servicio externo se encuentra temporalmente interrumpido.";
+          statusTitle = l10n.waterStatusMaintenanceTitle;
+          funnyMessage = l10n.waterStatusMaintenanceBody;
         } else if (isAvailable) {
-          iconColor = const Color(0xFF0D47A1); // Dark blue
+          iconColor = VecinalColors.blue600; // Dark blue
           icon = Icons.water_drop;
-          statusTitle = "Suministro Activo";
-          funnyMessage =
-              "De acuerdo al calendario municipal, el suministro de agua se encuentra activo el día de hoy. Le invitamos a hacer un uso responsable.";
+          statusTitle = l10n.waterStatusActiveTitle;
+          funnyMessage = l10n.waterStatusActiveBody;
         } else {
-          iconColor = const Color(0xFF616161); // Dark grey
+          iconColor = vc.textSecondary; // Dark grey
           icon = Icons.format_color_reset;
-          statusTitle = "Sin Suministro Programado";
-          funnyMessage =
-              "De acuerdo al calendario municipal, hoy no hay suministro de agua programado en la zona. Le sugerimos administrar sus reservas.";
+          statusTitle = l10n.waterStatusInactiveTitle;
+          funnyMessage = l10n.waterStatusInactiveBody;
         }
 
         return IconButton(
@@ -91,6 +88,7 @@ class WaterStatusIconWidget extends ConsumerWidget {
     Color color,
     VecinalSemanticColors vc,
   ) {
+    final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (context) {
@@ -127,7 +125,7 @@ class WaterStatusIconWidget extends ConsumerWidget {
             TextButton(
               onPressed: () => Navigator.pop(context),
               child: Text(
-                'Entendido',
+                l10n.understood,
                 style: TextStyle(
                   color: vc.primaryDefault,
                   fontWeight: FontWeight.bold,

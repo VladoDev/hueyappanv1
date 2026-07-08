@@ -330,7 +330,7 @@ class _ConceptFormScreenState extends ConsumerState<ConceptFormScreen> {
                   ),
                 ),
                 child: isLoading
-                    ? const CircularProgressIndicator(color: Colors.white)
+                    ? const CircularProgressIndicator(color: VecinalColors.white)
                     : Text(
                         l10n.save,
                         style: const TextStyle(

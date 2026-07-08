@@ -4,6 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:hueyappanv1/l10n/app_localizations.dart';
 import 'package:hueyappanv1/src/core/theme/vecinal_theme.dart';
 import '../../domain/entities/contact_entity.dart';
+import '../../../authentication/presentation/providers/auth_provider.dart';
 import '../providers/contacts_provider.dart';
 
 class ContactListItem extends ConsumerWidget {
@@ -15,6 +16,8 @@ class ContactListItem extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final vc = context.vecinalColors;
     final categoryStyles = _getCategoryStyles(contact.category, vc);
+    final authState = ref.watch(authStateProvider);
+    final isAdmin = authState.value?.isAdmin ?? false;
 
     return Card(
       elevation: 0,
@@ -41,7 +44,7 @@ class ContactListItem extends ConsumerWidget {
           ),
         ),
         subtitle: _buildSubtitle(context, vc, categoryStyles),
-        trailing: _buildActions(context, ref, vc),
+        trailing: _buildActions(context, ref, vc, isAdmin),
       ),
     );
   }
@@ -92,14 +95,20 @@ class ContactListItem extends ConsumerWidget {
     BuildContext context,
     WidgetRef ref,
     VecinalSemanticColors vc,
+    bool isAdmin,
   ) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
+        if (isAdmin)
+          IconButton(
+            icon: Icon(Icons.delete_outline, color: vc.destructive),
+            onPressed: () => _showDeleteConfirmDialog(context, ref, vc),
+          ),
         IconButton(
           icon: Icon(
             contact.isFavorite ? Icons.star : Icons.star_border,
-            color: contact.isFavorite ? Colors.amber : vc.textHint,
+            color: contact.isFavorite ? vc.warning : vc.textHint,
           ),
           onPressed: () => _toggleFavorite(ref),
         ),
@@ -124,6 +133,41 @@ class ContactListItem extends ConsumerWidget {
             'is_favorite': !contact.isFavorite ? 1 : 0,
           },
         );
+  }
+
+  void _showDeleteConfirmDialog(
+    BuildContext context,
+    WidgetRef ref,
+    VecinalSemanticColors vc,
+  ) {
+    final l10n = AppLocalizations.of(context)!;
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(
+          "Eliminar Contacto",
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+        content: Text("¿Estás seguro de que deseas eliminar a ${contact.name}? Esta acción no se puede deshacer."),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(l10n.cancel, style: TextStyle(color: vc.textSecondary)),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+              ref.read(deleteContactUseCaseProvider).execute(contact.id);
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: vc.destructiveBg,
+              foregroundColor: vc.textOnEmergency,
+            ),
+            child: const Text("Eliminar"),
+          ),
+        ],
+      ),
+    );
   }
 
   void _showCallConfirmDialog(
@@ -181,9 +225,10 @@ class ContactListItem extends ConsumerWidget {
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri);
     } else if (context.mounted) {
+      final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text('Could not launch dialer')));
+      ).showSnackBar(SnackBar(content: Text(l10n.couldNotLaunchDialer)));
     }
   }
 

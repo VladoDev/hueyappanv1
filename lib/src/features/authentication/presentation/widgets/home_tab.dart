@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hueyappanv1/l10n/app_localizations.dart';
 import 'package:hueyappanv1/src/core/theme/vecinal_theme.dart';
+import 'package:hueyappanv1/src/core/widgets/vecinal_empty_state.dart';
 import '../providers/auth_provider.dart';
 import '../../../payments/domain/entities/payment_transaction_entity.dart';
 import '../../../payments/domain/entities/payment_concept_entity.dart';
@@ -114,7 +115,7 @@ class _HomeTabState extends ConsumerState<HomeTab> {
             onPressed: () => Navigator.of(ctx).pop(true),
             style: ElevatedButton.styleFrom(
               backgroundColor: vc.primaryDefault,
-              foregroundColor: Colors.white,
+              foregroundColor: vc.surfacePrimary,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
@@ -587,7 +588,7 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                             } catch (e) {
                               if (context.mounted) {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text('Error: $e')),
+                                  SnackBar(content: Text(l10n.errorGeneric(e.toString()))),
                                 );
                                 setState(() => isRequesting = false);
                               }
@@ -646,7 +647,7 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                             } catch (e) {
                               if (context.mounted) {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text('Error: $e')),
+                                  SnackBar(content: Text(l10n.errorGeneric(e.toString()))),
                                 );
                                 setState(() => isVerifying = false);
                               }
@@ -695,7 +696,7 @@ class _RecentActivitySection extends ConsumerWidget {
     // 1. Emergency
     emergencyAsync.whenData((emergency) {
       if (emergency != null) {
-        final name = emergency['triggeredByName'] ?? 'Usuario';
+        final name = emergency['triggeredByName'] ?? l10n.aResident;
         final eLot = emergency['triggeredByLot'] ?? '';
         final timestamp = emergency['timestamp'];
         DateTime? dt;
@@ -709,7 +710,7 @@ class _RecentActivitySection extends ConsumerWidget {
 
         items.add(
           _ActivityItemWidget(
-            text: 'Alarma crítica: $name (Lote $eLot)',
+            text: l10n.criticalAlarm(name, eLot),
             time: timeStr,
             icon: Icons.warning_rounded,
             vc: vc,
@@ -729,7 +730,7 @@ class _RecentActivitySection extends ConsumerWidget {
 
         items.add(
           _ActivityItemWidget(
-            text: 'Realizaste un pago: ${latest.conceptTitle}',
+            text: l10n.paymentMade(latest.conceptTitle ?? ''),
             time: timeStr,
             icon: Icons.payment,
             vc: vc,
@@ -751,7 +752,7 @@ class _RecentActivitySection extends ConsumerWidget {
 
         items.add(
           _ActivityItemWidget(
-            text: 'Nuevo concepto de pago: ${latest.title}',
+            text: l10n.newPaymentConcept(latest.title),
             time: timeStr,
             icon: Icons.new_releases,
             vc: vc,
@@ -773,12 +774,9 @@ class _RecentActivitySection extends ConsumerWidget {
         ),
         const SizedBox(height: 12),
         if (items.isEmpty)
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            child: Text(
-              'No hay actividad reciente',
-              style: TextStyle(color: vc.textSecondary),
-            ),
+          VecinalEmptyState(
+            icon: Icons.history_toggle_off,
+            message: l10n.noRecentActivity,
           )
         else
           ...items,

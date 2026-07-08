@@ -1,6 +1,6 @@
 {
   "@@locale": "es",
-  "appName": "HueyAPPan",
+  "appName": "Hueyappan",
   "loginPortalSubtitle": "Portal de Residentes Convento Hueyapan",
   "emailLabel": "Correo Electrónico",
   "emailRequired": "El correo es requerido",
@@ -10,7 +10,6 @@
   "passwordTooShort": "La contraseña debe tener al menos 6 caracteres",
   "loginButton": "Acceder al Portal",
   "registerLink": "¿No tienes cuenta? Regístrate aquí",
-
   "registerHeaderTitle": "Registro de Residente",
   "firstNameLabel": "Nombre",
   "requiredField": "Requerido",
@@ -28,14 +27,12 @@
   "passwordRequiredRegister": "La contraseña es requerida",
   "passwordTooShortRegister": "Mínimo 6 caracteres",
   "registerButton": "Registrarse",
-
   "navHome": "Inicio",
   "navNews": "Noticias",
   "navPayments": "Pagos",
   "navProfile": "Perfil",
   "navNotifications": "Notificaciones",
   "noNotifications": "No tienes notificaciones",
-
   "emergencyAlertTitle": "Alerta de Emergencia",
   "emergencyAlertConfirm": "¿Estás seguro de que deseas activar la alerta de emergencia?\n\nEsta acción enviará una notificación de alerta crítica con sonido a todos los residentes de la comunidad.",
   "cancel": "Cancelar",
@@ -49,7 +46,6 @@
       }
     }
   },
-
   "emergencyOverlayTitle": "¡ALERTA DE EMERGENCIA!",
   "emergencyOverlayBody": "El residente {senderName} ha activado una alerta de emergencia en la comunidad.",
   "@emergencyOverlayBody": {
@@ -60,7 +56,6 @@
     }
   },
   "silenceAlarm": "Silenciar Alarma",
-
   "welcomeBack": "Bienvenido de nuevo,",
   "recentActivity": "Actividad Reciente",
   "activityMaintenance": "Mantenimiento del sistema de emergencias programado para el próximo sábado.",
@@ -70,7 +65,6 @@
   "homeFeatureTitle": "Resumen de la Comunidad",
   "homeFeatureSubtitle": "Comunidad Segura Convento Hueyapan",
   "homeFeatureBody": "Todos los sistemas operativos. Seguridad monitoreando los accesos 24/7.",
-
   "myProfile": "Mi Perfil",
   "accountInformation": "Información de la Cuenta",
   "housingUnitLabel": "Lote",
@@ -87,7 +81,6 @@
   },
   "residentStatusLabel": "Estado de Residente",
   "signOut": "Cerrar Sesión",
-
   "maintenanceFees": "Mis Pagos",
   "paymentHistory": "Historial de Pagos",
   "amountPaid": "Monto Pagado",
@@ -105,7 +98,6 @@
   "aprilFeeDate": "Pagado el 04 de abr, 2026",
   "marchFee": "Cuota de Mantenimiento de Marzo 2026",
   "marchFeeDate": "Pagado el 02 de mar, 2026",
-
   "communityNews": "Noticias de la Comunidad",
   "news1Title": "Nuevas Pautas de Control de Acceso",
   "news1Body": "Por favor, asegúrese de que los códigos de registro de invitados se generen a través del portal 24 horas antes de su llegada. Se requieren etiquetas RFID para el acceso vehicular.",
@@ -250,14 +242,12 @@
   "waterStatusForceAvailable": "Forzar: Disponible",
   "waterStatusForceUnavailable": "Forzar: Sin suministro",
   "waterStatusForceMaintenance": "Forzar: Mantenimiento",
-
   "forgotPassword": "¿Olvidaste tu contraseña?",
   "forgotPasswordTitle": "Recuperar Contraseña",
   "forgotPasswordSubtitle": "Ingresa tu correo y te enviaremos un enlace para restablecer tu contraseña.",
   "sendResetLink": "Enviar Enlace",
   "resetEmailSent": "Se ha enviado un enlace de recuperación a tu correo.",
   "backToLogin": "Volver al inicio de sesión",
-
   "biometricLoginTitle": "Inicio Rápido",
   "biometricLoginSubtitle": "Toca para iniciar sesión",
   "biometricLoginButton": "Iniciar con Biométrico",
@@ -274,6 +264,108 @@
   "biometricsEnabled": "Biométricos activados",
   "biometricsDisabled": "Biométricos desactivados",
   "invalidPassword": "Contraseña incorrecta",
-  "biometricToggle": "Inicio de Sesión con Biométrico"
-
+  "biometricToggle": "Inicio de Sesión con Biométrico",
+  "noConceptsCreatedYet": "No hay conceptos de pago creados aún",
+  "errorLoadingInfo": "Error al cargar la información",
+  "errorGeneric": "Error: {error}",
+  "@errorGeneric": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "aResident": "Un residente",
+  "criticalAlarm": "Alarma crítica: {name} (Lote {lot})",
+  "@criticalAlarm": {
+    "placeholders": {
+      "name": {},
+      "lot": {}
+    }
+  },
+  "paymentMade": "Realizaste un pago: {concept}",
+  "@paymentMade": {
+    "placeholders": {
+      "concept": {}
+    }
+  },
+  "newPaymentConcept": "Nuevo concepto de pago: {concept}",
+  "@newPaymentConcept": {
+    "placeholders": {
+      "concept": {}
+    }
+  },
+  "noRecentActivity": "No hay actividad reciente",
+  "newContact": "Nuevo Contacto",
+  "contactAdded": "Contacto agregado exitosamente",
+  "addContact": "Añadir Contacto",
+  "add": "Añadir",
+  "couldNotLaunchDialer": "No se pudo abrir el marcador telefónico",
+  "conceptDeleted": "Concepto eliminado con éxito",
+  "conceptNotFound": "Concepto no encontrado",
+  "toConfirm": "Por confirmar",
+  "amountGreaterThanZero": "El monto debe ser mayor a 0",
+  "errorReportingPayment": "Error al reportar el pago.",
+  "sendReport": "Enviar Reporte",
+  "amountNotChanged": "El monto no ha cambiado",
+  "transactionRegistered": "Transacción registrada con éxito",
+  "conceptUpdated": "Concepto actualizado",
+  "conceptCreated": "Concepto creado",
+  "pollCreated": "Votación creada exitosamente",
+  "createPoll": "Crear Votación",
+  "options": "Opciones",
+  "addOption": "Añadir Opción",
+  "noPollsAvailable": "No hay votaciones disponibles",
+  "newPoll": "Nueva Votación",
+  "neighborhoodPolls": "Votaciones Vecinales",
+  "revertRequests": "Solicitudes de Reversión",
+  "noPendingRequests": "No hay solicitudes pendientes",
+  "pollLabel": "Votación: {title}",
+  "@pollLabel": {
+    "placeholders": {
+      "title": {}
+    }
+  },
+  "userLabel": "Usuario: {name}",
+  "@userLabel": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "houseLotLabel": "Casa/Lote: {id}",
+  "@houseLotLabel": {
+    "placeholders": {
+      "id": {}
+    }
+  },
+  "dateLabel": "Fecha: {date}",
+  "@dateLabel": {
+    "placeholders": {
+      "date": {}
+    }
+  },
+  "reject": "Rechazar",
+  "approve": "Aprobar",
+  "revertRequestSent": "Solicitud de reversión enviada al administrador",
+  "closed": "Cerrada",
+  "alreadyVoted": "Ya votaste",
+  "requestRevertVote": "Solicitar revertir voto",
+  "vote": "Votar",
+  "pollClosedNoVote": "Esta votación ha sido cerrada y no emitiste voto.",
+  "updateRequired": "Actualización Requerida",
+  "updateRequiredDesc": "Hemos lanzado una nueva versión con mejoras importantes. Por favor, actualiza la aplicación para continuar.",
+  "updateInStore": "Actualizar en la Tienda",
+  "alreadyVotedByOther": "Alguien más ({name}) ya votó por el Lote {lot}, Casa {house}",
+  "@alreadyVotedByOther": {
+    "placeholders": {
+      "name": {},
+      "lot": {},
+      "house": {}
+    }
+  },
+  "waterStatusMaintenanceTitle": "Mantenimiento Reportado",
+  "waterStatusMaintenanceBody": "Se ha reportado mantenimiento en la red de agua. El servicio externo se encuentra temporalmente interrumpido.",
+  "waterStatusActiveTitle": "Suministro Activo",
+  "waterStatusActiveBody": "De acuerdo al calendario municipal, el suministro de agua se encuentra activo el día de hoy. Le invitamos a hacer un uso responsable.",
+  "waterStatusInactiveTitle": "Sin Suministro Programado",
+  "waterStatusInactiveBody": "De acuerdo al calendario municipal, hoy no hay suministro de agua programado en la zona. Le sugerimos administrar sus reservas.",
+  "understood": "Entendido"
 }

@@ -1,12 +1,11 @@
-import 'package:drift/drift.dart';
 import '../../domain/entities/contact_entity.dart';
 import '../../domain/repositories/contacts_repository.dart';
-import '../datasources/contacts_database.dart';
+import '../datasources/contacts_firebase_datasource.dart';
 
 class ContactsRepositoryImpl implements ContactsRepository {
-  final ContactsDatabase _db;
+  final ContactsFirebaseDatasource _datasource;
 
-  ContactsRepositoryImpl(this._db);
+  ContactsRepositoryImpl(this._datasource);
 
   @override
   Stream<List<ContactEntity>> watchContacts({
@@ -14,75 +13,51 @@ class ContactsRepositoryImpl implements ContactsRepository {
     String? categoryFilter,
     bool favoritesOnly = false,
   }) {
-    final selectQuery = _db.select(_db.contacts);
-    _applyFilters(selectQuery, query, categoryFilter, favoritesOnly);
-    _applySorting(selectQuery);
-
-    return selectQuery.watch().map(_mapListToEntities);
-  }
-
-  void _applyFilters(
-    SimpleSelectStatement<$ContactsTable, Contact> statement,
-    String? query,
-    String? categoryFilter,
-    bool favoritesOnly,
-  ) {
-    statement.where((tbl) {
-      final expressions = <Expression<bool>>[];
+    return _datasource.getContactsStream().map((contacts) {
+      var filtered = contacts;
 
       if (favoritesOnly) {
-        expressions.add(tbl.isFavorite.equals(true));
+        filtered = filtered.where((c) => c.isFavorite).toList();
       }
 
       if (categoryFilter != null && categoryFilter.isNotEmpty) {
-        expressions.add(
-          tbl.category.lower().equals(categoryFilter.toLowerCase()),
-        );
+        filtered = filtered
+            .where((c) => c.category.toLowerCase() == categoryFilter.toLowerCase())
+            .toList();
       }
 
       if (query != null && query.trim().isNotEmpty) {
-        final term = '%${query.trim().toLowerCase()}%';
-        expressions.add(
-          tbl.name.lower().like(term) |
-              tbl.phoneNumber.lower().like(term) |
-              tbl.category.lower().like(term),
-        );
+        final term = query.trim().toLowerCase();
+        filtered = filtered.where((c) {
+          return c.name.toLowerCase().contains(term) ||
+              c.phoneNumber.toLowerCase().contains(term) ||
+              c.category.toLowerCase().contains(term);
+        }).toList();
       }
 
-      if (expressions.isEmpty) {
-        return const Constant(true);
-      }
+      // Sort favorites first, then alphabetically
+      filtered.sort((a, b) {
+        if (a.isFavorite && !b.isFavorite) return -1;
+        if (!a.isFavorite && b.isFavorite) return 1;
+        return a.name.compareTo(b.name);
+      });
 
-      return expressions.reduce((value, element) => value & element);
+      return filtered;
     });
   }
 
-  void _applySorting(SimpleSelectStatement<$ContactsTable, Contact> statement) {
-    statement.orderBy([
-      (tbl) =>
-          OrderingTerm(expression: tbl.isFavorite, mode: OrderingMode.desc),
-      (tbl) => OrderingTerm(expression: tbl.name, mode: OrderingMode.asc),
-    ]);
-  }
-
-  List<ContactEntity> _mapListToEntities(List<Contact> contacts) {
-    return contacts.map(_mapToEntity).toList();
+  @override
+  Future<void> toggleFavorite(String id, bool isFavorite) async {
+    await _datasource.toggleFavorite(id, isFavorite);
   }
 
   @override
-  Future<void> toggleFavorite(int id, bool isFavorite) async {
-    await (_db.update(_db.contacts)..where((tbl) => tbl.id.equals(id))).write(
-      ContactsCompanion(isFavorite: Value(isFavorite)),
-    );
+  Future<void> addContact(ContactEntity contact) {
+    return _datasource.addContact(contact);
   }
 
-  ContactEntity _mapToEntity(Contact contact) {
-    return ContactEntity(
-      id: contact.id,
-      name: contact.name,
-      phoneNumber: contact.phoneNumber,
-      category: contact.category,
-      isFavorite: contact.isFavorite,
-    );
+  @override
+  Future<void> deleteContact(String contactId) {
+    return _datasource.deleteContact(contactId);
   }
 }
