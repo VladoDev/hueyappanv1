@@ -1,5 +1,5 @@
 class ContactEntity {
-  final int id;
+  final String id;
   final String name;
   final String phoneNumber;
   final String category;
@@ -14,7 +14,7 @@ class ContactEntity {
   });
 
   ContactEntity copyWith({
-    int? id,
+    String? id,
     String? name,
     String? phoneNumber,
     String? category,

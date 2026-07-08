@@ -1,11 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
-import '../../data/datasources/contacts_database.dart';
+import '../../data/datasources/contacts_firebase_datasource.dart';
 import '../../data/repositories/contacts_repository_impl.dart';
 import '../../domain/entities/contact_entity.dart';
 import '../../domain/repositories/contacts_repository.dart';
 import '../../domain/usecases/toggle_favorite_usecase.dart';
 import '../../domain/usecases/watch_contacts_usecase.dart';
+import '../../domain/usecases/add_contact_usecase.dart';
 
 class ContactsFilterState {
   final String searchQuery;
@@ -38,16 +39,12 @@ final analyticsProvider = Provider<FirebaseAnalytics>(
   (ref) => FirebaseAnalytics.instance,
 );
 
-final contactsDatabaseProvider = Provider<ContactsDatabase>((ref) {
-  final db = ContactsDatabase();
-  ref.onDispose(() {
-    db.close();
-  });
-  return db;
+final contactsFirebaseDatasourceProvider = Provider<ContactsFirebaseDatasource>((ref) {
+  return ContactsFirebaseDatasource();
 });
 
 final contactsRepositoryProvider = Provider<ContactsRepository>((ref) {
-  return ContactsRepositoryImpl(ref.watch(contactsDatabaseProvider));
+  return ContactsRepositoryImpl(ref.watch(contactsFirebaseDatasourceProvider));
 });
 
 final watchContactsUseCaseProvider = Provider<WatchContactsUseCase>((ref) {
@@ -56,6 +53,10 @@ final watchContactsUseCaseProvider = Provider<WatchContactsUseCase>((ref) {
 
 final toggleFavoriteUseCaseProvider = Provider<ToggleFavoriteUseCase>((ref) {
   return ToggleFavoriteUseCase(ref.watch(contactsRepositoryProvider));
+});
+
+final addContactUseCaseProvider = Provider<AddContactUseCase>((ref) {
+  return AddContactUseCase(ref.watch(contactsRepositoryProvider));
 });
 
 class ContactsFilterNotifier extends Notifier<ContactsFilterState> {

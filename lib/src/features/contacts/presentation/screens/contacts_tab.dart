@@ -4,6 +4,8 @@ import 'package:hueyappanv1/l10n/app_localizations.dart';
 import 'package:hueyappanv1/src/core/theme/vecinal_theme.dart';
 import '../providers/contacts_provider.dart';
 import '../widgets/contact_list_item.dart';
+import '../../../authentication/presentation/providers/auth_provider.dart';
+import '../widgets/add_contact_dialog.dart';
 
 class ContactsTab extends ConsumerStatefulWidget {
   const ContactsTab({super.key});
@@ -65,7 +67,28 @@ class _ContactsTabState extends ConsumerState<ContactsTab> {
           ],
         ),
       ),
+      floatingActionButton: _buildFab(),
     );
+  }
+
+  Widget? _buildFab() {
+    final user = ref.watch(authStateProvider).value;
+    if (user != null && user.role.toLowerCase() == 'admin') {
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 100.0),
+        child: FloatingActionButton.extended(
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (ctx) => const AddContactDialog(),
+            );
+          },
+          icon: const Icon(Icons.add),
+          label: const Text('Nuevo Contacto'),
+        ),
+      );
+    }
+    return null;
   }
 
   Widget _buildSearchBar(VecinalSemanticColors vc, AppLocalizations l10n) {
@@ -207,7 +230,6 @@ class _ContactsTabState extends ConsumerState<ContactsTab> {
             right: VecinalSpacing.xl,
             bottom: 100,
           ),
-          clipBehavior: Clip.none,
           itemBuilder: (context, index) {
             return ContactListItem(contact: contacts[index]);
           },

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../providers/polls_provider.dart';
 import '../widgets/poll_card.dart';
 import '../../../authentication/presentation/providers/auth_provider.dart';
+import 'package:hueyappanv1/src/core/theme/vecinal_theme.dart';
 
 class PollsPage extends ConsumerWidget {
   const PollsPage({super.key});
@@ -17,7 +18,13 @@ class PollsPage extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Votaciones Vecinales'),
+        title: Text(
+          'Votaciones Vecinales',
+          style: VecinalTextStyles.headlineSmall.copyWith(
+            fontWeight: FontWeight.bold,
+            color: context.vecinalColors.primaryDefault,
+          ),
+        ),
         actions: [
           if (isAdmin)
             IconButton(
