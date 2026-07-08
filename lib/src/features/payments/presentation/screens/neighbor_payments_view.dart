@@ -191,8 +191,13 @@ class NeighborPaymentsView extends ConsumerWidget {
 
     String _formatClabe(String clabe) {
       final clean = clabe.replaceAll(RegExp(r'\s+'), '');
-      if (clean.length != 18) return clabe; // fallback si no tiene 18 dígitos
-      return '${clean.substring(0, 4)} ${clean.substring(4, 8)} ${clean.substring(8, 12)} ${clean.substring(12, 16)} ${clean.substring(16, 18)}';
+      if (clean.isEmpty) return clabe;
+      final buffer = StringBuffer();
+      for (int i = 0; i < clean.length; i++) {
+        if (i > 0 && i % 4 == 0) buffer.write(' ');
+        buffer.write(clean[i]);
+      }
+      return buffer.toString();
     }
 
     return bankDetailsAsync.when(
