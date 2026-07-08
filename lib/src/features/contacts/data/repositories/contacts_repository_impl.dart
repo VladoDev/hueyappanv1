@@ -52,7 +52,12 @@ class ContactsRepositoryImpl implements ContactsRepository {
   }
 
   @override
-  Future<void> addContact(ContactEntity contact) async {
-    await _datasource.addContact(contact);
+  Future<void> addContact(ContactEntity contact) {
+    return _datasource.addContact(contact);
+  }
+
+  @override
+  Future<void> deleteContact(String contactId) {
+    return _datasource.deleteContact(contactId);
   }
 }

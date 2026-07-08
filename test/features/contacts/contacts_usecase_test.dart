@@ -55,6 +55,9 @@ class MockContactsRepository implements ContactsRepository {
   Future<void> addContact(ContactEntity contact) async {
     addContactCalled = true;
   }
+
+  @override
+  Future<void> deleteContact(String contactId) async {}
 }
 
 void main() {

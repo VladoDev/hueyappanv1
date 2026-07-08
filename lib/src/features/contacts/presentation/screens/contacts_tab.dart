@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hueyappanv1/l10n/app_localizations.dart';
 import 'package:hueyappanv1/src/core/theme/vecinal_theme.dart';
+import 'package:hueyappanv1/src/core/widgets/vecinal_empty_state.dart';
 import '../providers/contacts_provider.dart';
 import '../widgets/contact_list_item.dart';
 import '../../../authentication/presentation/providers/auth_provider.dart';
@@ -84,7 +85,7 @@ class _ContactsTabState extends ConsumerState<ContactsTab> {
             );
           },
           icon: const Icon(Icons.add),
-          label: const Text('Nuevo Contacto'),
+          label: Text(AppLocalizations.of(context)!.newContact),
         ),
       );
     }
@@ -213,14 +214,12 @@ class _ContactsTabState extends ConsumerState<ContactsTab> {
 
     return contactsAsync.when(
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (err, stack) => Center(child: Text('Error: $err')),
+      error: (err, stack) => Center(child: Text(l10n.errorGeneric(err.toString()))),
       data: (contacts) {
         if (contacts.isEmpty) {
-          return Center(
-            child: Text(
-              l10n.noContactsFound,
-              style: VecinalTextStyles.bodyMedium.copyWith(color: vc.textHint),
-            ),
+          return VecinalEmptyState(
+            icon: Icons.contacts_outlined,
+            message: l10n.noContactsFound,
           );
         }
         return ListView.builder(

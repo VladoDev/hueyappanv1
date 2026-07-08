@@ -129,10 +129,10 @@ class ConceptPaymentMapScreen extends ConsumerWidget {
         runSpacing: 8,
         alignment: WrapAlignment.center,
         children: [
-          _legendItem('No Registrado', Colors.grey[300]!, vc),
-          _legendItem('Pendiente', Colors.red[400]!, vc),
-          _legendItem('Parcial', Colors.orange[400]!, vc),
-          _legendItem('Pagado', Colors.green[400]!, vc),
+          _legendItem('No Registrado', VecinalColors.gray200, vc),
+          _legendItem('Pendiente', VecinalColors.red400, vc),
+          _legendItem('Parcial', VecinalColors.amber400, vc),
+          _legendItem('Pagado', VecinalColors.green400, vc),
         ],
       ),
     );
@@ -176,18 +176,18 @@ class ConceptPaymentMapScreen extends ConsumerWidget {
         .firstOrNull;
 
     Color color;
-    Color textColor = Colors.white;
+    Color textColor = VecinalColors.white;
 
     if (payment == null) {
-      color = Colors.grey[300]!;
-      textColor = Colors.black54;
+      color = VecinalColors.gray200;
+      textColor = VecinalColors.gray600;
     } else {
       if (payment.paymentStatus == 'paid') {
-        color = Colors.green[400]!;
+        color = VecinalColors.green400;
       } else if (payment.paymentStatus == 'partial') {
-        color = Colors.orange[400]!;
+        color = VecinalColors.amber400;
       } else {
-        color = Colors.red[400]!;
+        color = VecinalColors.red400;
       }
     }
 
@@ -198,7 +198,7 @@ class ConceptPaymentMapScreen extends ConsumerWidget {
         borderRadius: BorderRadius.circular(VecinalRadius.md),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: VecinalColors.black.withOpacity(0.05),
             blurRadius: 4,
             offset: const Offset(0, 2),
           ),

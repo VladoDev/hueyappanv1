@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hueyappanv1/l10n/app_localizations.dart';
 import 'package:hueyappanv1/src/core/theme/vecinal_theme.dart';
+import 'package:hueyappanv1/src/core/widgets/vecinal_empty_state.dart';
 import '../../domain/entities/payment_concept_entity.dart';
 import '../providers/payments_provider.dart';
 
@@ -21,39 +22,30 @@ class AdminPaymentsView extends ConsumerWidget {
       data: (concepts) {
         if (concepts.isEmpty) {
           return Center(
-            child: Padding(
-              padding: const EdgeInsets.all(24.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.payment_outlined, size: 64, color: vc.textHint),
-                  const SizedBox(height: 16),
-                  Text(
-                    'No hay conceptos de pago creados aún.',
-                    style: VecinalTextStyles.headlineSmall.copyWith(
-                      color: vc.textSecondary,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                VecinalEmptyState(
+                  icon: Icons.receipt_long_outlined,
+                  message: l10n.noConceptsCreatedYet,
+                ),
+                ElevatedButton.icon(
+                  onPressed: () => context.push('/payments/new'),
+                  icon: const Icon(Icons.add),
+                  label: Text(l10n.createConcept),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: vc.primaryDefault,
+                    foregroundColor: vc.textOnPrimary,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 12,
                     ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 24),
-                  ElevatedButton.icon(
-                    onPressed: () => context.push('/payments/new'),
-                    icon: const Icon(Icons.add),
-                    label: Text(l10n.createConcept),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: vc.primaryDefault,
-                      foregroundColor: vc.textOnPrimary,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 24,
-                        vertical: 12,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(VecinalRadius.md),
-                      ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(VecinalRadius.md),
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           );
         }
@@ -72,7 +64,7 @@ class AdminPaymentsView extends ConsumerWidget {
         );
       },
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (err, stack) => Center(child: Text('Error: $err')),
+      error: (err, stack) => Center(child: Text(l10n.errorGeneric(err.toString()))),
     );
 
     if (isEmbedded) {
@@ -179,8 +171,8 @@ class _ConceptCard extends ConsumerWidget {
                       .deleteConcept(concept.id);
                   if (context.mounted && success) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Concepto eliminado con éxito'),
+                      SnackBar(
+                        content: Text(l10n.conceptDeleted),
                       ),
                     );
                   }
@@ -363,7 +355,7 @@ class _ConceptCard extends ConsumerWidget {
                         child: CircularProgressIndicator(strokeWidth: 2),
                       ),
                     ),
-                    error: (err, stack) => const Text('Err'),
+                    error: (err, stack) => Text(l10n.errorGeneric(err.toString())),
                   ),
                 ],
               ),

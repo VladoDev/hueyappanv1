@@ -1261,6 +1261,336 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Biometric Sign-In'**
   String get biometricToggle;
+
+  /// No description provided for @noConceptsCreatedYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No payment concepts created yet'**
+  String get noConceptsCreatedYet;
+
+  /// No description provided for @errorLoadingInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading information'**
+  String get errorLoadingInfo;
+
+  /// No description provided for @errorGeneric.
+  ///
+  /// In en, this message translates to:
+  /// **'Error: {error}'**
+  String errorGeneric(Object error);
+
+  /// No description provided for @aResident.
+  ///
+  /// In en, this message translates to:
+  /// **'A resident'**
+  String get aResident;
+
+  /// No description provided for @criticalAlarm.
+  ///
+  /// In en, this message translates to:
+  /// **'Critical alarm: {name} (Lot {lot})'**
+  String criticalAlarm(Object name, Object lot);
+
+  /// No description provided for @paymentMade.
+  ///
+  /// In en, this message translates to:
+  /// **'You made a payment: {concept}'**
+  String paymentMade(Object concept);
+
+  /// No description provided for @newPaymentConcept.
+  ///
+  /// In en, this message translates to:
+  /// **'New payment concept: {concept}'**
+  String newPaymentConcept(Object concept);
+
+  /// No description provided for @noRecentActivity.
+  ///
+  /// In en, this message translates to:
+  /// **'No recent activity'**
+  String get noRecentActivity;
+
+  /// No description provided for @newContact.
+  ///
+  /// In en, this message translates to:
+  /// **'New Contact'**
+  String get newContact;
+
+  /// No description provided for @contactAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact added successfully'**
+  String get contactAdded;
+
+  /// No description provided for @addContact.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Contact'**
+  String get addContact;
+
+  /// No description provided for @add.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get add;
+
+  /// No description provided for @couldNotLaunchDialer.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not launch dialer'**
+  String get couldNotLaunchDialer;
+
+  /// No description provided for @conceptDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Concept deleted successfully'**
+  String get conceptDeleted;
+
+  /// No description provided for @conceptNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Concept not found'**
+  String get conceptNotFound;
+
+  /// No description provided for @toConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'To confirm'**
+  String get toConfirm;
+
+  /// No description provided for @amountGreaterThanZero.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount must be greater than 0'**
+  String get amountGreaterThanZero;
+
+  /// No description provided for @errorReportingPayment.
+  ///
+  /// In en, this message translates to:
+  /// **'Error reporting payment.'**
+  String get errorReportingPayment;
+
+  /// No description provided for @sendReport.
+  ///
+  /// In en, this message translates to:
+  /// **'Send Report'**
+  String get sendReport;
+
+  /// No description provided for @amountNotChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount has not changed'**
+  String get amountNotChanged;
+
+  /// No description provided for @transactionRegistered.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction registered successfully'**
+  String get transactionRegistered;
+
+  /// No description provided for @conceptUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Concept updated'**
+  String get conceptUpdated;
+
+  /// No description provided for @conceptCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Concept created'**
+  String get conceptCreated;
+
+  /// No description provided for @pollCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Poll created successfully'**
+  String get pollCreated;
+
+  /// No description provided for @createPoll.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Poll'**
+  String get createPoll;
+
+  /// No description provided for @options.
+  ///
+  /// In en, this message translates to:
+  /// **'Options'**
+  String get options;
+
+  /// No description provided for @addOption.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Option'**
+  String get addOption;
+
+  /// No description provided for @noPollsAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No polls available'**
+  String get noPollsAvailable;
+
+  /// No description provided for @newPoll.
+  ///
+  /// In en, this message translates to:
+  /// **'New Poll'**
+  String get newPoll;
+
+  /// No description provided for @neighborhoodPolls.
+  ///
+  /// In en, this message translates to:
+  /// **'Neighborhood Polls'**
+  String get neighborhoodPolls;
+
+  /// No description provided for @revertRequests.
+  ///
+  /// In en, this message translates to:
+  /// **'Revert Requests'**
+  String get revertRequests;
+
+  /// No description provided for @noPendingRequests.
+  ///
+  /// In en, this message translates to:
+  /// **'No pending requests'**
+  String get noPendingRequests;
+
+  /// No description provided for @pollLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Poll: {title}'**
+  String pollLabel(Object title);
+
+  /// No description provided for @userLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'User: {name}'**
+  String userLabel(Object name);
+
+  /// No description provided for @houseLotLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'House/Lot: {id}'**
+  String houseLotLabel(Object id);
+
+  /// No description provided for @dateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Date: {date}'**
+  String dateLabel(Object date);
+
+  /// No description provided for @reject.
+  ///
+  /// In en, this message translates to:
+  /// **'Reject'**
+  String get reject;
+
+  /// No description provided for @approve.
+  ///
+  /// In en, this message translates to:
+  /// **'Approve'**
+  String get approve;
+
+  /// No description provided for @revertRequestSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Revert request sent to administrator'**
+  String get revertRequestSent;
+
+  /// No description provided for @closed.
+  ///
+  /// In en, this message translates to:
+  /// **'Closed'**
+  String get closed;
+
+  /// No description provided for @alreadyVoted.
+  ///
+  /// In en, this message translates to:
+  /// **'Already voted'**
+  String get alreadyVoted;
+
+  /// No description provided for @requestRevertVote.
+  ///
+  /// In en, this message translates to:
+  /// **'Request to revert vote'**
+  String get requestRevertVote;
+
+  /// No description provided for @vote.
+  ///
+  /// In en, this message translates to:
+  /// **'Vote'**
+  String get vote;
+
+  /// No description provided for @pollClosedNoVote.
+  ///
+  /// In en, this message translates to:
+  /// **'This poll is closed and you did not vote.'**
+  String get pollClosedNoVote;
+
+  /// No description provided for @updateRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Required'**
+  String get updateRequired;
+
+  /// No description provided for @updateRequiredDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'We have released a new version with important improvements. Please update the app to continue.'**
+  String get updateRequiredDesc;
+
+  /// No description provided for @updateInStore.
+  ///
+  /// In en, this message translates to:
+  /// **'Update in Store'**
+  String get updateInStore;
+
+  /// No description provided for @alreadyVotedByOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Someone else ({name}) has already voted for Lot {lot}, House {house}'**
+  String alreadyVotedByOther(Object name, Object lot, Object house);
+
+  /// No description provided for @waterStatusMaintenanceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Maintenance Reported'**
+  String get waterStatusMaintenanceTitle;
+
+  /// No description provided for @waterStatusMaintenanceBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Maintenance has been reported in the water network. The external service is temporarily interrupted.'**
+  String get waterStatusMaintenanceBody;
+
+  /// No description provided for @waterStatusActiveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Active Supply'**
+  String get waterStatusActiveTitle;
+
+  /// No description provided for @waterStatusActiveBody.
+  ///
+  /// In en, this message translates to:
+  /// **'According to the municipal calendar, the water supply is active today. We invite you to use it responsibly.'**
+  String get waterStatusActiveBody;
+
+  /// No description provided for @waterStatusInactiveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No Scheduled Supply'**
+  String get waterStatusInactiveTitle;
+
+  /// No description provided for @waterStatusInactiveBody.
+  ///
+  /// In en, this message translates to:
+  /// **'According to the municipal calendar, there is no water supply scheduled in the area today. We suggest you manage your reserves.'**
+  String get waterStatusInactiveBody;
+
+  /// No description provided for @understood.
+  ///
+  /// In en, this message translates to:
+  /// **'Got it'**
+  String get understood;
 }
 
 class _AppLocalizationsDelegate

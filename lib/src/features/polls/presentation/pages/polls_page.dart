@@ -5,6 +5,8 @@ import '../providers/polls_provider.dart';
 import '../widgets/poll_card.dart';
 import '../../../authentication/presentation/providers/auth_provider.dart';
 import 'package:hueyappanv1/src/core/theme/vecinal_theme.dart';
+import 'package:hueyappanv1/src/core/widgets/vecinal_empty_state.dart';
+import 'package:hueyappanv1/l10n/app_localizations.dart';
 
 class PollsPage extends ConsumerWidget {
   const PollsPage({super.key});
@@ -16,10 +18,11 @@ class PollsPage extends ConsumerWidget {
     final resident = authState.value;
     final isAdmin = resident?.isAdmin ?? false;
 
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Votaciones Vecinales',
+          l10n.neighborhoodPolls,
           style: VecinalTextStyles.headlineSmall.copyWith(
             fontWeight: FontWeight.bold,
             color: context.vecinalColors.primaryDefault,
@@ -29,7 +32,7 @@ class PollsPage extends ConsumerWidget {
           if (isAdmin)
             IconButton(
               icon: const Icon(Icons.history),
-              tooltip: 'Solicitudes de Reversión',
+              tooltip: l10n.revertRequests,
               onPressed: () => context.push('/polls/revert-requests'),
             )
         ],
@@ -37,7 +40,10 @@ class PollsPage extends ConsumerWidget {
       body: pollsAsync.when(
         data: (polls) {
           if (polls.isEmpty) {
-            return const Center(child: Text('No hay votaciones disponibles'));
+            return VecinalEmptyState(
+              icon: Icons.how_to_vote_outlined,
+              message: l10n.noPollsAvailable,
+            );
           }
           return ListView.builder(
             padding: EdgeInsets.only(
@@ -52,7 +58,7 @@ class PollsPage extends ConsumerWidget {
           );
         },
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (err, stack) => Center(child: Text('Error: $err')),
+        error: (err, stack) => Center(child: Text(l10n.errorGeneric(err.toString()))),
       ),
       floatingActionButton: isAdmin
           ? Padding(
@@ -62,7 +68,7 @@ class PollsPage extends ConsumerWidget {
                   context.push('/polls/create');
                 },
                 icon: const Icon(Icons.add),
-                label: const Text('Nueva Votación'),
+                label: Text(l10n.newPoll),
               ),
             )
           : null,

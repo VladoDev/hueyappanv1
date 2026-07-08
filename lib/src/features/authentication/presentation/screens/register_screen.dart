@@ -192,7 +192,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     borderRadius: BorderRadius.circular(24),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.05),
+                        color: VecinalColors.black.withValues(alpha: 0.05),
                         blurRadius: 10,
                         offset: const Offset(0, 4),
                       ),
@@ -476,7 +476,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         onPressed: isLoading ? null : _submitForm,
         style: ElevatedButton.styleFrom(
           backgroundColor: vc.primaryDefault,
-          foregroundColor: Colors.white,
+          foregroundColor: VecinalColors.white,
           elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
@@ -488,7 +488,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 height: 24,
                 child: CircularProgressIndicator(
                   strokeWidth: 2.5,
-                  color: Colors.white,
+                  color: VecinalColors.white,
                 ),
               )
             : Text(

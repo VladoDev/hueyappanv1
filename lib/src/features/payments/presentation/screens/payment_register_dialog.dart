@@ -45,6 +45,7 @@ class _PaymentRegisterDialogState extends ConsumerState<PaymentRegisterDialog> {
 
   void _submit() async {
     if (_formKey.currentState!.validate()) {
+      final l10n = AppLocalizations.of(context)!;
       final authUser = ref.read(authStateProvider).value;
       if (authUser == null) return;
 
@@ -53,7 +54,7 @@ class _PaymentRegisterDialogState extends ConsumerState<PaymentRegisterDialog> {
 
       if (difference == 0) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('El monto no ha cambiado')),
+          SnackBar(content: Text(l10n.amountNotChanged)),
         );
         return;
       }
@@ -90,7 +91,7 @@ class _PaymentRegisterDialogState extends ConsumerState<PaymentRegisterDialog> {
 
       if (mounted && success) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Transacción registrada con éxito')),
+          SnackBar(content: Text(l10n.transactionRegistered)),
         );
         Navigator.of(context).pop();
       }

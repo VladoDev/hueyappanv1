@@ -35,6 +35,7 @@ class _AddContactDialogState extends ConsumerState<AddContactDialog> {
 
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
+    final l10n = AppLocalizations.of(context)!;
 
     setState(() => _isLoading = true);
 
@@ -52,13 +53,13 @@ class _AddContactDialogState extends ConsumerState<AddContactDialog> {
       if (mounted) {
         Navigator.of(context).pop();
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Contacto agregado exitosamente')),
+          SnackBar(content: Text(l10n.contactAdded)),
         );
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e')),
+          SnackBar(content: Text(l10n.errorGeneric(e.toString()))),
         );
       }
     } finally {
@@ -72,7 +73,7 @@ class _AddContactDialogState extends ConsumerState<AddContactDialog> {
     final l10n = AppLocalizations.of(context)!;
 
     return AlertDialog(
-      title: Text('Añadir Contacto', style: VecinalTextStyles.headlineSmall),
+      title: Text(l10n.addContact, style: VecinalTextStyles.headlineSmall),
       content: Form(
         key: _formKey,
         child: SingleChildScrollView(
@@ -86,7 +87,7 @@ class _AddContactDialogState extends ConsumerState<AddContactDialog> {
                   border: const OutlineInputBorder(),
                 ),
                 validator: (val) => val == null || val.trim().isEmpty
-                    ? 'Campo requerido'
+                    ? l10n.fieldRequired
                     : null,
               ),
               const SizedBox(height: VecinalSpacing.md),
@@ -98,7 +99,7 @@ class _AddContactDialogState extends ConsumerState<AddContactDialog> {
                 ),
                 keyboardType: TextInputType.phone,
                 validator: (val) => val == null || val.trim().isEmpty
-                    ? 'Campo requerido'
+                    ? l10n.fieldRequired
                     : null,
               ),
               const SizedBox(height: VecinalSpacing.md),
@@ -140,7 +141,7 @@ class _AddContactDialogState extends ConsumerState<AddContactDialog> {
                   width: 20,
                   height: 20,
                   child: CircularProgressIndicator(strokeWidth: 2))
-              : const Text('Añadir'),
+              : Text(l10n.add),
         ),
       ],
     );

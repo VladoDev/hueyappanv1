@@ -7,6 +7,7 @@ import '../../domain/repositories/contacts_repository.dart';
 import '../../domain/usecases/toggle_favorite_usecase.dart';
 import '../../domain/usecases/watch_contacts_usecase.dart';
 import '../../domain/usecases/add_contact_usecase.dart';
+import '../../domain/usecases/delete_contact_usecase.dart';
 
 class ContactsFilterState {
   final String searchQuery;
@@ -57,6 +58,10 @@ final toggleFavoriteUseCaseProvider = Provider<ToggleFavoriteUseCase>((ref) {
 
 final addContactUseCaseProvider = Provider<AddContactUseCase>((ref) {
   return AddContactUseCase(ref.watch(contactsRepositoryProvider));
+});
+
+final deleteContactUseCaseProvider = Provider<DeleteContactUseCase>((ref) {
+  return DeleteContactUseCase(ref.watch(contactsRepositoryProvider));
 });
 
 class ContactsFilterNotifier extends Notifier<ContactsFilterState> {

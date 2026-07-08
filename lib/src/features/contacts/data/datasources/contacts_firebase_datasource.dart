@@ -76,4 +76,12 @@ class ContactsFirebaseDatasource {
 
     await _firestore.collection('contacts').add(model.toFirestore());
   }
+
+  Future<void> deleteContact(String contactId) async {
+    final user = _auth.currentUser;
+    if (user == null) throw Exception('Must be logged in to delete a contact');
+    
+    // Admins only: We rely on security rules or UI, but here we just delete it from contacts
+    await _firestore.collection('contacts').doc(contactId).delete();
+  }
 }

@@ -427,7 +427,7 @@ class _PaymentListRow extends ConsumerWidget {
               child: const Text(
                 'Por confirmar',
                 style: TextStyle(
-                  color: Colors.orange,
+                  color: VecinalColors.amber400,
                   fontSize: 10,
                   fontWeight: FontWeight.bold,
                 ),

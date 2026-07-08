@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:hueyappanv1/src/core/theme/vecinal_theme.dart';
+import 'package:hueyappanv1/l10n/app_localizations.dart';
 import '../providers/app_settings_provider.dart';
 
 class ForceUpdateScreen extends ConsumerWidget {
@@ -27,6 +28,7 @@ class ForceUpdateScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final vc = context.vecinalColors;
+    final l10n = AppLocalizations.of(context)!;
     final settingsAsync = ref.watch(appSettingsProvider);
 
     return Scaffold(
@@ -46,7 +48,7 @@ class ForceUpdateScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 32),
               Text(
-                'Actualización Requerida',
+                l10n.updateRequired,
                 style: VecinalTextStyles.headlineMedium.copyWith(
                   fontWeight: FontWeight.bold,
                   color: vc.textPrimary,
@@ -55,7 +57,7 @@ class ForceUpdateScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 16),
               Text(
-                'Hemos lanzado una nueva versión con mejoras importantes. Por favor, actualiza la aplicación para continuar.',
+                l10n.updateRequiredDesc,
                 style: VecinalTextStyles.bodyLarge.copyWith(
                   color: vc.textSecondary,
                   height: 1.5,
@@ -71,7 +73,7 @@ class ForceUpdateScreen extends ConsumerWidget {
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: vc.primaryDefault,
-                        foregroundColor: Colors.white,
+                        foregroundColor: vc.surfacePrimary,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
                         ),
@@ -83,9 +85,9 @@ class ForceUpdateScreen extends ConsumerWidget {
                               settings.storeUrlIos,
                             )
                           : null,
-                      child: const Text(
-                        'Actualizar en la Tienda',
-                        style: TextStyle(
+                      child: Text(
+                        l10n.updateInStore,
+                        style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),
@@ -94,7 +96,7 @@ class ForceUpdateScreen extends ConsumerWidget {
                   );
                 },
                 loading: () => const CircularProgressIndicator(),
-                error: (e, st) => const Text('Error al cargar la información'),
+                error: (e, st) => Text(l10n.errorLoadingInfo),
               ),
               const SizedBox(height: 48),
             ],
