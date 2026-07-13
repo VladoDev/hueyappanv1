@@ -70,9 +70,25 @@ class NeighborPaymentsView extends ConsumerWidget {
               ...pending.map((p) => _NeighborPaymentCard(payment: p)),
             transactionsAsync.when(
               data: (transactions) {
-                final pendingConfirmations = transactions
+                var pendingConfirmations = transactions
                     .where((t) => !t.isConfirmed)
                     .toList();
+                    
+                final latestPerConcept = <String, PaymentTransactionEntity>{};
+                for (final t in pendingConfirmations) {
+                  final key = t.conceptId ?? t.housingPaymentId;
+                  if (!latestPerConcept.containsKey(key)) {
+                    latestPerConcept[key] = t;
+                  } else {
+                    if (t.createdAt.isAfter(latestPerConcept[key]!.createdAt)) {
+                      latestPerConcept[key] = t;
+                    }
+                  }
+                }
+                
+                pendingConfirmations = latestPerConcept.values.toList()
+                  ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+
                 final confirmedHistory = transactions
                     .where((t) => t.isConfirmed)
                     .toList();
@@ -607,6 +623,7 @@ class _NeighborPaymentCard extends ConsumerWidget {
                   const SizedBox(height: 16),
                   TextField(
                     controller: notesController,
+                    textCapitalization: TextCapitalization.sentences,
                     decoration: InputDecoration(
                       labelText: 'Notas / Referencia (Opcional)',
                       border: OutlineInputBorder(
@@ -1032,6 +1049,7 @@ class _EditBankDetailsDialogState extends ConsumerState<_EditBankDetailsDialog> 
           children: [
             TextField(
               controller: _bankNameCtrl,
+              textCapitalization: TextCapitalization.words,
               decoration: InputDecoration(labelText: l10n.bankNameLabel),
               style: TextStyle(color: vc.textPrimary),
             ),
@@ -1044,6 +1062,7 @@ class _EditBankDetailsDialogState extends ConsumerState<_EditBankDetailsDialog> 
             const SizedBox(height: 16),
             TextField(
               controller: _accountNameCtrl,
+              textCapitalization: TextCapitalization.words,
               decoration: InputDecoration(labelText: l10n.beneficiaryLabel),
               style: TextStyle(color: vc.textPrimary),
             ),

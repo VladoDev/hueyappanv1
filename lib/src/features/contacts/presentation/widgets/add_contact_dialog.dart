@@ -82,6 +82,7 @@ class _AddContactDialogState extends ConsumerState<AddContactDialog> {
             children: [
               TextFormField(
                 controller: _nameController,
+                textCapitalization: TextCapitalization.words,
                 decoration: InputDecoration(
                   labelText: 'Nombre',
                   border: const OutlineInputBorder(),

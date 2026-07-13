@@ -49,6 +49,7 @@ class PaymentsFirebaseDatasource {
     return _firestore
         .collection('housing_payments')
         .where('lot', isEqualTo: lot)
+        .where('house', isEqualTo: house)
         .snapshots()
         .map(
           (snapshot) => snapshot.docs

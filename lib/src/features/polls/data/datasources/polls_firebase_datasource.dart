@@ -47,6 +47,7 @@ class PollsFirebaseDatasource {
     required String pollId,
     required String optionId,
     required ResidentEntity resident,
+    String? customOptionText,
   }) async {
     final houseId = '${resident.lot}_${resident.house}';
     final pollRef = _firestore.collection('polls').doc(pollId);
@@ -71,12 +72,36 @@ class PollsFirebaseDatasource {
 
       // Update the option count
       List<dynamic> options = List.from(data['options']);
-      int optionIndex = options.indexWhere((opt) => opt['id'] == optionId);
-      if (optionIndex == -1) {
-        throw Exception('Opción no encontrada');
-      }
+      String finalOptionId = optionId;
 
-      options[optionIndex]['votesCount'] = (options[optionIndex]['votesCount'] ?? 0) + 1;
+      if (customOptionText != null && customOptionText.trim().isNotEmpty) {
+        final normalizedText = customOptionText.trim().toLowerCase().replaceAll(RegExp(r'\s+'), ' ');
+        
+        int existingIndex = options.indexWhere((opt) {
+          final optText = (opt['text'] as String).trim().toLowerCase().replaceAll(RegExp(r'\s+'), ' ');
+          return optText == normalizedText;
+        });
+        
+        if (existingIndex != -1) {
+          options[existingIndex]['votesCount'] = (options[existingIndex]['votesCount'] ?? 0) + 1;
+          finalOptionId = options[existingIndex]['id'];
+        } else {
+          final newOptionId = _firestore.collection('polls').doc().id;
+          final newOption = {
+            'id': newOptionId,
+            'text': customOptionText.trim(),
+            'votesCount': 1,
+          };
+          options.add(newOption);
+          finalOptionId = newOptionId;
+        }
+      } else {
+        int optionIndex = options.indexWhere((opt) => opt['id'] == optionId);
+        if (optionIndex == -1) {
+          throw Exception('Opción no encontrada');
+        }
+        options[optionIndex]['votesCount'] = (options[optionIndex]['votesCount'] ?? 0) + 1;
+      }
       
       // Add the household to voted map
       votedHouseholds[houseId] = resident.name;
@@ -89,7 +114,7 @@ class PollsFirebaseDatasource {
       transaction.set(voteRef, {
         'userId': resident.uid,
         'userName': resident.name,
-        'optionId': optionId,
+        'optionId': finalOptionId,
         'timestamp': FieldValue.serverTimestamp(),
       });
     });

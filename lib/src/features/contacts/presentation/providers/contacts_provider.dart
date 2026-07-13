@@ -74,7 +74,7 @@ class ContactsFilterNotifier extends Notifier<ContactsFilterState> {
 
   void setCategoryFilter(String? category) {
     if (category == null) {
-      state = state.copyWith(clearCategoryFilter: true);
+      state = state.copyWith(clearCategoryFilter: true, favoritesOnly: false);
     } else {
       state = state.copyWith(categoryFilter: category, favoritesOnly: false);
     }

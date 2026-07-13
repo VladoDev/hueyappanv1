@@ -37,9 +37,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           .read(authControllerProvider.notifier)
           .login(_emailController.text, _passwordController.text);
 
-      // If login succeeded, check if we should offer biometric setup
       if (result != null && mounted) {
-        await _offerBiometricSetup(result.email, result.password);
+        // Clear previous biometric state when manually logging in so it always prompts
+        final biometricService = ref.read(biometricServiceProvider);
+        await biometricService.clearCredentials();
+        await biometricService.setBiometricEnabled(false);
+        ref.invalidate(biometricEnabledProvider);
+        
+        ref.read(pendingBiometricSetupProvider.notifier).setCredentials(
+          result.email,
+          result.password,
+        );
       }
     }
   }
@@ -73,103 +81,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     }
   }
 
-  /// After a successful email/password login, offer biometric setup if available
-  /// and not already configured.
-  Future<void> _offerBiometricSetup(String email, String password) async {
-    final biometricService = ref.read(biometricServiceProvider);
-
-    // Check if device supports biometrics
-    final canUse = await biometricService.canCheckBiometrics();
-    if (!canUse) return;
-
-    // Whenever a manual login occurs, we must wipe the previously stored
-    // biometric credentials (even if it's the same user) and prompt them anew.
-    await biometricService.clearCredentials();
-    
-    if (!mounted) return;
-
-    final l10n = AppLocalizations.of(context)!;
-    final vc = context.vecinalColors;
-
-    // Determine which biometric icon to show
-    final biometrics = await biometricService.getAvailableBiometrics();
-    final IconData biometricIcon = biometrics.contains(BiometricType.face)
-        ? Icons.face_rounded
-        : Icons.fingerprint_rounded;
-
-    if (!mounted) return;
-
-    final shouldEnable = await showDialog<bool>(
-      context: context,
-      barrierDismissible: false,
-      builder: (ctx) => AlertDialog(
-        backgroundColor: vc.surfaceModal,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        icon: Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: vc.primaryContainer,
-            shape: BoxShape.circle,
-          ),
-          child: Icon(biometricIcon, size: 40, color: vc.primaryDefault),
-        ),
-        title: Text(
-          l10n.biometricSetupTitle,
-          style: VecinalTextStyles.headlineMedium.copyWith(
-            color: vc.textPrimary,
-          ),
-        ),
-        content: Text(
-          l10n.biometricSetupBody,
-          style: VecinalTextStyles.bodyMedium.copyWith(color: vc.textSecondary),
-          textAlign: TextAlign.center,
-        ),
-        actionsAlignment: MainAxisAlignment.center,
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(false),
-            child: Text(
-              l10n.notNow,
-              style: TextStyle(
-                color: vc.textSecondary,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-          const SizedBox(width: 8),
-          ElevatedButton(
-            onPressed: () => Navigator.of(ctx).pop(true),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: vc.primaryDefault,
-              foregroundColor: vc.surfacePrimary,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              elevation: 0,
-            ),
-            child: Text(
-              l10n.enableBiometric,
-              style: const TextStyle(fontWeight: FontWeight.w700),
-            ),
-          ),
-        ],
-      ),
-    );
-
-    if (shouldEnable == true) {
-      // Authenticate once to confirm, then save
-      final authenticated = await biometricService.authenticate(
-        l10n.biometricAuthReason,
-      );
-      if (authenticated) {
-        await biometricService.saveCredentials(email, password);
-        await biometricService.setBiometricEnabled(true);
-        // Invalidate providers so next login shows biometric view
-        ref.invalidate(biometricEnabledProvider);
-        ref.invalidate(hasStoredCredentialsProvider);
-      }
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -529,6 +440,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       ),
       child: Text(
         AppLocalizations.of(context)!.registerLink,
+        textAlign: TextAlign.center,
         style: TextStyle(
           color: vc.primaryDefault,
           fontWeight: FontWeight.w600,

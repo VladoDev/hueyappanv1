@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$PollModel {
 
- String get id; String get title; String get description; List<PollOptionModel> get options; Map<String, String> get votedHouseholds;@JsonKey(fromJson: _timestampToDateTime, toJson: _dateTimeToTimestamp) DateTime get createdAt; String get createdBy; bool get isActive;
+ String get id; String get title; String get description; List<PollOptionModel> get options; Map<String, String> get votedHouseholds;@JsonKey(fromJson: _timestampToDateTime, toJson: _dateTimeToTimestamp) DateTime get createdAt; String get createdBy; bool get isActive; bool get allowCustomOptions;
 /// Create a copy of PollModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $PollModelCopyWith<PollModel> get copyWith => _$PollModelCopyWithImpl<PollModel>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PollModel&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&const DeepCollectionEquality().equals(other.options, options)&&const DeepCollectionEquality().equals(other.votedHouseholds, votedHouseholds)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.createdBy, createdBy) || other.createdBy == createdBy)&&(identical(other.isActive, isActive) || other.isActive == isActive));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PollModel&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&const DeepCollectionEquality().equals(other.options, options)&&const DeepCollectionEquality().equals(other.votedHouseholds, votedHouseholds)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.createdBy, createdBy) || other.createdBy == createdBy)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.allowCustomOptions, allowCustomOptions) || other.allowCustomOptions == allowCustomOptions));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,title,description,const DeepCollectionEquality().hash(options),const DeepCollectionEquality().hash(votedHouseholds),createdAt,createdBy,isActive);
+int get hashCode => Object.hash(runtimeType,id,title,description,const DeepCollectionEquality().hash(options),const DeepCollectionEquality().hash(votedHouseholds),createdAt,createdBy,isActive,allowCustomOptions);
 
 @override
 String toString() {
-  return 'PollModel(id: $id, title: $title, description: $description, options: $options, votedHouseholds: $votedHouseholds, createdAt: $createdAt, createdBy: $createdBy, isActive: $isActive)';
+  return 'PollModel(id: $id, title: $title, description: $description, options: $options, votedHouseholds: $votedHouseholds, createdAt: $createdAt, createdBy: $createdBy, isActive: $isActive, allowCustomOptions: $allowCustomOptions)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $PollModelCopyWith<$Res>  {
   factory $PollModelCopyWith(PollModel value, $Res Function(PollModel) _then) = _$PollModelCopyWithImpl;
 @useResult
 $Res call({
- String id, String title, String description, List<PollOptionModel> options, Map<String, String> votedHouseholds,@JsonKey(fromJson: _timestampToDateTime, toJson: _dateTimeToTimestamp) DateTime createdAt, String createdBy, bool isActive
+ String id, String title, String description, List<PollOptionModel> options, Map<String, String> votedHouseholds,@JsonKey(fromJson: _timestampToDateTime, toJson: _dateTimeToTimestamp) DateTime createdAt, String createdBy, bool isActive, bool allowCustomOptions
 });
 
 
@@ -65,7 +65,7 @@ class _$PollModelCopyWithImpl<$Res>
 
 /// Create a copy of PollModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? title = null,Object? description = null,Object? options = null,Object? votedHouseholds = null,Object? createdAt = null,Object? createdBy = null,Object? isActive = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? title = null,Object? description = null,Object? options = null,Object? votedHouseholds = null,Object? createdAt = null,Object? createdBy = null,Object? isActive = null,Object? allowCustomOptions = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
@@ -75,6 +75,7 @@ as List<PollOptionModel>,votedHouseholds: null == votedHouseholds ? _self.votedH
 as Map<String, String>,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,createdBy: null == createdBy ? _self.createdBy : createdBy // ignore: cast_nullable_to_non_nullable
 as String,isActive: null == isActive ? _self.isActive : isActive // ignore: cast_nullable_to_non_nullable
+as bool,allowCustomOptions: null == allowCustomOptions ? _self.allowCustomOptions : allowCustomOptions // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }
@@ -160,10 +161,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String title,  String description,  List<PollOptionModel> options,  Map<String, String> votedHouseholds, @JsonKey(fromJson: _timestampToDateTime, toJson: _dateTimeToTimestamp)  DateTime createdAt,  String createdBy,  bool isActive)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String title,  String description,  List<PollOptionModel> options,  Map<String, String> votedHouseholds, @JsonKey(fromJson: _timestampToDateTime, toJson: _dateTimeToTimestamp)  DateTime createdAt,  String createdBy,  bool isActive,  bool allowCustomOptions)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _PollModel() when $default != null:
-return $default(_that.id,_that.title,_that.description,_that.options,_that.votedHouseholds,_that.createdAt,_that.createdBy,_that.isActive);case _:
+return $default(_that.id,_that.title,_that.description,_that.options,_that.votedHouseholds,_that.createdAt,_that.createdBy,_that.isActive,_that.allowCustomOptions);case _:
   return orElse();
 
 }
@@ -181,10 +182,10 @@ return $default(_that.id,_that.title,_that.description,_that.options,_that.voted
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String title,  String description,  List<PollOptionModel> options,  Map<String, String> votedHouseholds, @JsonKey(fromJson: _timestampToDateTime, toJson: _dateTimeToTimestamp)  DateTime createdAt,  String createdBy,  bool isActive)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String title,  String description,  List<PollOptionModel> options,  Map<String, String> votedHouseholds, @JsonKey(fromJson: _timestampToDateTime, toJson: _dateTimeToTimestamp)  DateTime createdAt,  String createdBy,  bool isActive,  bool allowCustomOptions)  $default,) {final _that = this;
 switch (_that) {
 case _PollModel():
-return $default(_that.id,_that.title,_that.description,_that.options,_that.votedHouseholds,_that.createdAt,_that.createdBy,_that.isActive);case _:
+return $default(_that.id,_that.title,_that.description,_that.options,_that.votedHouseholds,_that.createdAt,_that.createdBy,_that.isActive,_that.allowCustomOptions);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -201,10 +202,10 @@ return $default(_that.id,_that.title,_that.description,_that.options,_that.voted
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String title,  String description,  List<PollOptionModel> options,  Map<String, String> votedHouseholds, @JsonKey(fromJson: _timestampToDateTime, toJson: _dateTimeToTimestamp)  DateTime createdAt,  String createdBy,  bool isActive)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String title,  String description,  List<PollOptionModel> options,  Map<String, String> votedHouseholds, @JsonKey(fromJson: _timestampToDateTime, toJson: _dateTimeToTimestamp)  DateTime createdAt,  String createdBy,  bool isActive,  bool allowCustomOptions)?  $default,) {final _that = this;
 switch (_that) {
 case _PollModel() when $default != null:
-return $default(_that.id,_that.title,_that.description,_that.options,_that.votedHouseholds,_that.createdAt,_that.createdBy,_that.isActive);case _:
+return $default(_that.id,_that.title,_that.description,_that.options,_that.votedHouseholds,_that.createdAt,_that.createdBy,_that.isActive,_that.allowCustomOptions);case _:
   return null;
 
 }
@@ -216,7 +217,7 @@ return $default(_that.id,_that.title,_that.description,_that.options,_that.voted
 @JsonSerializable()
 
 class _PollModel extends PollModel {
-  const _PollModel({required this.id, required this.title, required this.description, final  List<PollOptionModel> options = const [], final  Map<String, String> votedHouseholds = const {}, @JsonKey(fromJson: _timestampToDateTime, toJson: _dateTimeToTimestamp) required this.createdAt, required this.createdBy, this.isActive = true}): _options = options,_votedHouseholds = votedHouseholds,super._();
+  const _PollModel({required this.id, required this.title, required this.description, final  List<PollOptionModel> options = const [], final  Map<String, String> votedHouseholds = const {}, @JsonKey(fromJson: _timestampToDateTime, toJson: _dateTimeToTimestamp) required this.createdAt, required this.createdBy, this.isActive = true, this.allowCustomOptions = false}): _options = options,_votedHouseholds = votedHouseholds,super._();
   factory _PollModel.fromJson(Map<String, dynamic> json) => _$PollModelFromJson(json);
 
 @override final  String id;
@@ -239,6 +240,7 @@ class _PollModel extends PollModel {
 @override@JsonKey(fromJson: _timestampToDateTime, toJson: _dateTimeToTimestamp) final  DateTime createdAt;
 @override final  String createdBy;
 @override@JsonKey() final  bool isActive;
+@override@JsonKey() final  bool allowCustomOptions;
 
 /// Create a copy of PollModel
 /// with the given fields replaced by the non-null parameter values.
@@ -253,16 +255,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PollModel&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&const DeepCollectionEquality().equals(other._options, _options)&&const DeepCollectionEquality().equals(other._votedHouseholds, _votedHouseholds)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.createdBy, createdBy) || other.createdBy == createdBy)&&(identical(other.isActive, isActive) || other.isActive == isActive));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PollModel&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&const DeepCollectionEquality().equals(other._options, _options)&&const DeepCollectionEquality().equals(other._votedHouseholds, _votedHouseholds)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.createdBy, createdBy) || other.createdBy == createdBy)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.allowCustomOptions, allowCustomOptions) || other.allowCustomOptions == allowCustomOptions));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,title,description,const DeepCollectionEquality().hash(_options),const DeepCollectionEquality().hash(_votedHouseholds),createdAt,createdBy,isActive);
+int get hashCode => Object.hash(runtimeType,id,title,description,const DeepCollectionEquality().hash(_options),const DeepCollectionEquality().hash(_votedHouseholds),createdAt,createdBy,isActive,allowCustomOptions);
 
 @override
 String toString() {
-  return 'PollModel(id: $id, title: $title, description: $description, options: $options, votedHouseholds: $votedHouseholds, createdAt: $createdAt, createdBy: $createdBy, isActive: $isActive)';
+  return 'PollModel(id: $id, title: $title, description: $description, options: $options, votedHouseholds: $votedHouseholds, createdAt: $createdAt, createdBy: $createdBy, isActive: $isActive, allowCustomOptions: $allowCustomOptions)';
 }
 
 
@@ -273,7 +275,7 @@ abstract mixin class _$PollModelCopyWith<$Res> implements $PollModelCopyWith<$Re
   factory _$PollModelCopyWith(_PollModel value, $Res Function(_PollModel) _then) = __$PollModelCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String title, String description, List<PollOptionModel> options, Map<String, String> votedHouseholds,@JsonKey(fromJson: _timestampToDateTime, toJson: _dateTimeToTimestamp) DateTime createdAt, String createdBy, bool isActive
+ String id, String title, String description, List<PollOptionModel> options, Map<String, String> votedHouseholds,@JsonKey(fromJson: _timestampToDateTime, toJson: _dateTimeToTimestamp) DateTime createdAt, String createdBy, bool isActive, bool allowCustomOptions
 });
 
 
@@ -290,7 +292,7 @@ class __$PollModelCopyWithImpl<$Res>
 
 /// Create a copy of PollModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? title = null,Object? description = null,Object? options = null,Object? votedHouseholds = null,Object? createdAt = null,Object? createdBy = null,Object? isActive = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? title = null,Object? description = null,Object? options = null,Object? votedHouseholds = null,Object? createdAt = null,Object? createdBy = null,Object? isActive = null,Object? allowCustomOptions = null,}) {
   return _then(_PollModel(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
@@ -300,6 +302,7 @@ as List<PollOptionModel>,votedHouseholds: null == votedHouseholds ? _self._voted
 as Map<String, String>,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,createdBy: null == createdBy ? _self.createdBy : createdBy // ignore: cast_nullable_to_non_nullable
 as String,isActive: null == isActive ? _self.isActive : isActive // ignore: cast_nullable_to_non_nullable
+as bool,allowCustomOptions: null == allowCustomOptions ? _self.allowCustomOptions : allowCustomOptions // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }

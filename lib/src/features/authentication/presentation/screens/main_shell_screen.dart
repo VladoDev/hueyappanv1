@@ -46,6 +46,10 @@ class _MainShellScreenState extends ConsumerState<MainShellScreen> {
       } else {
         final title = message.notification?.title ?? 'Notificación';
         final body = message.notification?.body;
+        
+        if (title.contains('EMERGENCIA') || message.data['type'] == 'emergency') {
+          return;
+        }
 
         final vc = context.vecinalColors;
         ScaffoldMessenger.of(context).showSnackBar(
@@ -331,44 +335,51 @@ class _MainShellScreenState extends ConsumerState<MainShellScreen> {
                         final item = navItems[index];
                         final isSelected =
                             widget.navigationShell.currentIndex == index;
-                        return GestureDetector(
-                          onTap: () => _onItemTapped(index),
-                          behavior: HitTestBehavior.opaque,
-                          child: AnimatedContainer(
-                            duration: const Duration(milliseconds: 250),
-                            curve: Curves.easeInOut,
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 10,
-                              vertical: 8,
-                            ),
-                            decoration: BoxDecoration(
-                              color: isSelected
-                                  ? vc.primaryDefault.withValues(alpha: 0.15)
-                                  : Colors.transparent,
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(
-                                  isSelected ? item.selectedIcon : item.icon,
-                                  color: isSelected
-                                      ? vc.primaryDefault
-                                      : vc.navUnselected,
-                                  size: 24,
-                                ),
-                                if (isSelected) ...[
-                                  const SizedBox(width: 6),
-                                  Text(
-                                    item.label,
-                                    style: VecinalTextStyles.labelMedium
-                                        .copyWith(
-                                          color: vc.primaryDefault,
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                        return Flexible(
+                          child: GestureDetector(
+                            onTap: () => _onItemTapped(index),
+                            behavior: HitTestBehavior.opaque,
+                            child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 250),
+                              curve: Curves.easeInOut,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 8,
+                              ),
+                              decoration: BoxDecoration(
+                                color: isSelected
+                                    ? vc.primaryDefault.withValues(alpha: 0.15)
+                                    : Colors.transparent,
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    isSelected ? item.selectedIcon : item.icon,
+                                    color: isSelected
+                                        ? vc.primaryDefault
+                                        : vc.navUnselected,
+                                    size: 24,
                                   ),
+                                  if (isSelected) ...[
+                                    const SizedBox(width: 6),
+                                    Flexible(
+                                      child: FittedBox(
+                                        fit: BoxFit.scaleDown,
+                                        child: Text(
+                                          item.label,
+                                          style: VecinalTextStyles.labelMedium
+                                              .copyWith(
+                                                color: vc.primaryDefault,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ],
-                              ],
+                              ),
                             ),
                           ),
                         );

@@ -19,11 +19,29 @@ class _PollCardState extends ConsumerState<PollCard> {
   String? _selectedOptionId;
   bool _isSubmitting = false;
 
+  final _customOptionController = TextEditingController();
+
   void _submitVote() async {
     if (_selectedOptionId == null) return;
+    
+    String? customText;
+    if (_selectedOptionId == 'custom') {
+      customText = _customOptionController.text.trim();
+      if (customText.isEmpty) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Por favor escribe tu respuesta.')));
+        }
+        return;
+      }
+    }
+
     setState(() => _isSubmitting = true);
     try {
-      await ref.read(pollsNotifierProvider.notifier).vote(widget.poll.id, _selectedOptionId!);
+      await ref.read(pollsNotifierProvider.notifier).vote(
+        widget.poll.id, 
+        _selectedOptionId!,
+        customOptionText: customText,
+      );
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
@@ -47,6 +65,12 @@ class _PollCardState extends ConsumerState<PollCard> {
     } finally {
       if (mounted) setState(() => _isSubmitting = false);
     }
+  }
+
+  @override
+  void dispose() {
+    _customOptionController.dispose();
+    super.dispose();
   }
 
   @override
@@ -184,6 +208,32 @@ class _PollCardState extends ConsumerState<PollCard> {
                   contentPadding: EdgeInsets.zero,
                 );
               }),
+              if (widget.poll.allowCustomOptions) ...[
+                RadioListTile<String>(
+                  title: const Text('Otra opción (Escribe tu propia respuesta)'),
+                  value: 'custom',
+                  groupValue: _selectedOptionId,
+                  onChanged: (val) {
+                    setState(() => _selectedOptionId = val);
+                  },
+                  contentPadding: EdgeInsets.zero,
+                ),
+                if (_selectedOptionId == 'custom')
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                    child: TextField(
+                      controller: _customOptionController,
+                      textCapitalization: TextCapitalization.sentences,
+                      decoration: InputDecoration(
+                        hintText: 'Escribe tu respuesta aquí...',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                      ),
+                    ),
+                  ),
+              ],
               const SizedBox(height: 8),
               SizedBox(
                 width: double.infinity,

@@ -171,7 +171,7 @@ class _ConceptFormScreenState extends ConsumerState<ConceptFormScreen> {
             TextFormField(
               controller: _titleController,
               enabled: !isLoading,
-              textCapitalization: TextCapitalization.words,
+              textCapitalization: TextCapitalization.sentences,
               decoration: InputDecoration(
                 labelText: l10n.conceptTitleLabel,
                 prefixIcon: Icon(Icons.title, color: vc.primaryDefault),
@@ -362,7 +362,7 @@ class _ConceptFormScreenState extends ConsumerState<ConceptFormScreen> {
             child: TextFormField(
               controller: subItem.labelController,
               enabled: !isLoading && !_isEditing,
-              textCapitalization: TextCapitalization.words,
+              textCapitalization: TextCapitalization.sentences,
               decoration: InputDecoration(
                 labelText: l10n.itemLabel,
                 contentPadding: const EdgeInsets.symmetric(

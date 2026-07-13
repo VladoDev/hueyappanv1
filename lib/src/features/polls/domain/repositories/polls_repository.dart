@@ -15,6 +15,7 @@ abstract class PollsRepository {
     required String pollId,
     required String optionId,
     required ResidentEntity resident,
+    String? customOptionText,
   });
 
   Future<void> requestRevertVote({

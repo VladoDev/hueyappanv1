@@ -23,6 +23,7 @@ _PollModel _$PollModelFromJson(Map<String, dynamic> json) => _PollModel(
   createdAt: _timestampToDateTime(json['createdAt'] as Timestamp),
   createdBy: json['createdBy'] as String,
   isActive: json['isActive'] as bool? ?? true,
+  allowCustomOptions: json['allowCustomOptions'] as bool? ?? false,
 );
 
 Map<String, dynamic> _$PollModelToJson(_PollModel instance) =>
@@ -35,6 +36,7 @@ Map<String, dynamic> _$PollModelToJson(_PollModel instance) =>
       'createdAt': _dateTimeToTimestamp(instance.createdAt),
       'createdBy': instance.createdBy,
       'isActive': instance.isActive,
+      'allowCustomOptions': instance.allowCustomOptions,
     };
 
 _PollOptionModel _$PollOptionModelFromJson(Map<String, dynamic> json) =>

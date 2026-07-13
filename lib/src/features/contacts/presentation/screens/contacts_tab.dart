@@ -95,6 +95,7 @@ class _ContactsTabState extends ConsumerState<ContactsTab> {
   Widget _buildSearchBar(VecinalSemanticColors vc, AppLocalizations l10n) {
     return TextField(
       controller: _searchController,
+      textCapitalization: TextCapitalization.words,
       onChanged: (val) =>
           ref.read(contactsFilterProvider.notifier).setSearchQuery(val),
       style: VecinalTextStyles.bodyMedium,

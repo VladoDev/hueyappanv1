@@ -225,7 +225,7 @@ class _HomeTabState extends ConsumerState<HomeTab> {
               ),
               const SizedBox(height: 4),
               Text(
-                widget.residentName,
+                widget.residentName.split(' ').first,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: VecinalTextStyles.headlineLarge.copyWith(
@@ -279,11 +279,13 @@ class _HomeTabState extends ConsumerState<HomeTab> {
               children: [
                 Icon(Icons.shield, color: vc.textOnPrimary, size: 28),
                 const SizedBox(width: 12),
-                Text(
-                  l10n.homeFeatureTitle,
-                  style: VecinalTextStyles.headlineMedium.copyWith(
-                    color: vc.textOnPrimary,
-                    fontWeight: FontWeight.bold,
+                Expanded(
+                  child: Text(
+                    l10n.homeFeatureTitle,
+                    style: VecinalTextStyles.headlineMedium.copyWith(
+                      color: vc.textOnPrimary,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ],

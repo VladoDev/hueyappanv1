@@ -22,6 +22,7 @@ class _CreatePollPageState extends ConsumerState<CreatePollPage> {
     TextEditingController(),
   ];
 
+  bool _allowCustomOptions = false;
   bool _isLoading = false;
 
   void _addOption() {
@@ -60,6 +61,7 @@ class _CreatePollPageState extends ConsumerState<CreatePollPage> {
         createdAt: DateTime.now(),
         createdBy: resident.uid,
         isActive: true,
+        allowCustomOptions: _allowCustomOptions,
       );
 
       await ref.read(pollsNotifierProvider.notifier).createPoll(newPoll);
@@ -108,6 +110,7 @@ class _CreatePollPageState extends ConsumerState<CreatePollPage> {
                   children: [
                     TextFormField(
                       controller: _titleController,
+                      textCapitalization: TextCapitalization.sentences,
                       decoration: const InputDecoration(
                         labelText: 'Pregunta o Título',
                         border: OutlineInputBorder(),
@@ -117,6 +120,7 @@ class _CreatePollPageState extends ConsumerState<CreatePollPage> {
                     const SizedBox(height: 16),
                     TextFormField(
                       controller: _descController,
+                      textCapitalization: TextCapitalization.sentences,
                       decoration: const InputDecoration(
                         labelText: 'Descripción (Opcional)',
                         border: OutlineInputBorder(),
@@ -136,6 +140,7 @@ class _CreatePollPageState extends ConsumerState<CreatePollPage> {
                             Expanded(
                               child: TextFormField(
                                 controller: ctrl,
+                                textCapitalization: TextCapitalization.sentences,
                                 decoration: InputDecoration(
                                   labelText: 'Opción ${index + 1}',
                                   border: const OutlineInputBorder(),
@@ -156,6 +161,16 @@ class _CreatePollPageState extends ConsumerState<CreatePollPage> {
                       onPressed: _addOption,
                       icon: const Icon(Icons.add),
                       label: const Text('Añadir Opción'),
+                    ),
+                    const SizedBox(height: 16),
+                    SwitchListTile(
+                      title: const Text('Permitir a los vecinos agregar sus propias opciones'),
+                      subtitle: const Text('Si un vecino escribe una opción que ya existe, su voto se sumará a esa opción.'),
+                      value: _allowCustomOptions,
+                      onChanged: (val) {
+                        setState(() => _allowCustomOptions = val);
+                      },
+                      contentPadding: EdgeInsets.zero,
                     ),
                     const SizedBox(height: 32),
                     SizedBox(
