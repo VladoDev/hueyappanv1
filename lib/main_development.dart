@@ -15,7 +15,7 @@ import 'src/features/app_settings/presentation/providers/package_info_provider.d
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
-  await dotenv.load(fileName: ".env");
+  await dotenv.load(fileName: ".env.development");
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,

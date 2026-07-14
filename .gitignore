@@ -56,4 +56,4 @@ google-services-production.json
 GoogleService-Info-production.plist
 
 # Env files
-.env
+.env*
