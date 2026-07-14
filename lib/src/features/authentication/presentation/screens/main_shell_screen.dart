@@ -268,11 +268,6 @@ class _MainShellScreenState extends ConsumerState<MainShellScreen> {
         label: l10n.navHome,
       ),
       _FloatingTabBarItem(
-        icon: Icons.notifications_outlined,
-        selectedIcon: Icons.notifications,
-        label: l10n.navNotifications,
-      ),
-      _FloatingTabBarItem(
         icon: Icons.account_balance_wallet_outlined,
         selectedIcon: Icons.account_balance_wallet,
         label: l10n.navPayments,
@@ -343,8 +338,8 @@ class _MainShellScreenState extends ConsumerState<MainShellScreen> {
                               duration: const Duration(milliseconds: 250),
                               curve: Curves.easeInOut,
                               padding: const EdgeInsets.symmetric(
-                                horizontal: 10,
-                                vertical: 8,
+                                horizontal: 16,
+                                vertical: 10,
                               ),
                               decoration: BoxDecoration(
                                 color: isSelected
@@ -352,32 +347,12 @@ class _MainShellScreenState extends ConsumerState<MainShellScreen> {
                                     : Colors.transparent,
                                 borderRadius: BorderRadius.circular(16),
                               ),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    isSelected ? item.selectedIcon : item.icon,
-                                    color: isSelected
-                                        ? vc.primaryDefault
-                                        : vc.navUnselected,
-                                    size: 26, // Ligeramente más grande para compensar
-                                  ),
-                                  if (isSelected) ...[
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      item.label,
-                                      maxLines: 1,
-                                      overflow: TextOverflow.visible,
-                                      style: VecinalTextStyles.labelMedium
-                                          .copyWith(
-                                            color: vc.primaryDefault,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 12, // Tamaño fijo
-                                          ),
-                                    ),
-                                  ],
-                                ],
+                              child: Icon(
+                                isSelected ? item.selectedIcon : item.icon,
+                                color: isSelected
+                                    ? vc.primaryDefault
+                                    : vc.navUnselected,
+                                size: 26,
                               ),
                             ),
                           ),

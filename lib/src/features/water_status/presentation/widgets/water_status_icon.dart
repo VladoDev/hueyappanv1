@@ -43,9 +43,8 @@ class WaterStatusIconWidget extends ConsumerWidget {
           funnyMessage = l10n.waterStatusInactiveBody;
         }
 
-        return IconButton(
-          icon: Icon(icon, color: iconColor),
-          onPressed: () {
+        return InkWell(
+          onTap: () {
             _showPopupMessage(
               context,
               statusTitle,
@@ -64,6 +63,11 @@ class WaterStatusIconWidget extends ConsumerWidget {
                   vc,
                 )
               : null,
+          borderRadius: BorderRadius.circular(20),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 4.0),
+            child: Icon(icon, color: iconColor, size: 28),
+          ),
         );
       },
       loading: () => const SizedBox(
