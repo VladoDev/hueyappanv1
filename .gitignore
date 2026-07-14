@@ -54,4 +54,6 @@ ios/Runner/GoogleService-Info.plist
 ios/Runner/GoogleService-Info-production.plist
 google-services-production.json
 GoogleService-Info-production.plist
+
+# Env files
 .env
