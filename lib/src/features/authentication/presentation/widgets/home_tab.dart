@@ -6,7 +6,6 @@ import 'package:hueyappanv1/l10n/app_localizations.dart';
 import 'package:hueyappanv1/src/core/theme/vecinal_theme.dart';
 import 'package:hueyappanv1/src/core/widgets/vecinal_empty_state.dart';
 import '../providers/auth_provider.dart';
-import '../../../payments/domain/entities/payment_transaction_entity.dart';
 import '../../../payments/domain/entities/payment_concept_entity.dart';
 import '../../../payments/presentation/providers/payments_provider.dart';
 import '../../../water_status/presentation/widgets/water_status_icon.dart';
@@ -91,7 +90,9 @@ class _HomeTabState extends ConsumerState<HomeTab> {
         ),
         title: Text(
           l10n.biometricSetupTitle,
-          style: VecinalTextStyles.headlineMedium.copyWith(color: vc.textPrimary),
+          style: VecinalTextStyles.headlineMedium.copyWith(
+            color: vc.textPrimary,
+          ),
         ),
         content: Text(
           l10n.biometricSetupBody,
@@ -150,14 +151,27 @@ class _HomeTabState extends ConsumerState<HomeTab> {
 
     return Scaffold(
       appBar: AppBar(
-        leading: const WaterStatusIconWidget(),
+        leading: IconButton(
+          icon: Icon(Icons.notifications_outlined, color: vc.primaryDefault),
+          onPressed: () => context.push('/notifications'),
+        ),
         centerTitle: true,
-        title: Text(
-          l10n.appName,
-          style: VecinalTextStyles.headlineSmall.copyWith(
-            fontWeight: FontWeight.bold,
-            color: vc.primaryDefault,
-          ),
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Flexible(
+              child: Text(
+                l10n.appName,
+                overflow: TextOverflow.ellipsis,
+                style: VecinalTextStyles.headlineSmall.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: vc.primaryDefault,
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
+            const WaterStatusIconWidget(),
+          ],
         ),
         actions: [
           Container(
@@ -199,7 +213,11 @@ class _HomeTabState extends ConsumerState<HomeTab> {
               const SizedBox(height: 32),
               _buildFeatureCard(context, vc),
               const SizedBox(height: 24),
-              _RecentActivitySection(lot: widget.lot, house: widget.house, vc: vc),
+              _RecentActivitySection(
+                lot: widget.lot,
+                house: widget.house,
+                vc: vc,
+              ),
             ],
           ),
         ),
@@ -225,7 +243,7 @@ class _HomeTabState extends ConsumerState<HomeTab> {
               ),
               const SizedBox(height: 4),
               Text(
-                widget.residentName,
+                widget.residentName.split(' ').first,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: VecinalTextStyles.headlineLarge.copyWith(
@@ -279,11 +297,13 @@ class _HomeTabState extends ConsumerState<HomeTab> {
               children: [
                 Icon(Icons.shield, color: vc.textOnPrimary, size: 28),
                 const SizedBox(width: 12),
-                Text(
-                  l10n.homeFeatureTitle,
-                  style: VecinalTextStyles.headlineMedium.copyWith(
-                    color: vc.textOnPrimary,
-                    fontWeight: FontWeight.bold,
+                Expanded(
+                  child: Text(
+                    l10n.homeFeatureTitle,
+                    style: VecinalTextStyles.headlineMedium.copyWith(
+                      color: vc.textOnPrimary,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ],
@@ -588,7 +608,11 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                             } catch (e) {
                               if (context.mounted) {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text(l10n.errorGeneric(e.toString()))),
+                                  SnackBar(
+                                    content: Text(
+                                      l10n.errorGeneric(e.toString()),
+                                    ),
+                                  ),
                                 );
                                 setState(() => isRequesting = false);
                               }
@@ -647,7 +671,11 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                             } catch (e) {
                               if (context.mounted) {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text(l10n.errorGeneric(e.toString()))),
+                                  SnackBar(
+                                    content: Text(
+                                      l10n.errorGeneric(e.toString()),
+                                    ),
+                                  ),
                                 );
                                 setState(() => isVerifying = false);
                               }

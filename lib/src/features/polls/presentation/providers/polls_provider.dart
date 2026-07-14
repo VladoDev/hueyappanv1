@@ -66,7 +66,7 @@ class PollsNotifier extends Notifier<AsyncValue<void>> {
     }
   }
 
-  Future<void> vote(String pollId, String optionId) async {
+  Future<void> vote(String pollId, String optionId, {String? customOptionText}) async {
     state = const AsyncValue.loading();
     try {
       final user = ref.read(authStateProvider).value;
@@ -76,6 +76,7 @@ class PollsNotifier extends Notifier<AsyncValue<void>> {
         pollId: pollId,
         optionId: optionId,
         resident: user,
+        customOptionText: customOptionText,
       );
       state = const AsyncValue.data(null);
     } catch (e, st) {

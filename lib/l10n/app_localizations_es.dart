@@ -67,7 +67,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get inquilinoLabel => 'Inquilino';
 
   @override
-  String get phoneLabel => 'Teléfono Móvil';
+  String get phoneLabel => 'Teléfono';
 
   @override
   String get phoneRequired => 'El teléfono es requerido';
@@ -811,4 +811,58 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get understood => 'Entendido';
+
+  @override
+  String get navPolls => 'Votaciones';
+
+  @override
+  String get pollWriteResponse => 'Por favor escribe tu respuesta.';
+
+  @override
+  String get pollOtherOption => 'Otra opción (Escribe tu propia respuesta)';
+
+  @override
+  String get pollWriteResponseHint => 'Escribe tu respuesta aquí...';
+
+  @override
+  String get pollQuestionLabel => 'Pregunta o Título';
+
+  @override
+  String get pollDescriptionLabel => 'Descripción (Opcional)';
+
+  @override
+  String pollOptionX(Object index) {
+    return 'Opción $index';
+  }
+
+  @override
+  String get pollAllowCustomOptions =>
+      'Permitir a los vecinos agregar sus propias opciones';
+
+  @override
+  String get pollCustomOptionsDescription =>
+      'Si un vecino escribe una opción que ya existe, su voto se sumará a esa opción.';
+
+  @override
+  String get nameLabel => 'Nombre';
+
+  @override
+  String get categoryLabel => 'Categoría';
+
+  @override
+  String get statusLabel => 'Estado';
+
+  @override
+  String get paymentNewTotalAbonadoLabel => 'Nuevo Total Abonado';
+
+  @override
+  String get paymentAmountAbonadoLabel => 'Monto Abonado';
+
+  @override
+  String deleteContactConfirm(Object name) {
+    return '¿Estás seguro de que deseas eliminar a $name? Esta acción no se puede deshacer.';
+  }
+
+  @override
+  String get deleteContactTitle => 'Eliminar Contacto';
 }

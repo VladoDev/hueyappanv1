@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -20,8 +19,6 @@ import '../../features/notifications/presentation/screens/notifications_screen.d
 import '../../features/app_settings/presentation/screens/force_update_screen.dart';
 import '../../features/app_settings/presentation/providers/app_settings_provider.dart';
 import '../../features/app_settings/presentation/providers/package_info_provider.dart';
-import '../../features/app_settings/domain/entities/app_settings_entity.dart';
-import '../../features/app_settings/data/repositories/app_settings_repository_impl.dart';
 import '../../features/polls/presentation/pages/polls_page.dart';
 import '../../features/polls/presentation/pages/create_poll_page.dart';
 import '../../features/polls/presentation/pages/revert_requests_page.dart';
@@ -120,6 +117,10 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/register',
         builder: (context, state) => const RegisterScreen(),
       ),
+      GoRoute(
+        path: '/notifications',
+        builder: (context, state) => const NotificationsScreen(),
+      ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
           return MainShellScreen(navigationShell: navigationShell);
@@ -140,14 +141,6 @@ final routerProvider = Provider<GoRouter>((ref) {
                     );
                   },
                 ),
-              ),
-            ],
-          ),
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: '/notifications',
-                builder: (context, state) => const NotificationsScreen(),
               ),
             ],
           ),

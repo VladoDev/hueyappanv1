@@ -145,10 +145,10 @@ class ContactListItem extends ConsumerWidget {
       context: context,
       builder: (context) => AlertDialog(
         title: Text(
-          "Eliminar Contacto",
+          l10n.deleteContactTitle,
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
-        content: Text("¿Estás seguro de que deseas eliminar a ${contact.name}? Esta acción no se puede deshacer."),
+        content: Text(l10n.deleteContactConfirm(contact.name)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -163,7 +163,7 @@ class ContactListItem extends ConsumerWidget {
               backgroundColor: vc.destructiveBg,
               foregroundColor: vc.textOnEmergency,
             ),
-            child: const Text("Eliminar"),
+            child: Text(l10n.delete),
           ),
         ],
       ),

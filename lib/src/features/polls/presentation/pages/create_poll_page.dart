@@ -1,3 +1,4 @@
+import 'package:hueyappanv1/l10n/app_localizations.dart';
 import 'package:hueyappanv1/src/core/theme/vecinal_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -22,6 +23,7 @@ class _CreatePollPageState extends ConsumerState<CreatePollPage> {
     TextEditingController(),
   ];
 
+  bool _allowCustomOptions = false;
   bool _isLoading = false;
 
   void _addOption() {
@@ -60,13 +62,15 @@ class _CreatePollPageState extends ConsumerState<CreatePollPage> {
         createdAt: DateTime.now(),
         createdBy: resident.uid,
         isActive: true,
+        allowCustomOptions: _allowCustomOptions,
       );
 
       await ref.read(pollsNotifierProvider.notifier).createPoll(newPoll);
 
       if (mounted) {
+        final l10n = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Votación creada exitosamente')),
+          SnackBar(content: Text(l10n.pollCreated)),
         );
         context.pop();
       }
@@ -93,9 +97,10 @@ class _CreatePollPageState extends ConsumerState<CreatePollPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Crear Votación'),
+        title: Text(l10n.createPoll),
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -108,23 +113,25 @@ class _CreatePollPageState extends ConsumerState<CreatePollPage> {
                   children: [
                     TextFormField(
                       controller: _titleController,
-                      decoration: const InputDecoration(
-                        labelText: 'Pregunta o Título',
-                        border: OutlineInputBorder(),
+                      textCapitalization: TextCapitalization.sentences,
+                      decoration: InputDecoration(
+                        labelText: l10n.pollQuestionLabel,
+                        border: const OutlineInputBorder(),
                       ),
                       validator: (value) => value!.isEmpty ? 'Requerido' : null,
                     ),
                     const SizedBox(height: 16),
                     TextFormField(
                       controller: _descController,
-                      decoration: const InputDecoration(
-                        labelText: 'Descripción (Opcional)',
-                        border: OutlineInputBorder(),
+                      textCapitalization: TextCapitalization.sentences,
+                      decoration: InputDecoration(
+                        labelText: l10n.pollDescriptionLabel,
+                        border: const OutlineInputBorder(),
                       ),
                       maxLines: 3,
                     ),
                     const SizedBox(height: 24),
-                    const Text('Opciones', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                    Text(l10n.options, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                     const SizedBox(height: 8),
                     ..._optionControllers.asMap().entries.map((entry) {
                       final index = entry.key;
@@ -136,8 +143,9 @@ class _CreatePollPageState extends ConsumerState<CreatePollPage> {
                             Expanded(
                               child: TextFormField(
                                 controller: ctrl,
+                                textCapitalization: TextCapitalization.sentences,
                                 decoration: InputDecoration(
-                                  labelText: 'Opción ${index + 1}',
+                                  labelText: l10n.pollOptionX(index + 1),
                                   border: const OutlineInputBorder(),
                                 ),
                                 validator: (value) => value!.isEmpty ? 'Requerido' : null,
@@ -155,16 +163,26 @@ class _CreatePollPageState extends ConsumerState<CreatePollPage> {
                     TextButton.icon(
                       onPressed: _addOption,
                       icon: const Icon(Icons.add),
-                      label: const Text('Añadir Opción'),
+                      label: Text(l10n.addOption),
+                    ),
+                    const SizedBox(height: 16),
+                    SwitchListTile(
+                      title: Text(l10n.pollAllowCustomOptions),
+                      subtitle: Text(l10n.pollCustomOptionsDescription),
+                      value: _allowCustomOptions,
+                      onChanged: (val) {
+                        setState(() => _allowCustomOptions = val);
+                      },
+                      contentPadding: EdgeInsets.zero,
                     ),
                     const SizedBox(height: 32),
                     SizedBox(
                       width: double.infinity,
                       child: FilledButton(
                         onPressed: _submit,
-                        child: const Padding(
-                          padding: EdgeInsets.all(16.0),
-                          child: Text('Crear Votación', style: TextStyle(fontSize: 16)),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Text(l10n.createPoll, style: const TextStyle(fontSize: 16)),
                         ),
                       ),
                     ),

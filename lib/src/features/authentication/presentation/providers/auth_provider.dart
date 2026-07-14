@@ -8,7 +8,6 @@ import '../../data/repositories/auth_repository_impl.dart';
 import '../../domain/usecases/login_with_email_usecase.dart';
 import '../../domain/usecases/send_password_reset_usecase.dart';
 import '../../data/datasources/biometric_service.dart';
-import 'biometric_provider.dart';
 
 final authFirebaseDatasourceProvider = Provider<AuthFirebaseDatasource>((ref) {
   return AuthFirebaseDatasource();
@@ -125,7 +124,9 @@ class AuthController extends Notifier<AsyncValue<ResidentEntity?>> {
   /// Send password reset email.
   Future<bool> sendPasswordReset(String email) async {
     try {
-      debugPrint('Provider: Llamando a sendPasswordResetUsecase con email $email');
+      debugPrint(
+        'Provider: Llamando a sendPasswordResetUsecase con email $email',
+      );
       final usecase = ref.read(sendPasswordResetUsecaseProvider);
       await usecase.execute(email);
       debugPrint('Provider: Reseteo de contraseña exitoso');

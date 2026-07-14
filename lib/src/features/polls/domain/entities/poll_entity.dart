@@ -7,6 +7,7 @@ class PollEntity {
   final DateTime createdAt;
   final String createdBy;
   final bool isActive;
+  final bool allowCustomOptions;
 
   PollEntity({
     required this.id,
@@ -17,6 +18,7 @@ class PollEntity {
     required this.createdAt,
     required this.createdBy,
     this.isActive = true,
+    this.allowCustomOptions = false,
   });
 
   bool hasHouseVoted(String houseId) {

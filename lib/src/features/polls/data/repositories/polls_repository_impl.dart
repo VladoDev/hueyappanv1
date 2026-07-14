@@ -36,11 +36,13 @@ class PollsRepositoryImpl implements PollsRepository {
     required String pollId,
     required String optionId,
     required ResidentEntity resident,
+    String? customOptionText,
   }) async {
     await _datasource.vote(
       pollId: pollId,
       optionId: optionId,
       resident: resident,
+      customOptionText: customOptionText,
     );
   }
 

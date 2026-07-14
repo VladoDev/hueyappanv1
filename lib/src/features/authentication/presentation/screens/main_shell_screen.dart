@@ -46,8 +46,13 @@ class _MainShellScreenState extends ConsumerState<MainShellScreen> {
       } else {
         final title = message.notification?.title ?? 'Notificación';
         final body = message.notification?.body;
+        
+        if (title.contains('EMERGENCIA') || message.data['type'] == 'emergency') {
+          return;
+        }
 
         final vc = context.vecinalColors;
+        final l10n = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Column(
@@ -79,7 +84,7 @@ class _MainShellScreenState extends ConsumerState<MainShellScreen> {
             margin: const EdgeInsets.only(bottom: 80, left: 16, right: 16),
             duration: const Duration(seconds: 4),
             action: SnackBarAction(
-              label: 'Cerrar',
+              label: l10n.close,
               textColor: vc.primaryDefault,
               onPressed: () {
                 ScaffoldMessenger.of(context).hideCurrentSnackBar();
@@ -264,11 +269,6 @@ class _MainShellScreenState extends ConsumerState<MainShellScreen> {
         label: l10n.navHome,
       ),
       _FloatingTabBarItem(
-        icon: Icons.notifications_outlined,
-        selectedIcon: Icons.notifications,
-        label: l10n.navNotifications,
-      ),
-      _FloatingTabBarItem(
         icon: Icons.account_balance_wallet_outlined,
         selectedIcon: Icons.account_balance_wallet,
         label: l10n.navPayments,
@@ -281,7 +281,7 @@ class _MainShellScreenState extends ConsumerState<MainShellScreen> {
       _FloatingTabBarItem(
         icon: Icons.how_to_vote_outlined,
         selectedIcon: Icons.how_to_vote,
-        label: 'Votaciones', // No localization for now or hardcoded
+        label: l10n.navPolls,
       ),
       _FloatingTabBarItem(
         icon: Icons.person_outline,
@@ -331,44 +331,30 @@ class _MainShellScreenState extends ConsumerState<MainShellScreen> {
                         final item = navItems[index];
                         final isSelected =
                             widget.navigationShell.currentIndex == index;
-                        return GestureDetector(
-                          onTap: () => _onItemTapped(index),
-                          behavior: HitTestBehavior.opaque,
-                          child: AnimatedContainer(
-                            duration: const Duration(milliseconds: 250),
-                            curve: Curves.easeInOut,
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 10,
-                              vertical: 8,
-                            ),
-                            decoration: BoxDecoration(
-                              color: isSelected
-                                  ? vc.primaryDefault.withValues(alpha: 0.15)
-                                  : Colors.transparent,
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(
-                                  isSelected ? item.selectedIcon : item.icon,
-                                  color: isSelected
-                                      ? vc.primaryDefault
-                                      : vc.navUnselected,
-                                  size: 24,
-                                ),
-                                if (isSelected) ...[
-                                  const SizedBox(width: 6),
-                                  Text(
-                                    item.label,
-                                    style: VecinalTextStyles.labelMedium
-                                        .copyWith(
-                                          color: vc.primaryDefault,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                  ),
-                                ],
-                              ],
+                        return Flexible(
+                          child: GestureDetector(
+                            onTap: () => _onItemTapped(index),
+                            behavior: HitTestBehavior.opaque,
+                            child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 250),
+                              curve: Curves.easeInOut,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 10,
+                              ),
+                              decoration: BoxDecoration(
+                                color: isSelected
+                                    ? vc.primaryDefault.withValues(alpha: 0.15)
+                                    : Colors.transparent,
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              child: Icon(
+                                isSelected ? item.selectedIcon : item.icon,
+                                color: isSelected
+                                    ? vc.primaryDefault
+                                    : vc.navUnselected,
+                                size: 26,
+                              ),
                             ),
                           ),
                         );

@@ -80,8 +80,9 @@ class PaymentsRepositoryImpl implements PaymentsRepository {
     final List<HousingPaymentModel> payments = [];
     final Set<String> uniqueHousingUnits = {};
     for (final resident in activeResidents) {
-      if (uniqueHousingUnits.contains(resident.lot)) continue;
-      uniqueHousingUnits.add(resident.lot);
+      final houseId = '${resident.lot}_${resident.house}';
+      if (uniqueHousingUnits.contains(houseId)) continue;
+      uniqueHousingUnits.add(houseId);
 
       final paymentId = FirebaseFirestore.instance
           .collection('housing_payments')
@@ -330,6 +331,23 @@ class PaymentsRepositoryImpl implements PaymentsRepository {
       updatedPayment: updatedParentModel,
       transaction: updatedTransactionModel,
     );
+
+    // Send push notification to the resident
+    try {
+      final serverKey = await _dataSource.getFcmServerKey();
+      final targetTokens = await _dataSource.getResidentTokens(parentModel.residentUid);
+
+      if (targetTokens.isNotEmpty) {
+        await _dataSource.sendPushNotification(
+          serverKey,
+          title: 'Pago Confirmado ✅',
+          body: 'Tu pago por \$${transactionModel.amount.toStringAsFixed(2)} para el concepto "${transactionModel.conceptTitle ?? 'Cuota'}" ha sido confirmado por el administrador.',
+          targetTokens: targetTokens,
+        );
+      }
+    } catch (e) {
+      debugPrint('⚠️ Error sending push notification for payment confirmation: $e');
+    }
   }
 
   @override

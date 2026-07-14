@@ -19,6 +19,7 @@ abstract class PollModel with _$PollModel {
     required DateTime createdAt,
     required String createdBy,
     @Default(true) bool isActive,
+    @Default(false) bool allowCustomOptions,
   }) = _PollModel;
 
   factory PollModel.fromJson(Map<String, dynamic> json) => _$PollModelFromJson(json);
@@ -33,6 +34,7 @@ abstract class PollModel with _$PollModel {
       createdAt: createdAt,
       createdBy: createdBy,
       isActive: isActive,
+      allowCustomOptions: allowCustomOptions,
     );
   }
 
@@ -46,6 +48,7 @@ abstract class PollModel with _$PollModel {
       createdAt: entity.createdAt,
       createdBy: entity.createdBy,
       isActive: entity.isActive,
+      allowCustomOptions: entity.allowCustomOptions,
     );
   }
 }

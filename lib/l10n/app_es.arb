@@ -19,7 +19,7 @@
   "residentTypeLabel": "Tipo de Residente",
   "propietarioLabel": "Propietario",
   "inquilinoLabel": "Inquilino",
-  "phoneLabel": "Teléfono Móvil",
+  "phoneLabel": "Teléfono",
   "phoneRequired": "El teléfono es requerido",
   "phoneLengthInvalid": "Debe tener exactamente 10 dígitos",
   "emailRequiredRegister": "El correo es requerido",
@@ -367,5 +367,31 @@
   "waterStatusActiveBody": "De acuerdo al calendario municipal, el suministro de agua se encuentra activo el día de hoy. Le invitamos a hacer un uso responsable.",
   "waterStatusInactiveTitle": "Sin Suministro Programado",
   "waterStatusInactiveBody": "De acuerdo al calendario municipal, hoy no hay suministro de agua programado en la zona. Le sugerimos administrar sus reservas.",
-  "understood": "Entendido"
+  "understood": "Entendido",
+  "navPolls": "Votaciones",
+  "pollWriteResponse": "Por favor escribe tu respuesta.",
+  "pollOtherOption": "Otra opción (Escribe tu propia respuesta)",
+  "pollWriteResponseHint": "Escribe tu respuesta aquí...",
+  "pollQuestionLabel": "Pregunta o Título",
+  "pollDescriptionLabel": "Descripción (Opcional)",
+  "pollOptionX": "Opción {index}",
+  "@pollOptionX": {
+    "placeholders": {
+      "index": {}
+    }
+  },
+  "pollAllowCustomOptions": "Permitir a los vecinos agregar sus propias opciones",
+  "pollCustomOptionsDescription": "Si un vecino escribe una opción que ya existe, su voto se sumará a esa opción.",
+  "nameLabel": "Nombre",
+  "categoryLabel": "Categoría",
+  "statusLabel": "Estado",
+  "paymentNewTotalAbonadoLabel": "Nuevo Total Abonado",
+  "paymentAmountAbonadoLabel": "Monto Abonado",
+  "deleteContactConfirm": "¿Estás seguro de que deseas eliminar a {name}? Esta acción no se puede deshacer.",
+  "@deleteContactConfirm": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "deleteContactTitle": "Eliminar Contacto"
 }

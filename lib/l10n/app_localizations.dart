@@ -215,7 +215,7 @@ abstract class AppLocalizations {
   /// No description provided for @phoneLabel.
   ///
   /// In en, this message translates to:
-  /// **'Mobile Phone'**
+  /// **'Phone'**
   String get phoneLabel;
 
   /// No description provided for @phoneRequired.
@@ -1591,6 +1591,102 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Got it'**
   String get understood;
+
+  /// No description provided for @navPolls.
+  ///
+  /// In en, this message translates to:
+  /// **'Polls'**
+  String get navPolls;
+
+  /// No description provided for @pollWriteResponse.
+  ///
+  /// In en, this message translates to:
+  /// **'Please write your response.'**
+  String get pollWriteResponse;
+
+  /// No description provided for @pollOtherOption.
+  ///
+  /// In en, this message translates to:
+  /// **'Other option (Write your own response)'**
+  String get pollOtherOption;
+
+  /// No description provided for @pollWriteResponseHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Write your response here...'**
+  String get pollWriteResponseHint;
+
+  /// No description provided for @pollQuestionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Question or Title'**
+  String get pollQuestionLabel;
+
+  /// No description provided for @pollDescriptionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Description (Optional)'**
+  String get pollDescriptionLabel;
+
+  /// No description provided for @pollOptionX.
+  ///
+  /// In en, this message translates to:
+  /// **'Option {index}'**
+  String pollOptionX(Object index);
+
+  /// No description provided for @pollAllowCustomOptions.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow neighbors to add custom options'**
+  String get pollAllowCustomOptions;
+
+  /// No description provided for @pollCustomOptionsDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'If a neighbor writes an existing option, their vote will be added to it.'**
+  String get pollCustomOptionsDescription;
+
+  /// No description provided for @nameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get nameLabel;
+
+  /// No description provided for @categoryLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get categoryLabel;
+
+  /// No description provided for @statusLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get statusLabel;
+
+  /// No description provided for @paymentNewTotalAbonadoLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'New Total Paid'**
+  String get paymentNewTotalAbonadoLabel;
+
+  /// No description provided for @paymentAmountAbonadoLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount Paid'**
+  String get paymentAmountAbonadoLabel;
+
+  /// No description provided for @deleteContactConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete {name}? This action cannot be undone.'**
+  String deleteContactConfirm(Object name);
+
+  /// No description provided for @deleteContactTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Contact'**
+  String get deleteContactTitle;
 }
 
 class _AppLocalizationsDelegate

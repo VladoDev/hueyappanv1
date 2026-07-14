@@ -1,3 +1,4 @@
+import 'package:hueyappanv1/l10n/app_localizations.dart';
 import 'package:hueyappanv1/src/core/theme/vecinal_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,16 +10,17 @@ class RevertRequestsPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     final requestsAsync = ref.watch(revertRequestsStreamProvider);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Solicitudes de Reversión'),
+        title: Text(l10n.revertRequests),
       ),
       body: requestsAsync.when(
         data: (requests) {
           if (requests.isEmpty) {
-            return const Center(child: Text('No hay solicitudes pendientes'));
+            return Center(child: Text(l10n.noPendingRequests));
           }
           return ListView.builder(
             padding: const EdgeInsets.all(16),
@@ -32,11 +34,11 @@ class RevertRequestsPage extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Votación: ${req.pollTitle}', style: const TextStyle(fontWeight: FontWeight.bold)),
+                      Text(l10n.pollLabel(req.pollTitle), style: const TextStyle(fontWeight: FontWeight.bold)),
                       const SizedBox(height: 8),
-                      Text('Usuario: ${req.userName}'),
-                      Text('Casa/Lote: ${req.houseId.replaceAll('_', ' ')}'),
-                      Text('Fecha: ${DateFormat('dd/MM/yyyy HH:mm').format(req.createdAt)}'),
+                      Text(l10n.userLabel(req.userName)),
+                      Text(l10n.houseLotLabel(req.houseId.replaceAll('_', ' '))),
+                      Text(l10n.dateLabel(DateFormat('dd/MM/yyyy HH:mm').format(req.createdAt))),
                       const SizedBox(height: 16),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
@@ -45,14 +47,14 @@ class RevertRequestsPage extends ConsumerWidget {
                             onPressed: () {
                               ref.read(pollsNotifierProvider.notifier).processRevertRequest(req, false);
                             },
-                            child: const Text('Rechazar', style: TextStyle(color: VecinalColors.red600)),
+                            child: Text(l10n.reject, style: const TextStyle(color: VecinalColors.red600)),
                           ),
                           const SizedBox(width: 8),
                           FilledButton(
                             onPressed: () {
                               ref.read(pollsNotifierProvider.notifier).processRevertRequest(req, true);
                             },
-                            child: const Text('Aprobar'),
+                            child: Text(l10n.approve),
                           ),
                         ],
                       )
