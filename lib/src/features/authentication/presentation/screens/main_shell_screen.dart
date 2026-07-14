@@ -352,30 +352,29 @@ class _MainShellScreenState extends ConsumerState<MainShellScreen> {
                                     : Colors.transparent,
                                 borderRadius: BorderRadius.circular(16),
                               ),
-                              child: Row(
+                              child: Column(
                                 mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Icon(
                                     isSelected ? item.selectedIcon : item.icon,
                                     color: isSelected
                                         ? vc.primaryDefault
                                         : vc.navUnselected,
-                                    size: 24,
+                                    size: 26, // Ligeramente más grande para compensar
                                   ),
                                   if (isSelected) ...[
-                                    const SizedBox(width: 6),
-                                    Flexible(
-                                      child: FittedBox(
-                                        fit: BoxFit.scaleDown,
-                                        child: Text(
-                                          item.label,
-                                          style: VecinalTextStyles.labelMedium
-                                              .copyWith(
-                                                color: vc.primaryDefault,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                        ),
-                                      ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      item.label,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.visible,
+                                      style: VecinalTextStyles.labelMedium
+                                          .copyWith(
+                                            color: vc.primaryDefault,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 12, // Tamaño fijo
+                                          ),
                                     ),
                                   ],
                                 ],
