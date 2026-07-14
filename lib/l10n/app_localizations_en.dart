@@ -859,4 +859,29 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get deleteContactTitle => 'Delete Contact';
+
+  @override
+  String get deleteAccountButton => 'Delete Account';
+
+  @override
+  String get deleteAccountTitle => 'Permanently Delete Account';
+
+  @override
+  String get deleteAccountDescription =>
+      'Are you sure you want to delete your account and all associated data? This action is irreversible and you will not be able to register again using this same email address.';
+
+  @override
+  String get deleteAccountConfirm => 'Delete';
+
+  @override
+  String get deleteAccountSuccess =>
+      'Your account has been successfully deleted.';
+
+  @override
+  String get emailAlreadyDeletedError =>
+      'This email address is blocked because the associated account was deleted.';
+
+  @override
+  String get requiresRecentLoginError =>
+      'For security reasons, you must log in again before deleting your account. Please sign out and try again.';
 }

@@ -192,6 +192,24 @@ class AuthController extends Notifier<AsyncValue<ResidentEntity?>> {
       }
     }
   }
+
+  Future<void> deleteAccount(String email) async {
+    state = const AsyncValue.loading();
+    try {
+      final repository = ref.read(authRepositoryProvider);
+      await repository.deleteAccount(email);
+      if (ref.mounted) {
+        state = const AsyncValue.data(null);
+        ref.invalidate(authStateProvider);
+        ref.invalidate(firebaseUserProvider);
+      }
+    } catch (e, stack) {
+      if (ref.mounted) {
+        state = AsyncValue.error(e, stack);
+      }
+      rethrow;
+    }
+  }
 }
 
 final authControllerProvider =

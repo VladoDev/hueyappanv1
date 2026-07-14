@@ -393,5 +393,12 @@
       "name": {}
     }
   },
-  "deleteContactTitle": "Delete Contact"
+  "deleteContactTitle": "Delete Contact",
+  "deleteAccountButton": "Delete Account",
+  "deleteAccountTitle": "Permanently Delete Account",
+  "deleteAccountDescription": "Are you sure you want to delete your account and all associated data? This action is irreversible and you will not be able to register again using this same email address.",
+  "deleteAccountConfirm": "Delete",
+  "deleteAccountSuccess": "Your account has been successfully deleted.",
+  "emailAlreadyDeletedError": "This email address is blocked because the associated account was deleted.",
+  "requiresRecentLoginError": "For security reasons, you must log in again before deleting your account. Please sign out and try again."
 }

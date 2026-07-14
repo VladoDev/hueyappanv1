@@ -1687,6 +1687,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Delete Contact'**
   String get deleteContactTitle;
+
+  /// No description provided for @deleteAccountButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Account'**
+  String get deleteAccountButton;
+
+  /// No description provided for @deleteAccountTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Permanently Delete Account'**
+  String get deleteAccountTitle;
+
+  /// No description provided for @deleteAccountDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete your account and all associated data? This action is irreversible and you will not be able to register again using this same email address.'**
+  String get deleteAccountDescription;
+
+  /// No description provided for @deleteAccountConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get deleteAccountConfirm;
+
+  /// No description provided for @deleteAccountSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Your account has been successfully deleted.'**
+  String get deleteAccountSuccess;
+
+  /// No description provided for @emailAlreadyDeletedError.
+  ///
+  /// In en, this message translates to:
+  /// **'This email address is blocked because the associated account was deleted.'**
+  String get emailAlreadyDeletedError;
+
+  /// No description provided for @requiresRecentLoginError.
+  ///
+  /// In en, this message translates to:
+  /// **'For security reasons, you must log in again before deleting your account. Please sign out and try again.'**
+  String get requiresRecentLoginError;
 }
 
 class _AppLocalizationsDelegate

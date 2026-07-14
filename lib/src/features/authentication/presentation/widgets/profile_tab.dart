@@ -78,6 +78,8 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
           _buildBiometricToggle(vc, l10n),
           const SizedBox(height: 48),
           _buildSignOutButton(context, ref, controller.isLoading, vc),
+          const SizedBox(height: 16),
+          _buildDeleteAccountButton(context, ref, controller.isLoading, vc),
         ],
       ),
     );
@@ -292,6 +294,121 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
         elevation: 0,
       ),
     );
+  }
+
+  Widget _buildDeleteAccountButton(
+    BuildContext context,
+    WidgetRef ref,
+    bool isLoading,
+    VecinalSemanticColors vc,
+  ) {
+    final l10n = AppLocalizations.of(context)!;
+    return TextButton.icon(
+      onPressed: isLoading
+          ? null
+          : () => _showDeleteConfirmationDialog(context, ref, vc),
+      icon: isLoading
+          ? SizedBox(
+              width: 18,
+              height: 18,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                color: vc.destructive,
+              ),
+            )
+          : const Icon(Icons.delete_forever),
+      label: Text(
+        l10n.deleteAccountButton,
+        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+      ),
+      style: TextButton.styleFrom(
+        foregroundColor: vc.destructive,
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(VecinalRadius.md),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _showDeleteConfirmationDialog(
+    BuildContext context,
+    WidgetRef ref,
+    VecinalSemanticColors vc,
+  ) async {
+    final l10n = AppLocalizations.of(context)!;
+    
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: vc.surfaceModal,
+        title: Row(
+          children: [
+            Icon(Icons.warning_amber_rounded, color: vc.destructive),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                l10n.deleteAccountTitle,
+                style: VecinalTextStyles.bodyLarge.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: vc.destructive,
+                ),
+              ),
+            ),
+          ],
+        ),
+        content: Text(
+          l10n.deleteAccountDescription,
+          style: VecinalTextStyles.bodyMedium.copyWith(color: vc.textPrimary),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: Text(l10n.cancel, style: TextStyle(color: vc.textSecondary)),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            style: ElevatedButton.styleFrom(backgroundColor: vc.destructive),
+            child: Text(
+              l10n.deleteAccountConfirm,
+              style: TextStyle(color: vc.surfacePrimary),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true && mounted) {
+      try {
+        await ref
+            .read(authControllerProvider.notifier)
+            .deleteAccount(widget.email);
+        
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(l10n.deleteAccountSuccess),
+              backgroundColor: vc.paymentSuccessText,
+            ),
+          );
+          context.go('/login');
+        }
+      } catch (e) {
+        if (mounted) {
+          final isRequiresRecentLogin = e.toString().contains('requires-recent-login');
+          final errorMsg = isRequiresRecentLogin 
+              ? l10n.requiresRecentLoginError 
+              : e.toString();
+              
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(errorMsg),
+              backgroundColor: vc.destructive,
+            ),
+          );
+        }
+      }
+    }
   }
 
   Widget _buildInfoRow(String label, String value, VecinalSemanticColors vc) {
