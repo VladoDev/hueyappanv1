@@ -400,5 +400,16 @@
   "deleteAccountConfirm": "Delete",
   "deleteAccountSuccess": "Your account has been successfully deleted.",
   "emailAlreadyDeletedError": "This email address is blocked because the associated account was deleted.",
-  "requiresRecentLoginError": "For security reasons, you must log in again before deleting your account. Please sign out and try again."
+  "requiresRecentLoginError": "For security reasons, you must log in again before deleting your account. Please sign out and try again.",
+  "reportBug": "Report Bug",
+  "appIdea": "App Idea",
+  "neighborhoodProblem": "Neighborhood Problem",
+  "whatToReport": "What do you want to report?",
+  "briefTitle": "Brief Title",
+  "detailedDescription": "Detailed Description",
+  "fillAllFields": "Please fill all fields",
+  "reportThanks": "Thanks for your report!",
+  "suggestIdea": "Suggest Idea",
+  "reportLabel": "Report",
+  "back": "Back"
 }

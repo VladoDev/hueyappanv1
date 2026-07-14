@@ -1729,6 +1729,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'For security reasons, you must log in again before deleting your account. Please sign out and try again.'**
   String get requiresRecentLoginError;
+
+  /// No description provided for @reportBug.
+  ///
+  /// In en, this message translates to:
+  /// **'Report Bug'**
+  String get reportBug;
+
+  /// No description provided for @appIdea.
+  ///
+  /// In en, this message translates to:
+  /// **'App Idea'**
+  String get appIdea;
+
+  /// No description provided for @neighborhoodProblem.
+  ///
+  /// In en, this message translates to:
+  /// **'Neighborhood Problem'**
+  String get neighborhoodProblem;
+
+  /// No description provided for @whatToReport.
+  ///
+  /// In en, this message translates to:
+  /// **'What do you want to report?'**
+  String get whatToReport;
+
+  /// No description provided for @briefTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Brief Title'**
+  String get briefTitle;
+
+  /// No description provided for @detailedDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Detailed Description'**
+  String get detailedDescription;
+
+  /// No description provided for @fillAllFields.
+  ///
+  /// In en, this message translates to:
+  /// **'Please fill all fields'**
+  String get fillAllFields;
+
+  /// No description provided for @reportThanks.
+  ///
+  /// In en, this message translates to:
+  /// **'Thanks for your report!'**
+  String get reportThanks;
+
+  /// No description provided for @suggestIdea.
+  ///
+  /// In en, this message translates to:
+  /// **'Suggest Idea'**
+  String get suggestIdea;
+
+  /// No description provided for @reportLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Report'**
+  String get reportLabel;
+
+  /// No description provided for @back.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get back;
 }
 
 class _AppLocalizationsDelegate

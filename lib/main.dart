@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hueyappanv1/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'src/core/router/router.dart';
@@ -8,6 +9,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'src/features/security_events/domain/entities/security_event_entity.dart';
 import 'src/features/security_events/presentation/providers/security_events_provider.dart';
+import 'package:shake/shake.dart';
+import 'package:screenshot/screenshot.dart';
+import 'src/features/feedback/presentation/widgets/shake_report_dialog.dart';
 
 // Entry points are now in main_development.dart and main_production.dart
 
@@ -20,11 +24,32 @@ class MyApp extends ConsumerStatefulWidget {
 
 class _MyAppState extends ConsumerState<MyApp> {
   late ScreenshotCallback screenshotCallback;
+  late ShakeDetector shakeDetector;
+  final ScreenshotController screenshotController = ScreenshotController();
 
   @override
   void initState() {
     super.initState();
     initScreenshotCallback();
+    initShakeDetector();
+  }
+
+  void initShakeDetector() {
+    shakeDetector = ShakeDetector.autoStart(
+      onPhoneShake: (_) {
+        screenshotController.capture().then((screenshotBytes) {
+          if (!mounted) return;
+          final context = ref.read(routerProvider).routerDelegate.navigatorKey.currentContext;
+          if (context != null && context.mounted) {
+            HapticFeedback.heavyImpact();
+            showDialog(
+              context: context,
+              builder: (ctx) => ShakeReportDialog(screenshotBytes: screenshotBytes),
+            );
+          }
+        });
+      },
+    );
   }
 
   void initScreenshotCallback() {
@@ -72,6 +97,7 @@ class _MyAppState extends ConsumerState<MyApp> {
   @override
   void dispose() {
     screenshotCallback.dispose();
+    shakeDetector.stopListening();
     super.dispose();
   }
 
@@ -79,15 +105,18 @@ class _MyAppState extends ConsumerState<MyApp> {
   Widget build(BuildContext context) {
     final router = ref.watch(routerProvider);
 
-    return MaterialApp.router(
-      title: 'Hueyappan',
-      theme: vecinalLightTheme(),
-      darkTheme: vecinalDarkTheme(),
-      themeMode: ThemeMode.system,
-      routerConfig: router,
-      debugShowCheckedModeBanner: false,
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
+    return Screenshot(
+      controller: screenshotController,
+      child: MaterialApp.router(
+        title: 'Hueyappan',
+        theme: vecinalLightTheme(),
+        darkTheme: vecinalDarkTheme(),
+        themeMode: ThemeMode.system,
+        routerConfig: router,
+        debugShowCheckedModeBanner: false,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+      ),
     );
   }
 }

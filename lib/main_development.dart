@@ -6,12 +6,16 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 import 'firebase_options_development.dart';
 import 'main.dart';
 import 'src/features/app_settings/presentation/providers/package_info_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  await dotenv.load(fileName: ".env");
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
