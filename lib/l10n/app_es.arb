@@ -400,5 +400,16 @@
   "deleteAccountConfirm": "Eliminar",
   "deleteAccountSuccess": "Tu cuenta ha sido eliminada exitosamente.",
   "emailAlreadyDeletedError": "Este correo electrónico está bloqueado porque la cuenta asociada fue eliminada.",
-  "requiresRecentLoginError": "Por seguridad, debes volver a iniciar sesión antes de poder eliminar tu cuenta. Cierra sesión e inténtalo de nuevo."
+  "requiresRecentLoginError": "Por seguridad, debes volver a iniciar sesión antes de poder eliminar tu cuenta. Cierra sesión e inténtalo de nuevo.",
+  "reportBug": "Reportar Bug",
+  "appIdea": "Idea para la app",
+  "neighborhoodProblem": "Problema vecinal",
+  "whatToReport": "¿Qué deseas reportar?",
+  "briefTitle": "Título breve",
+  "detailedDescription": "Descripción detallada",
+  "fillAllFields": "Por favor llena todos los campos",
+  "reportThanks": "¡Gracias por tu reporte!",
+  "suggestIdea": "Sugerir Idea",
+  "reportLabel": "Reporte",
+  "back": "Atrás"
 }

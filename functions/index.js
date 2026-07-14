@@ -25,7 +25,7 @@ exports.broadcastEmergencyAlert = onDocumentCreated("emergencies/{docId}", async
     android: {
       priority: "high",
       notification: {
-        sound: "siren.wav",
+        sound: "siren", // Recommended by FCM to omit extension for Android
         channelId: "critical_emergency_channel_30s",
       },
     },
@@ -33,7 +33,7 @@ exports.broadcastEmergencyAlert = onDocumentCreated("emergencies/{docId}", async
       payload: {
         aps: {
           sound: {
-            critical: 1,
+            critical: true, // firebase-admin SDK expects boolean
             name: "siren.wav",
             volume: 1.0,
           },

@@ -30,7 +30,7 @@ target 'Runner' do
   use_frameworks!
 
   # Use precompiled Firestore binary to speed up compilation from ~10 mins to ~30 seconds
-  pod 'FirebaseFirestore', :git => 'https://github.com/invertase/firestore-ios-sdk-frameworks.git', :tag => '12.13.0'
+  pod 'FirebaseFirestore', :git => 'https://github.com/invertase/firestore-ios-sdk-frameworks.git', :tag => '12.15.0'
 
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
 

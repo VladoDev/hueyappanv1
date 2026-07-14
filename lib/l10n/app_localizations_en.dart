@@ -884,4 +884,37 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get requiresRecentLoginError =>
       'For security reasons, you must log in again before deleting your account. Please sign out and try again.';
+
+  @override
+  String get reportBug => 'Report Bug';
+
+  @override
+  String get appIdea => 'App Idea';
+
+  @override
+  String get neighborhoodProblem => 'Neighborhood Problem';
+
+  @override
+  String get whatToReport => 'What do you want to report?';
+
+  @override
+  String get briefTitle => 'Brief Title';
+
+  @override
+  String get detailedDescription => 'Detailed Description';
+
+  @override
+  String get fillAllFields => 'Please fill all fields';
+
+  @override
+  String get reportThanks => 'Thanks for your report!';
+
+  @override
+  String get suggestIdea => 'Suggest Idea';
+
+  @override
+  String get reportLabel => 'Report';
+
+  @override
+  String get back => 'Back';
 }

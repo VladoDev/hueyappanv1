@@ -890,4 +890,37 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get requiresRecentLoginError =>
       'Por seguridad, debes volver a iniciar sesión antes de poder eliminar tu cuenta. Cierra sesión e inténtalo de nuevo.';
+
+  @override
+  String get reportBug => 'Reportar Bug';
+
+  @override
+  String get appIdea => 'Idea para la app';
+
+  @override
+  String get neighborhoodProblem => 'Problema vecinal';
+
+  @override
+  String get whatToReport => '¿Qué deseas reportar?';
+
+  @override
+  String get briefTitle => 'Título breve';
+
+  @override
+  String get detailedDescription => 'Descripción detallada';
+
+  @override
+  String get fillAllFields => 'Por favor llena todos los campos';
+
+  @override
+  String get reportThanks => '¡Gracias por tu reporte!';
+
+  @override
+  String get suggestIdea => 'Sugerir Idea';
+
+  @override
+  String get reportLabel => 'Reporte';
+
+  @override
+  String get back => 'Atrás';
 }
