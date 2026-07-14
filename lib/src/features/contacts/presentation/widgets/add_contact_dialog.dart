@@ -84,7 +84,7 @@ class _AddContactDialogState extends ConsumerState<AddContactDialog> {
                 controller: _nameController,
                 textCapitalization: TextCapitalization.words,
                 decoration: InputDecoration(
-                  labelText: 'Nombre',
+                  labelText: l10n.nameLabel,
                   border: const OutlineInputBorder(),
                 ),
                 validator: (val) => val == null || val.trim().isEmpty
@@ -95,7 +95,7 @@ class _AddContactDialogState extends ConsumerState<AddContactDialog> {
               TextFormField(
                 controller: _phoneController,
                 decoration: InputDecoration(
-                  labelText: 'Teléfono',
+                  labelText: l10n.phoneLabel,
                   border: const OutlineInputBorder(),
                 ),
                 keyboardType: TextInputType.phone,
@@ -107,7 +107,7 @@ class _AddContactDialogState extends ConsumerState<AddContactDialog> {
               DropdownButtonFormField<String>(
                 value: _selectedCategory,
                 decoration: InputDecoration(
-                  labelText: 'Categoría',
+                  labelText: l10n.categoryLabel,
                   border: const OutlineInputBorder(),
                 ),
                 items: _categories.map((cat) {

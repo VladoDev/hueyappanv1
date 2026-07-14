@@ -1,3 +1,4 @@
+import 'package:hueyappanv1/l10n/app_localizations.dart';
 import 'package:hueyappanv1/src/core/theme/vecinal_theme.dart';
 import 'dart:math';
 import 'package:flutter/material.dart';
@@ -29,7 +30,8 @@ class _PollCardState extends ConsumerState<PollCard> {
       customText = _customOptionController.text.trim();
       if (customText.isEmpty) {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Por favor escribe tu respuesta.')));
+          final l10n = AppLocalizations.of(context)!;
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.pollWriteResponse)));
         }
         return;
       }
@@ -56,7 +58,8 @@ class _PollCardState extends ConsumerState<PollCard> {
     try {
       await ref.read(pollsNotifierProvider.notifier).requestRevertVote(widget.poll.id, pollTitle, '');
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Solicitud de reversión enviada al administrador')));
+        final l10n = AppLocalizations.of(context)!;
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.revertRequestSent)));
       }
     } catch (e) {
       if (mounted) {
@@ -75,6 +78,7 @@ class _PollCardState extends ConsumerState<PollCard> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final resident = ref.watch(authStateProvider).value;
     if (resident == null) return const SizedBox.shrink();
 
@@ -106,12 +110,12 @@ class _PollCardState extends ConsumerState<PollCard> {
                 ),
                 if (!widget.poll.isActive)
                   Chip(
-                    label: const Text('Cerrada', style: TextStyle(color: VecinalColors.white)),
+                    label: Text(l10n.closed, style: const TextStyle(color: VecinalColors.white)),
                     backgroundColor: VecinalColors.red800,
                   )
                 else if (hasVoted)
                   Chip(
-                    label: const Text('Ya votaste', style: TextStyle(color: VecinalColors.white)),
+                    label: Text(l10n.alreadyVoted, style: const TextStyle(color: VecinalColors.white)),
                     backgroundColor: VecinalColors.green800,
                   )
               ],
@@ -138,7 +142,7 @@ class _PollCardState extends ConsumerState<PollCard> {
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
-                          'El usuario $votedUserName ya emitió el voto por tu casa (Lote ${resident.lot} - Casa ${resident.house}).',
+                          l10n.alreadyVotedByOther(votedUserName ?? '', resident.lot, resident.house),
                           style: TextStyle(color: VecinalColors.amber400),
                         ),
                       ),
@@ -190,7 +194,7 @@ class _PollCardState extends ConsumerState<PollCard> {
                     onPressed: _isSubmitting ? null : () => _requestRevertVote(widget.poll.title),
                     child: _isSubmitting
                         ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
-                        : const Text('Solicitar revertir voto', style: TextStyle(color: VecinalColors.red600)),
+                        : Text(l10n.requestRevertVote, style: const TextStyle(color: VecinalColors.red600)),
                   ),
                 ),
             ]
@@ -210,7 +214,7 @@ class _PollCardState extends ConsumerState<PollCard> {
               }),
               if (widget.poll.allowCustomOptions) ...[
                 RadioListTile<String>(
-                  title: const Text('Otra opción (Escribe tu propia respuesta)'),
+                  title: Text(l10n.pollOtherOption),
                   value: 'custom',
                   groupValue: _selectedOptionId,
                   onChanged: (val) {
@@ -225,7 +229,7 @@ class _PollCardState extends ConsumerState<PollCard> {
                       controller: _customOptionController,
                       textCapitalization: TextCapitalization.sentences,
                       decoration: InputDecoration(
-                        hintText: 'Escribe tu respuesta aquí...',
+                        hintText: l10n.pollWriteResponseHint,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
@@ -241,14 +245,14 @@ class _PollCardState extends ConsumerState<PollCard> {
                   onPressed: _selectedOptionId == null || _isSubmitting ? null : _submitVote,
                   child: _isSubmitting
                       ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(color: VecinalColors.white, strokeWidth: 2))
-                      : const Text('Votar'),
+                      : Text(l10n.vote),
                 ),
               ),
             ]
 
             // === CLOSED and never voted ===
             else ...[
-              const Text('Esta votación ha sido cerrada y no emitiste voto.'),
+              Text(l10n.pollClosedNoVote),
             ],
           ],
         ),

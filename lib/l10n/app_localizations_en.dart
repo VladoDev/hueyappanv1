@@ -66,7 +66,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get inquilinoLabel => 'Tenant';
 
   @override
-  String get phoneLabel => 'Mobile Phone';
+  String get phoneLabel => 'Phone';
 
   @override
   String get phoneRequired => 'Phone is required';
@@ -806,4 +806,57 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get understood => 'Got it';
+
+  @override
+  String get navPolls => 'Polls';
+
+  @override
+  String get pollWriteResponse => 'Please write your response.';
+
+  @override
+  String get pollOtherOption => 'Other option (Write your own response)';
+
+  @override
+  String get pollWriteResponseHint => 'Write your response here...';
+
+  @override
+  String get pollQuestionLabel => 'Question or Title';
+
+  @override
+  String get pollDescriptionLabel => 'Description (Optional)';
+
+  @override
+  String pollOptionX(Object index) {
+    return 'Option $index';
+  }
+
+  @override
+  String get pollAllowCustomOptions => 'Allow neighbors to add custom options';
+
+  @override
+  String get pollCustomOptionsDescription =>
+      'If a neighbor writes an existing option, their vote will be added to it.';
+
+  @override
+  String get nameLabel => 'Name';
+
+  @override
+  String get categoryLabel => 'Category';
+
+  @override
+  String get statusLabel => 'Status';
+
+  @override
+  String get paymentNewTotalAbonadoLabel => 'New Total Paid';
+
+  @override
+  String get paymentAmountAbonadoLabel => 'Amount Paid';
+
+  @override
+  String deleteContactConfirm(Object name) {
+    return 'Are you sure you want to delete $name? This action cannot be undone.';
+  }
+
+  @override
+  String get deleteContactTitle => 'Delete Contact';
 }

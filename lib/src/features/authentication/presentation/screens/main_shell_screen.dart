@@ -52,6 +52,7 @@ class _MainShellScreenState extends ConsumerState<MainShellScreen> {
         }
 
         final vc = context.vecinalColors;
+        final l10n = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Column(
@@ -83,7 +84,7 @@ class _MainShellScreenState extends ConsumerState<MainShellScreen> {
             margin: const EdgeInsets.only(bottom: 80, left: 16, right: 16),
             duration: const Duration(seconds: 4),
             action: SnackBarAction(
-              label: 'Cerrar',
+              label: l10n.close,
               textColor: vc.primaryDefault,
               onPressed: () {
                 ScaffoldMessenger.of(context).hideCurrentSnackBar();
@@ -280,7 +281,7 @@ class _MainShellScreenState extends ConsumerState<MainShellScreen> {
       _FloatingTabBarItem(
         icon: Icons.how_to_vote_outlined,
         selectedIcon: Icons.how_to_vote,
-        label: 'Votaciones', // No localization for now or hardcoded
+        label: l10n.navPolls,
       ),
       _FloatingTabBarItem(
         icon: Icons.person_outline,

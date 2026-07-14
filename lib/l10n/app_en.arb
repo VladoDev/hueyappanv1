@@ -19,7 +19,7 @@
   "residentTypeLabel": "Resident Type",
   "propietarioLabel": "Owner",
   "inquilinoLabel": "Tenant",
-  "phoneLabel": "Mobile Phone",
+  "phoneLabel": "Phone",
   "phoneRequired": "Phone is required",
   "phoneLengthInvalid": "Must be exactly 10 digits",
   "emailRequiredRegister": "Email is required",
@@ -367,5 +367,31 @@
   "waterStatusActiveBody": "According to the municipal calendar, the water supply is active today. We invite you to use it responsibly.",
   "waterStatusInactiveTitle": "No Scheduled Supply",
   "waterStatusInactiveBody": "According to the municipal calendar, there is no water supply scheduled in the area today. We suggest you manage your reserves.",
-  "understood": "Got it"
+  "understood": "Got it",
+  "navPolls": "Polls",
+  "pollWriteResponse": "Please write your response.",
+  "pollOtherOption": "Other option (Write your own response)",
+  "pollWriteResponseHint": "Write your response here...",
+  "pollQuestionLabel": "Question or Title",
+  "pollDescriptionLabel": "Description (Optional)",
+  "pollOptionX": "Option {index}",
+  "@pollOptionX": {
+    "placeholders": {
+      "index": {}
+    }
+  },
+  "pollAllowCustomOptions": "Allow neighbors to add custom options",
+  "pollCustomOptionsDescription": "If a neighbor writes an existing option, their vote will be added to it.",
+  "nameLabel": "Name",
+  "categoryLabel": "Category",
+  "statusLabel": "Status",
+  "paymentNewTotalAbonadoLabel": "New Total Paid",
+  "paymentAmountAbonadoLabel": "Amount Paid",
+  "deleteContactConfirm": "Are you sure you want to delete {name}? This action cannot be undone.",
+  "@deleteContactConfirm": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "deleteContactTitle": "Delete Contact"
 }

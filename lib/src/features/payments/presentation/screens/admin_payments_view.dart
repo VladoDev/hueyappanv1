@@ -55,7 +55,7 @@ class AdminPaymentsView extends ConsumerWidget {
             left: VecinalSpacing.xl,
             right: VecinalSpacing.xl,
             top: VecinalSpacing.xl,
-            bottom: isEmbedded ? 24 : 100,
+            bottom: 120,
           ),
           itemCount: concepts.length,
           itemBuilder: (context, index) {

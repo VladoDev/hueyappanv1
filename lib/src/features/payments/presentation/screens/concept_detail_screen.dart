@@ -111,8 +111,8 @@ class _ConceptDetailScreenState extends ConsumerState<ConceptDetailScreen>
             .where((c) => c.id == widget.conceptId)
             .firstOrNull;
         if (concept == null) {
-          return const Scaffold(
-            body: Center(child: Text('Concepto no encontrado')),
+          return Scaffold(
+            body: Center(child: Text(l10n.conceptNotFound)),
           );
         }
 

@@ -1,21 +1,11 @@
 import json
 
 new_es = {
-  "deleteContactConfirm": "¿Estás seguro de que deseas eliminar a {name}? Esta acción no se puede deshacer.",
-  "@deleteContactConfirm": {
-    "placeholders": {
-      "name": {}
-    }
-  }
+  "deleteContactTitle": "Eliminar Contacto"
 }
 
 new_en = {
-  "deleteContactConfirm": "Are you sure you want to delete {name}? This action cannot be undone.",
-  "@deleteContactConfirm": {
-    "placeholders": {
-      "name": {}
-    }
-  }
+  "deleteContactTitle": "Delete Contact"
 }
 
 def update_file(path, new_data):

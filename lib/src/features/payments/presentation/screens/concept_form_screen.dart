@@ -248,7 +248,7 @@ class _ConceptFormScreenState extends ConsumerState<ConceptFormScreen> {
               DropdownButtonFormField<String>(
                 initialValue: _status,
                 decoration: InputDecoration(
-                  labelText: 'Estado',
+                  labelText: l10n.statusLabel,
                   prefixIcon: Icon(
                     Icons.info_outline,
                     color: vc.primaryDefault,

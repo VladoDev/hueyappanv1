@@ -156,7 +156,7 @@ class _PaymentRegisterDialogState extends ConsumerState<PaymentRegisterDialog> {
                   signed: false,
                 ),
                 decoration: InputDecoration(
-                  labelText: 'Nuevo Total Abonado',
+                  labelText: l10n.paymentNewTotalAbonadoLabel,
                   prefixIcon: Icon(
                     Icons.monetization_on_outlined,
                     color: vc.primaryDefault,
@@ -166,7 +166,7 @@ class _PaymentRegisterDialogState extends ConsumerState<PaymentRegisterDialog> {
                   if (val == null || val.isEmpty) return l10n.fieldRequired;
                   final parsed = double.tryParse(val);
                   if (parsed == null) return l10n.invalidAmount;
-                  if (parsed < 0) return 'El monto no puede ser negativo';
+                  if (parsed < 0) return l10n.amountGreaterThanZero;
                   return null;
                 },
               ),

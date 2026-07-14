@@ -47,7 +47,7 @@ class NeighborPaymentsView extends ConsumerWidget {
             left: VecinalSpacing.xl,
             right: VecinalSpacing.xl,
             top: VecinalSpacing.base,
-            bottom: isEmbedded ? 24 : 100,
+            bottom: 120,
           ),
           children: [
             _buildTransferCard(context, ref, isAdmin),
@@ -613,7 +613,7 @@ class _NeighborPaymentCard extends ConsumerWidget {
                       decimal: true,
                     ),
                     decoration: InputDecoration(
-                      labelText: 'Monto Abonado',
+                      labelText: l10n.paymentAmountAbonadoLabel,
                       prefixText: '\$ ',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
@@ -625,7 +625,7 @@ class _NeighborPaymentCard extends ConsumerWidget {
                     controller: notesController,
                     textCapitalization: TextCapitalization.sentences,
                     decoration: InputDecoration(
-                      labelText: 'Notas / Referencia (Opcional)',
+                      labelText: l10n.notesLabel,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
@@ -1080,7 +1080,7 @@ class _EditBankDetailsDialogState extends ConsumerState<_EditBankDetailsDialog> 
             backgroundColor: vc.primaryDefault,
             foregroundColor: vc.textOnPrimary,
           ),
-          child: _isLoading ? const CircularProgressIndicator() : Text("Guardar"),
+          child: _isLoading ? const CircularProgressIndicator() : Text(l10n.save),
         ),
       ],
     );
