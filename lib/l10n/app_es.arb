@@ -393,5 +393,12 @@
       "name": {}
     }
   },
-  "deleteContactTitle": "Eliminar Contacto"
+  "deleteContactTitle": "Eliminar Contacto",
+  "deleteAccountButton": "Eliminar Cuenta",
+  "deleteAccountTitle": "Eliminar Cuenta Definitivamente",
+  "deleteAccountDescription": "¿Estás seguro de que deseas eliminar tu cuenta y todos tus datos asociados? Esta acción es irreversible y no podrás volver a registrarte con este mismo correo electrónico.",
+  "deleteAccountConfirm": "Eliminar",
+  "deleteAccountSuccess": "Tu cuenta ha sido eliminada exitosamente.",
+  "emailAlreadyDeletedError": "Este correo electrónico está bloqueado porque la cuenta asociada fue eliminada.",
+  "requiresRecentLoginError": "Por seguridad, debes volver a iniciar sesión antes de poder eliminar tu cuenta. Cierra sesión e inténtalo de nuevo."
 }

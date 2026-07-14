@@ -129,7 +129,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
     ref.listen<AsyncValue>(authControllerProvider, (previous, next) {
       if (next.hasError) {
-        final errorMsg = next.error.toString().replaceAll('Exception: ', '');
+        var errorMsg = next.error.toString().replaceAll('Exception: ', '');
+        if (errorMsg.contains('email_already_deleted')) {
+          errorMsg = l10n.emailAlreadyDeletedError;
+        }
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(errorMsg),

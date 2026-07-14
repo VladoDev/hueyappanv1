@@ -865,4 +865,29 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get deleteContactTitle => 'Eliminar Contacto';
+
+  @override
+  String get deleteAccountButton => 'Eliminar Cuenta';
+
+  @override
+  String get deleteAccountTitle => 'Eliminar Cuenta Definitivamente';
+
+  @override
+  String get deleteAccountDescription =>
+      '¿Estás seguro de que deseas eliminar tu cuenta y todos tus datos asociados? Esta acción es irreversible y no podrás volver a registrarte con este mismo correo electrónico.';
+
+  @override
+  String get deleteAccountConfirm => 'Eliminar';
+
+  @override
+  String get deleteAccountSuccess =>
+      'Tu cuenta ha sido eliminada exitosamente.';
+
+  @override
+  String get emailAlreadyDeletedError =>
+      'Este correo electrónico está bloqueado porque la cuenta asociada fue eliminada.';
+
+  @override
+  String get requiresRecentLoginError =>
+      'Por seguridad, debes volver a iniciar sesión antes de poder eliminar tu cuenta. Cierra sesión e inténtalo de nuevo.';
 }

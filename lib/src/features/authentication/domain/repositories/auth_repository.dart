@@ -6,6 +6,7 @@ abstract class AuthRepository {
   Future<void> sendPasswordResetEmail(String email);
   Future<void> logout();
   Future<ResidentEntity?> getCurrentResident();
+  Future<void> deleteAccount(String email);
 
   Future<ResidentEntity> registerWithEmail({
     required String email,

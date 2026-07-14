@@ -126,6 +126,31 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
+  Future<void> deleteAccount(String email) async {
+    try {
+      final user = _dataSource.currentUser;
+      if (user != null) {
+        try {
+          await _dataSource.unregisterDeviceToken(user.uid);
+        } catch (_) {}
+        
+        await _dataSource.deleteAccount(user.uid, email);
+        
+        // Clear identifiers in Analytics and Crashlytics
+        await FirebaseAnalytics.instance.setUserId(id: null);
+        await FirebaseCrashlytics.instance.setUserIdentifier('');
+      }
+    } catch (e, stackTrace) {
+      await FirebaseCrashlytics.instance.recordError(
+        e,
+        stackTrace,
+        reason: 'Delete account failed',
+      );
+      rethrow;
+    }
+  }
+
+  @override
   Future<ResidentEntity> registerWithEmail({
     required String email,
     required String password,
@@ -137,6 +162,12 @@ class AuthRepositoryImpl implements AuthRepository {
     required String phone,
   }) async {
     try {
+      // 0. Check if the email is blocked/deleted
+      final isDeleted = await _dataSource.isEmailDeleted(email.trim());
+      if (isDeleted) {
+        throw Exception('email_already_deleted');
+      }
+
       // 1. Create the user in Firebase Auth if not already pre-authenticated
       final existingUser = _dataSource.currentUser;
       final String uid;

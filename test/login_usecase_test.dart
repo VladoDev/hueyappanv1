@@ -30,6 +30,9 @@ class MockAuthRepository implements AuthRepository {
   Future<ResidentEntity?> getCurrentResident() async => null;
 
   @override
+  Future<void> deleteAccount(String email) async {}
+
+  @override
   Future<ResidentEntity> registerWithEmail({
     required String email,
     required String password,

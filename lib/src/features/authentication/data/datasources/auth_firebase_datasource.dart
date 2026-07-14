@@ -66,6 +66,25 @@ class AuthFirebaseDatasource {
     return _auth.signOut();
   }
 
+  Future<void> deleteAccount(String uid, String email) async {
+    // 1. Add email to deleted_emails collection
+    await _firestore.collection('deleted_emails').doc(email).set({
+      'deletedAt': FieldValue.serverTimestamp(),
+      'uid': uid,
+    });
+
+    // 2. Delete resident profile
+    await _firestore.collection('residents').doc(uid).delete();
+
+    // 3. Delete auth user (requires recent login)
+    await _auth.currentUser?.delete();
+  }
+
+  Future<bool> isEmailDeleted(String email) async {
+    final doc = await _firestore.collection('deleted_emails').doc(email).get();
+    return doc.exists;
+  }
+
   Future<ResidentModel?> getResidentProfile(String uid) async {
     final doc = await _firestore.collection('residents').doc(uid).get();
     if (!doc.exists || doc.data() == null) return null;
