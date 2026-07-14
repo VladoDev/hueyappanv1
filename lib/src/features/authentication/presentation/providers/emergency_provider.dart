@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'auth_provider.dart';
 
 class EmergencyState {
@@ -116,16 +116,21 @@ class EmergencyNotifier extends Notifier<EmergencyState> {
     );
   }
 
-  void _startAlarm() {
+  final AudioPlayer _audioPlayer = AudioPlayer();
+
+  void _startAlarm() async {
     if (!state.isPlayingAlarm) {
       state = state.copyWith(isPlayingAlarm: true);
-      FlutterRingtonePlayer().playAlarm(looping: true, asAlarm: true);
+      // Ensure it loops continuously
+      await _audioPlayer.setReleaseMode(ReleaseMode.loop);
+      await _audioPlayer.play(AssetSource('audio/siren.wav'), volume: 1.0);
     }
   }
 
-  void _stopAlarm() {
+  void _stopAlarm() async {
     if (state.isPlayingAlarm) {
-      FlutterRingtonePlayer().stop();
+      await _audioPlayer.stop();
+      state = state.copyWith(isPlayingAlarm: false);
     }
   }
 }

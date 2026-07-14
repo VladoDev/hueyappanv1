@@ -25,8 +25,8 @@ exports.broadcastEmergencyAlert = onDocumentCreated("emergencies/{docId}", async
     android: {
       priority: "high",
       notification: {
-        sound: "default",
-        channelId: "emergency_channel",
+        sound: "siren.wav",
+        channelId: "critical_emergency_channel_30s",
       },
     },
     apns: {
@@ -34,7 +34,7 @@ exports.broadcastEmergencyAlert = onDocumentCreated("emergencies/{docId}", async
         aps: {
           sound: {
             critical: 1,
-            name: "default",
+            name: "siren.wav",
             volume: 1.0,
           },
           "interruption-level": "critical",
@@ -46,9 +46,54 @@ exports.broadcastEmergencyAlert = onDocumentCreated("emergencies/{docId}", async
   try {
     const response = await getMessaging().send(payload);
     console.log("Notificación de emergencia enviada con éxito:", response);
+    
+    // Guardar el registro en la subcolección 'notifications' de cada residente
+    const db = require("firebase-admin/firestore").getFirestore();
+    const residentsSnapshot = await db.collection("residents").get();
+    
+    // Batch writes for notifications (Firestore allows up to 500 per batch)
+    // If there are more than 500 residents, we need multiple batches.
+    const batches = [];
+    let currentBatch = db.batch();
+    let opCount = 0;
+    
+    const notificationData = {
+      title: payload.notification.title,
+      body: payload.notification.body,
+      type: "emergency",
+      data: {
+        triggeredBy: data.triggeredBy,
+        emergencyId: event.data.id,
+      },
+      createdAt: require("firebase-admin/firestore").FieldValue.serverTimestamp(),
+      isRead: false,
+    };
+    
+    residentsSnapshot.forEach((doc) => {
+      // Opcionalmente podemos evitar notificar al usuario que la disparó:
+      // if (doc.id === data.triggeredBy) return;
+      
+      const notifRef = db.collection("residents").doc(doc.id).collection("notifications").doc();
+      currentBatch.set(notifRef, notificationData);
+      opCount++;
+      
+      if (opCount === 500) {
+        batches.push(currentBatch.commit());
+        currentBatch = db.batch();
+        opCount = 0;
+      }
+    });
+    
+    if (opCount > 0) {
+      batches.push(currentBatch.commit());
+    }
+    
+    await Promise.all(batches);
+    console.log("Registros de notificación guardados en todos los residentes.");
+    
     return response;
   } catch (error) {
-    console.error("Error al enviar la notificación:", error);
+    console.error("Error al enviar la notificación o guardar registros:", error);
     throw new Error(error);
   }
 });
