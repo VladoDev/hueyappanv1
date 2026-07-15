@@ -6,7 +6,7 @@ import 'package:hueyappanv1/l10n/app_localizations.dart';
 import 'package:hueyappanv1/src/core/theme/vecinal_theme.dart';
 import '../providers/auth_provider.dart';
 import '../providers/biometric_provider.dart';
-import 'package:flutter_recaptcha_v2_compat/flutter_recaptcha_v2_compat.dart';
+import '../widgets/local_recaptcha.dart';
 
 class RegisterScreen extends ConsumerStatefulWidget {
   const RegisterScreen({super.key});
@@ -189,7 +189,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
               children: [
                 // Clean Solid Card
                 Container(
-                  padding: const EdgeInsets.all(32),
+                  padding: const EdgeInsets.symmetric(vertical: 32),
                   decoration: BoxDecoration(
                     color: vc.surfaceCard,
                     borderRadius: BorderRadius.circular(24),
@@ -206,15 +206,27 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        _buildNameFields(isLoading, vc),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 32),
+                          child: _buildNameFields(isLoading, vc),
+                        ),
                         const SizedBox(height: 16),
-                        _buildDropdowns(isLoading, vc),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 32),
+                          child: _buildDropdowns(isLoading, vc),
+                        ),
                         const SizedBox(height: 16),
-                        _buildContactFields(isLoading, vc),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 32),
+                          child: _buildContactFields(isLoading, vc),
+                        ),
                         const SizedBox(height: 16),
                         _buildRecaptcha(vc),
                         const SizedBox(height: 28),
-                        _buildSubmitButton(isLoading, vc),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 32),
+                          child: _buildSubmitButton(isLoading, vc),
+                        ),
                       ],
                     ),
                   ),
@@ -451,20 +463,24 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   Widget _buildRecaptcha(VecinalSemanticColors vc) {
     return Column(
       children: [
-        RecaptchaV2(
-          apiKey: "6Lemtw4tAAAAACeY-96VPirAxI6EcUTgwW8quFXQ",
-          apiSecret: "6Lemtw4tAAAAAErhymCWcuWsuxCqAXtyzHGKNdkV",
-          controller: recaptchaV2Controller,
-          onVerifiedError: (err) {
-            debugPrint('Recaptcha error: $err');
-          },
-          onVerifiedSuccessfully: (success) {
-            setState(() {
-              if (success) {
-                _isRecaptchaVerified = true;
-              }
-            });
-          },
+        Center(
+          child: RecaptchaV2(
+            apiKey: "6Lemtw4tAAAAACeY-96VPirAxI6EcUTgwW8quFXQ",
+            apiSecret: "6Lemtw4tAAAAAErhymCWcuWsuxCqAXtyzHGKNdkV",
+            controller: recaptchaV2Controller,
+            themeMode: Theme.of(context).brightness == Brightness.dark ? 'dark' : 'light',
+            backgroundColor: vc.surfaceCard,
+            onVerifiedError: (err) {
+              debugPrint('Recaptcha error: $err');
+            },
+            onVerifiedSuccessfully: (success) {
+              setState(() {
+                if (success) {
+                  _isRecaptchaVerified = true;
+                }
+              });
+            },
+          ),
         ),
       ],
     );
