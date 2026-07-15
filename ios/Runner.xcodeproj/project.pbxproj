@@ -13,7 +13,7 @@
 		4A875373D1B8E77CF4F504D5 /* siren.wav in Resources */ = {isa = PBXBuildFile; fileRef = 9167213DD69DA5D97DAA4060 /* siren.wav */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
 		7884E8682EC3CC0700C636F2 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7884E8672EC3CC0400C636F2 /* SceneDelegate.swift */; };
-		93BCB019C23179239EC3F823 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C9793647CDE0B2A041DD269E /* GoogleService-Info.plist */; };
+
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
@@ -57,7 +57,7 @@
 		74858FAE1ED2DC5600515810 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		7884E8672EC3CC0400C636F2 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		7AFA3C8E1D35360C0083082E /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Release.xcconfig; path = Flutter/Release.xcconfig; sourceTree = "<group>"; };
-		9167213DD69DA5D97DAA4060 /* siren.wav */ = {isa = PBXFileReference; includeInIndex = 1; path = siren.wav; sourceTree = "<group>"; };
+		9167213DD69DA5D97DAA4060 /* siren.wav */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.wav; path = siren.wav; sourceTree = "<group>"; };
 		933C2ED0FF96284FDBA131D1 /* Pods-Runner.debug-production.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.debug-production.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.debug-production.xcconfig"; sourceTree = "<group>"; };
 		9740EEB21CF90195004384FC /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Debug.xcconfig; path = Flutter/Debug.xcconfig; sourceTree = "<group>"; };
 		9740EEB31CF90195004384FC /* Generated.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Generated.xcconfig; path = Flutter/Generated.xcconfig; sourceTree = "<group>"; };
@@ -278,7 +278,7 @@
 				3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */,
 				97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */,
 				97C146FC1CF9000F007C117D /* Main.storyboard in Resources */,
-				93BCB019C23179239EC3F823 /* GoogleService-Info.plist in Resources */,
+
 				4A875373D1B8E77CF4F504D5 /* siren.wav in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -744,6 +744,54 @@
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Runner.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Runner";
 			};
 			name = Profile;
+		};
+		348FBBC63006F7290060AB96 /* Debug-development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = RunnerTests;
+				SWIFT_VERSION = 5.0;
+			};
+			name = "Debug-development";
+		};
+		348FBBC73006F7290060AB96 /* Debug-production */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = RunnerTests;
+				SWIFT_VERSION = 5.0;
+			};
+			name = "Debug-production";
+		};
+		348FBBC83006F7290060AB96 /* Release-development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = RunnerTests;
+				SWIFT_VERSION = 5.0;
+			};
+			name = "Release-development";
+		};
+		348FBBC93006F7290060AB96 /* Release-production */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = RunnerTests;
+				SWIFT_VERSION = 5.0;
+			};
+			name = "Release-production";
+		};
+		348FBBCA3006F7290060AB96 /* Profile-development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = RunnerTests;
+				SWIFT_VERSION = 5.0;
+			};
+			name = "Profile-development";
+		};
+		348FBBCB3006F7290060AB96 /* Profile-production */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = RunnerTests;
+				SWIFT_VERSION = 5.0;
+			};
+			name = "Profile-production";
 		};
 		6E8060F85FC2DD0479AD68CC /* Profile-development */ = {
 			isa = XCBuildConfiguration;
@@ -1242,6 +1290,12 @@
 				331C8088294A63A400263BE5 /* Debug */,
 				331C8089294A63A400263BE5 /* Release */,
 				331C808A294A63A400263BE5 /* Profile */,
+				348FBBC63006F7290060AB96 /* Debug-development */,
+				348FBBC73006F7290060AB96 /* Debug-production */,
+				348FBBC83006F7290060AB96 /* Release-development */,
+				348FBBC93006F7290060AB96 /* Release-production */,
+				348FBBCA3006F7290060AB96 /* Profile-development */,
+				348FBBCB3006F7290060AB96 /* Profile-production */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
