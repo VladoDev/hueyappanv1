@@ -800,14 +800,14 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get waterStatusActiveBody =>
-      'De acuerdo al calendario municipal, el suministro de agua se encuentra activo el día de hoy. Le invitamos a hacer un uso responsable.';
+      'De acuerdo a la administración, el suministro de agua se encuentra activo el día de hoy. Le invitamos a hacer un uso responsable.';
 
   @override
   String get waterStatusInactiveTitle => 'Sin Suministro Programado';
 
   @override
   String get waterStatusInactiveBody =>
-      'De acuerdo al calendario municipal, hoy no hay suministro de agua programado en la zona. Le sugerimos administrar sus reservas.';
+      'De acuerdo a la administración, hoy no hay suministro de agua programado en la zona. Le sugerimos administrar sus reservas.';
 
   @override
   String get understood => 'Entendido';
