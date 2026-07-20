@@ -6,7 +6,6 @@ import 'package:hueyappanv1/l10n/app_localizations.dart';
 import 'package:hueyappanv1/src/core/theme/vecinal_theme.dart';
 import '../providers/auth_provider.dart';
 import '../providers/biometric_provider.dart';
-import '../widgets/local_recaptcha.dart';
 
 class RegisterScreen extends ConsumerStatefulWidget {
   const RegisterScreen({super.key});
@@ -42,9 +41,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
   bool _isPreAuthenticated = false;
 
-  final RecaptchaV2Controller recaptchaV2Controller = RecaptchaV2Controller();
-  bool _isRecaptchaVerified = false;
-
   @override
   void initState() {
     super.initState();
@@ -68,16 +64,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
   void _submitForm() async {
     final l10n = AppLocalizations.of(context)!;
-    if (!_isRecaptchaVerified) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.recaptchaRequired),
-          backgroundColor: context.vecinalColors.destructive,
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
-      return;
-    }
 
     if (_formKey.currentState!.validate() &&
         _selectedLot != null &&
@@ -220,8 +206,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                           padding: const EdgeInsets.symmetric(horizontal: 32),
                           child: _buildContactFields(isLoading, vc),
                         ),
-                        const SizedBox(height: 16),
-                        _buildRecaptcha(vc),
                         const SizedBox(height: 28),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 32),
@@ -455,32 +439,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             if (val.length < 6) return l10n.passwordTooShortRegister;
             return null;
           },
-        ),
-      ],
-    );
-  }
-
-  Widget _buildRecaptcha(VecinalSemanticColors vc) {
-    return Column(
-      children: [
-        Center(
-          child: RecaptchaV2(
-            apiKey: "6Lemtw4tAAAAACeY-96VPirAxI6EcUTgwW8quFXQ",
-            apiSecret: "6Lemtw4tAAAAAErhymCWcuWsuxCqAXtyzHGKNdkV",
-            controller: recaptchaV2Controller,
-            themeMode: Theme.of(context).brightness == Brightness.dark ? 'dark' : 'light',
-            backgroundColor: vc.surfaceCard,
-            onVerifiedError: (err) {
-              debugPrint('Recaptcha error: $err');
-            },
-            onVerifiedSuccessfully: (success) {
-              setState(() {
-                if (success) {
-                  _isRecaptchaVerified = true;
-                }
-              });
-            },
-          ),
         ),
       ],
     );
