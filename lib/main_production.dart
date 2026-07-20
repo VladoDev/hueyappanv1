@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-
+import 'package:firebase_app_check/firebase_app_check.dart';
 import 'firebase_options_production.dart';
 import 'main.dart';
 import 'src/features/app_settings/presentation/providers/package_info_provider.dart';
@@ -19,6 +19,11 @@ void main() async {
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  await FirebaseAppCheck.instance.activate(
+    androidProvider: AndroidProvider.playIntegrity,
+    appleProvider: AppleProvider.appAttest,
   );
 
   FlutterError.onError = (errorDetails) {
