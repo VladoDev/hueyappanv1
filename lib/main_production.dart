@@ -13,40 +13,72 @@ import 'main.dart';
 import 'src/features/app_settings/presentation/providers/package_info_provider.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  
-  await dotenv.load(fileName: ".env.production");
+  try {
+    WidgetsFlutterBinding.ensureInitialized();
+    
+    await dotenv.load(fileName: ".env.production");
 
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+    try {
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
+    } catch (e) {
+      debugPrint('Firebase already initialized: $e');
+    }
 
-  await FirebaseAppCheck.instance.activate(
-    providerAndroid: AndroidPlayIntegrityProvider(),
-    providerApple: AppleAppAttestProvider(),
-  );
+    try {
+      await FirebaseAppCheck.instance.activate(
+        providerAndroid: AndroidPlayIntegrityProvider(),
+        providerApple: AppleAppAttestProvider(),
+      );
+    } catch (e) {
+      debugPrint('AppCheck initialization error: $e');
+    }
 
-  FlutterError.onError = (errorDetails) {
-    FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
-  };
+    FlutterError.onError = (errorDetails) {
+      FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
+    };
 
-  PlatformDispatcher.instance.onError = (error, stack) {
-    FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
-    return true;
-  };
+    PlatformDispatcher.instance.onError = (error, stack) {
+      FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+      return true;
+    };
 
-  await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
-    alert: true,
-    badge: true,
-    sound: true,
-  );
+    try {
+      await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+        alert: true,
+        badge: true,
+        sound: true,
+      );
+    } catch (e) {
+      debugPrint('FCM initialization error: $e');
+    }
 
-  final packageInfo = await PackageInfo.fromPlatform();
+    final packageInfo = await PackageInfo.fromPlatform();
 
-  runApp(
-    ProviderScope(
-      overrides: [packageInfoProvider.overrideWithValue(packageInfo)],
-      child: const MyApp(),
-    ),
-  );
+    runApp(
+      ProviderScope(
+        overrides: [packageInfoProvider.overrideWithValue(packageInfo)],
+        child: const MyApp(),
+      ),
+    );
+  } catch (e, stackTrace) {
+    debugPrint('Fatal initialization error: $e');
+    runApp(
+      MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(24),
+              child: Text(
+                'Error de inicialización:\n\n$e\n\n$stackTrace',
+                style: const TextStyle(color: Colors.red, fontSize: 12),
+                textDirection: TextDirection.ltr,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
