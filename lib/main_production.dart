@@ -22,8 +22,8 @@ void main() async {
   );
 
   await FirebaseAppCheck.instance.activate(
-    androidProvider: AndroidProvider.playIntegrity,
-    appleProvider: AppleProvider.appAttest,
+    providerAndroid: AndroidPlayIntegrityProvider(),
+    providerApple: AppleAppAttestProvider(),
   );
 
   FlutterError.onError = (errorDetails) {
