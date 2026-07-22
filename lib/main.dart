@@ -7,8 +7,8 @@ import 'src/core/theme/vecinal_theme.dart';
 import 'package:screenshot_callback/screenshot_callback.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'src/features/security_events/domain/entities/security_event_entity.dart';
-import 'src/features/security_events/presentation/providers/security_events_provider.dart';
 import 'package:shake/shake.dart';
 import 'package:screenshot/screenshot.dart';
 import 'src/features/feedback/presentation/widgets/shake_report_dialog.dart';
@@ -55,8 +55,16 @@ class _MyAppState extends ConsumerState<MyApp> {
   void initScreenshotCallback() {
     screenshotCallback = ScreenshotCallback();
     screenshotCallback.addListener(() async {
-      final user = FirebaseAuth.instance.currentUser;
-      if (user != null) {
+      try {
+        final user = FirebaseAuth.instance.currentUser;
+        if (user == null) {
+          // Log to Crashlytics so we can see this in prod dashboard
+          FirebaseCrashlytics.instance.log(
+            'Screenshot detected but no authenticated user found',
+          );
+          return;
+        }
+
         String userName =
             user.displayName ?? user.email ?? 'Nombre no disponible';
 
@@ -73,7 +81,8 @@ class _MyAppState extends ConsumerState<MyApp> {
             }
           }
         } catch (e) {
-          debugPrint('Error fetching resident name: $e');
+          // Non-fatal: continue with fallback name
+          FirebaseCrashlytics.instance.log('Error fetching resident name: $e');
         }
 
         final event = SecurityEventEntity(
@@ -84,12 +93,27 @@ class _MyAppState extends ConsumerState<MyApp> {
           timestamp: DateTime.now(),
         );
 
+        // Write directly to Firestore instead of going through the
+        // Riverpod provider chain, which can be unreliable when called
+        // from a platform callback outside the widget lifecycle.
         try {
-          final repository = ref.read(securityEventsRepositoryProvider);
-          await repository.logEvent(event);
-        } catch (e) {
-          debugPrint('Error logging screenshot: $e');
+          await FirebaseFirestore.instance
+              .collection('screenshot_logs')
+              .doc()
+              .set(event.toMap());
+        } catch (e, stack) {
+          FirebaseCrashlytics.instance.recordError(
+            e,
+            stack,
+            reason: 'Failed to log screenshot event to Firestore',
+          );
         }
+      } catch (e, stack) {
+        FirebaseCrashlytics.instance.recordError(
+          e,
+          stack,
+          reason: 'Unexpected error in screenshot callback',
+        );
       }
     });
   }
