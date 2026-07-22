@@ -9,6 +9,6 @@ final deviceIdProvider = FutureProvider<String>((ref) {
   return ref.watch(deviceBlockRepositoryProvider).getDeviceId();
 });
 
-final deviceBlockStatusProvider = FutureProvider<DeviceBlockStatus>((ref) {
-  return ref.watch(deviceBlockRepositoryProvider).checkBlockStatus();
+final deviceBlockStatusProvider = StreamProvider<DeviceBlockStatus>((ref) {
+  return ref.watch(deviceBlockRepositoryProvider).watchBlockStatus();
 });

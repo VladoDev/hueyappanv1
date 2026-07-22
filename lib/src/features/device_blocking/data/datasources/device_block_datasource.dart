@@ -13,10 +13,17 @@ class DeviceBlockDatasource {
       );
       return doc.exists;
     } catch (e) {
-      // Return false on network error. The repository will handle the fallback
-      // using the local datasource if needed.
       return false; 
     }
+  }
+
+  Stream<bool> watchDeviceBlocked(String deviceId) {
+    return _firestore
+        .collection('blocked_devices')
+        .doc(deviceId)
+        .snapshots()
+        .map((snapshot) => snapshot.exists)
+        .handleError((_) => false);
   }
 
   Future<void> saveDeviceIdToResident(String uid, String deviceId) async {

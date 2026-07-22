@@ -27,27 +27,18 @@ class DeviceBlockRepository {
     return await _idService.getOrCreatePersistentDeviceId();
   }
 
-  Future<DeviceBlockStatus> checkBlockStatus() async {
+  Stream<DeviceBlockStatus> watchBlockStatus() async* {
     final deviceId = await getDeviceId();
     
-    // 1. Check local status first (handles offline case and immediate blocking)
+    // 1. Initial local status (handles offline and immediate start)
     final isLocallyBlocked = await _localDatasource.isDeviceBlockedLocally();
+    yield DeviceBlockStatus(isBlocked: isLocallyBlocked, deviceId: deviceId);
     
-    try {
-      // 2. Try to verify with server
-      final isRemotelyBlocked = await _remoteDatasource.isDeviceBlocked(deviceId);
-      
-      // 3. Sync local status with remote
-      if (isRemotelyBlocked != isLocallyBlocked) {
-        await _localDatasource.setDeviceBlocked(isRemotelyBlocked);
-      }
-      
+    // 2. Yield from remote stream and sync to local storage
+    yield* _remoteDatasource.watchDeviceBlocked(deviceId).map((isRemotelyBlocked) {
+      _localDatasource.setDeviceBlocked(isRemotelyBlocked); // Always sync latest
       return DeviceBlockStatus(isBlocked: isRemotelyBlocked, deviceId: deviceId);
-    } catch (e) {
-      debugPrint('Error checking remote block status: $e');
-      // If network fails, fallback to local status
-      return DeviceBlockStatus(isBlocked: isLocallyBlocked, deviceId: deviceId);
-    }
+    });
   }
 
   Future<void> syncDeviceIdForUser(String uid) async {
