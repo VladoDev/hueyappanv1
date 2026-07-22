@@ -923,4 +923,11 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get back => 'Atrás';
+
+  @override
+  String get deviceBlockedTitle => 'Dispositivo Bloqueado';
+
+  @override
+  String get deviceBlockedDesc =>
+      'Este dispositivo ha sido bloqueado permanentemente por violación a los términos de uso de la comunidad. Esta acción ha sido registrada. Si considera que esto es un error, contacte a la administración.';
 }

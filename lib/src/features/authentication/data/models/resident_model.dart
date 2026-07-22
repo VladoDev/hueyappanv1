@@ -17,6 +17,7 @@ abstract class ResidentModel with _$ResidentModel {
     String? residentType,
     @Default('vecino') String role,
     @Default(false) bool isPhoneVerified,
+    String? deviceId,
   }) = _ResidentModel;
 
   factory ResidentModel.fromJson(Map<String, dynamic> json) =>
@@ -33,6 +34,7 @@ abstract class ResidentModel with _$ResidentModel {
     residentType: entity.residentType,
     role: entity.role,
     isPhoneVerified: entity.isPhoneVerified,
+    deviceId: entity.deviceId,
   );
 }
 
@@ -48,5 +50,6 @@ extension ResidentModelX on ResidentModel {
     residentType: residentType,
     role: role,
     isPhoneVerified: isPhoneVerified,
+    deviceId: deviceId,
   );
 }

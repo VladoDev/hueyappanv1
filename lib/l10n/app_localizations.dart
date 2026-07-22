@@ -1795,6 +1795,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Back'**
   String get back;
+
+  /// No description provided for @deviceBlockedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Device Blocked'**
+  String get deviceBlockedTitle;
+
+  /// No description provided for @deviceBlockedDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'This device has been permanently blocked due to a violation of community terms of use. This action has been recorded. If you believe this is an error, please contact administration.'**
+  String get deviceBlockedDesc;
 }
 
 class _AppLocalizationsDelegate

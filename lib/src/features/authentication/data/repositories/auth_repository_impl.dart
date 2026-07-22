@@ -6,11 +6,14 @@ import '../../domain/entities/resident_entity.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../datasources/auth_firebase_datasource.dart';
 import '../models/resident_model.dart';
+import '../../../device_blocking/data/repositories/device_block_repository.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
   final AuthFirebaseDatasource _dataSource;
+  final DeviceBlockRepository _deviceBlockRepo;
 
-  AuthRepositoryImpl(this._dataSource);
+  AuthRepositoryImpl(this._dataSource, {DeviceBlockRepository? deviceBlockRepo})
+      : _deviceBlockRepo = deviceBlockRepo ?? DeviceBlockRepository();
 
   @override
   Stream<ResidentEntity?> get authStateChanges {
@@ -18,6 +21,9 @@ class AuthRepositoryImpl implements AuthRepository {
       if (user == null) {
         return Stream.value(null);
       }
+      // Trigger background sync of device ID for the logged-in user
+      _deviceBlockRepo.syncDeviceIdForUser(user.uid);
+      
       return _dataSource
           .watchResidentProfile(user.uid)
           .map((profile) => profile?.toEntity());
@@ -39,6 +45,7 @@ class AuthRepositoryImpl implements AuthRepository {
       }
 
       await _dataSource.registerDeviceToken(uid);
+      await _deviceBlockRepo.syncDeviceIdForUser(uid);
 
       // Track successful login in Analytics and configure Crashlytics user identifier
       await FirebaseAnalytics.instance.setUserId(id: uid);
@@ -254,6 +261,7 @@ class AuthRepositoryImpl implements AuthRepository {
 
       // 6. Register device token for push notifications
       await _dataSource.registerDeviceToken(uid);
+      await _deviceBlockRepo.syncDeviceIdForUser(uid);
 
       // Track successful sign up in Analytics and configure Crashlytics user identifier
       await FirebaseAnalytics.instance.setUserId(id: uid);

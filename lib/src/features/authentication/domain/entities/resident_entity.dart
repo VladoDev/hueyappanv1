@@ -9,6 +9,7 @@ class ResidentEntity {
   final String? residentType;
   final String role;
   final bool isPhoneVerified;
+  final String? deviceId;
 
   const ResidentEntity({
     required this.uid,
@@ -21,6 +22,7 @@ class ResidentEntity {
     this.residentType,
     this.role = 'vecino',
     this.isPhoneVerified = false,
+    this.deviceId,
   });
 
   bool get isAdmin => role.toLowerCase() == 'admin';
@@ -37,6 +39,7 @@ class ResidentEntity {
     String? residentType,
     String? role,
     bool? isPhoneVerified,
+    String? deviceId,
   }) {
     return ResidentEntity(
       uid: uid ?? this.uid,
@@ -49,6 +52,7 @@ class ResidentEntity {
       residentType: residentType ?? this.residentType,
       role: role ?? this.role,
       isPhoneVerified: isPhoneVerified ?? this.isPhoneVerified,
+      deviceId: deviceId ?? this.deviceId,
     );
   }
 
@@ -66,7 +70,8 @@ class ResidentEntity {
           phone == other.phone &&
           residentType == other.residentType &&
           role == other.role &&
-          isPhoneVerified == other.isPhoneVerified;
+          isPhoneVerified == other.isPhoneVerified &&
+          deviceId == other.deviceId;
 
   @override
   int get hashCode =>
@@ -79,5 +84,6 @@ class ResidentEntity {
       phone.hashCode ^
       residentType.hashCode ^
       role.hashCode ^
-      isPhoneVerified.hashCode;
+      isPhoneVerified.hashCode ^
+      deviceId.hashCode;
 }

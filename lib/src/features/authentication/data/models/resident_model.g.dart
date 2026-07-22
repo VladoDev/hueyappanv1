@@ -18,6 +18,7 @@ _ResidentModel _$ResidentModelFromJson(Map<String, dynamic> json) =>
       residentType: json['residentType'] as String?,
       role: json['role'] as String? ?? 'vecino',
       isPhoneVerified: json['isPhoneVerified'] as bool? ?? false,
+      deviceId: json['deviceId'] as String?,
     );
 
 Map<String, dynamic> _$ResidentModelToJson(_ResidentModel instance) =>
@@ -32,4 +33,5 @@ Map<String, dynamic> _$ResidentModelToJson(_ResidentModel instance) =>
       'residentType': instance.residentType,
       'role': instance.role,
       'isPhoneVerified': instance.isPhoneVerified,
+      'deviceId': instance.deviceId,
     };
