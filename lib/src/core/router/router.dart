@@ -22,6 +22,8 @@ import '../../features/app_settings/presentation/providers/package_info_provider
 import '../../features/polls/presentation/pages/polls_page.dart';
 import '../../features/polls/presentation/pages/create_poll_page.dart';
 import '../../features/polls/presentation/pages/revert_requests_page.dart';
+import '../../features/device_blocking/presentation/providers/device_block_provider.dart';
+import '../../features/device_blocking/presentation/screens/device_blocked_screen.dart';
 import 'dart:io';
 
 class RouterNotifier extends ChangeNotifier {
@@ -29,6 +31,7 @@ class RouterNotifier extends ChangeNotifier {
     ref.listen(authStateProvider, (previous, next) => notifyListeners());
     ref.listen(appSettingsProvider, (previous, next) => notifyListeners());
     ref.listen(firebaseUserProvider, (previous, next) => notifyListeners());
+    ref.listen(deviceBlockStatusProvider, (previous, next) => notifyListeners());
   }
 }
 
@@ -54,6 +57,17 @@ final routerProvider = Provider<GoRouter>((ref) {
       final isRegistering = state.matchedLocation == '/register';
       final isForgotPassword = state.matchedLocation == '/forgot-password';
       final isForceUpdate = state.matchedLocation == '/force_update';
+      final isDeviceBlocked = state.matchedLocation == '/device_blocked';
+
+      // -1. Device blocking check (before ANYTHING, even login)
+      final blockStatus = ref.read(deviceBlockStatusProvider);
+      
+      if (blockStatus.value?.isBlocked == true) {
+        return '/device_blocked';
+      }
+      if (isDeviceBlocked && blockStatus.value?.isBlocked != true) {
+        return '/login';
+      }
 
       // 0. Check for forced updates
       final appSettings = ref.read(appSettingsProvider).value;
@@ -104,6 +118,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       return null; // Allow navigation to the requested route
     },
     routes: [
+      GoRoute(
+        path: '/device_blocked',
+        builder: (context, state) => const DeviceBlockedScreen(),
+      ),
       GoRoute(
         path: '/force_update',
         builder: (context, state) => const ForceUpdateScreen(),

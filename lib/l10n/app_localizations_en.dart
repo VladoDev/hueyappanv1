@@ -917,4 +917,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get back => 'Back';
+
+  @override
+  String get deviceBlockedTitle => 'Device Blocked';
+
+  @override
+  String get deviceBlockedDesc =>
+      'This device has been permanently blocked due to a violation of community terms of use. This action has been recorded. If you believe this is an error, please contact administration.';
 }

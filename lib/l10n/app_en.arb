@@ -411,5 +411,7 @@
   "reportThanks": "Thanks for your report!",
   "suggestIdea": "Suggest Idea",
   "reportLabel": "Report",
-  "back": "Back"
+  "back": "Back",
+  "deviceBlockedTitle": "Device Blocked",
+  "deviceBlockedDesc": "This device has been permanently blocked due to a violation of community terms of use. This action has been recorded. If you believe this is an error, please contact administration."
 }
