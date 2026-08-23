@@ -555,7 +555,35 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                     style: const TextStyle(fontSize: 15),
                   ),
                   const SizedBox(height: 20),
-                  if (isRequested)
+                  if (isRequested) ...[
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: vc.surfaceSecondary,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(
+                            Icons.info_outline,
+                            size: 18,
+                            color: vc.primaryDefault,
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              l10n.otpHelperText,
+                              style: TextStyle(
+                                fontSize: 13,
+                                color: vc.textSecondary,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 12),
                     TextField(
                       controller: otpController,
                       decoration: InputDecoration(
@@ -565,6 +593,7 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                       keyboardType: TextInputType.number,
                       enabled: !isVerifying,
                     ),
+                  ],
                 ],
               ),
               actions: [

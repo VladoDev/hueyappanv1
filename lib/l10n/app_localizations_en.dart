@@ -308,22 +308,28 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get verifyPhoneRequiredBody =>
-      'In order to send Critical Alerts, you must verify your phone number.';
+      'Before you can use the Critical Alarm you need a one-time verification with an administrator. This is not an automatic SMS: once you request it, an administrator will get your request and give you a 6-digit code in person or by phone.';
 
   @override
   String get requestVerification => 'Request Verification';
 
   @override
-  String get enterOtp => 'Enter OTP code';
+  String get enterOtp => 'Code the administrator gave you';
+
+  @override
+  String get otpHelperText =>
+      'This code will not arrive on its own. Ask a community administrator for it directly.';
 
   @override
   String get verifyOtp => 'Verify Code';
 
   @override
-  String get otpRequestedSuccess => 'Request sent to administrators.';
+  String get otpRequestedSuccess =>
+      'Request sent. Find an administrator so they can give you the code; no SMS will arrive.';
 
   @override
-  String get otpVerifiedSuccess => 'Phone successfully verified!';
+  String get otpVerifiedSuccess =>
+      'Phone successfully verified! You won\'t need to repeat this step.';
 
   @override
   String get otpVerificationFailed => 'The code is incorrect or expired.';

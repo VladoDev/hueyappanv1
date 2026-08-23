@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'auth_provider.dart';
@@ -34,16 +35,24 @@ class EmergencyState {
 
 class EmergencyNotifier extends Notifier<EmergencyState> {
   StreamSubscription<Map<String, dynamic>?>? _subscription;
+  AppLifecycleListener? _lifecycleListener;
 
   @override
   EmergencyState build() {
     // Start listening on provider initialization
     _listenToEmergencies();
 
+    // Force-kill any lingering alarm audio every time the app comes back to
+    // the foreground. This is a safety net for the case where the alarm was
+    // left looping in the background (see _forceStopAlarm for why the state
+    // flag alone isn't reliable enough to trust here).
+    _lifecycleListener = AppLifecycleListener(onResume: _forceStopAlarm);
+
     // Clean up when the provider is disposed
     ref.onDispose(() {
       _subscription?.cancel();
-      _stopAlarm();
+      _lifecycleListener?.dispose();
+      _forceStopAlarm();
     });
 
     return const EmergencyState(
@@ -62,7 +71,7 @@ class EmergencyNotifier extends Notifier<EmergencyState> {
       final String status = emergency['status'] as String? ?? '';
 
       if (status != 'active') {
-        _stopAlarm();
+        _forceStopAlarm();
         state = state.copyWith(
           clearActiveEmergency: true,
           isPlayingAlarm: false,
@@ -101,12 +110,12 @@ class EmergencyNotifier extends Notifier<EmergencyState> {
       // Handle permission denied or other stream errors safely
       // instead of throwing an unhandled exception.
       state = state.copyWith(clearActiveEmergency: true, isPlayingAlarm: false);
-      _stopAlarm();
+      _forceStopAlarm();
     });
   }
 
   void silenceAlarm(String id) {
-    _stopAlarm();
+    _forceStopAlarm();
     final updatedDismissed = Set<String>.from(state.dismissedEmergencyIds)
       ..add(id);
     state = state.copyWith(
@@ -116,20 +125,43 @@ class EmergencyNotifier extends Notifier<EmergencyState> {
     );
   }
 
-  final AudioPlayer _audioPlayer = AudioPlayer();
+  AudioPlayer _audioPlayer = AudioPlayer();
 
   void _startAlarm() async {
-    if (!state.isPlayingAlarm) {
-      state = state.copyWith(isPlayingAlarm: true);
+    if (state.isPlayingAlarm) return;
+    state = state.copyWith(isPlayingAlarm: true);
+    // Capture the instance so a concurrent _forceStopAlarm() swap can't make
+    // the two calls below land on two different players.
+    final player = _audioPlayer;
+    try {
       // Ensure it loops continuously
-      await _audioPlayer.setReleaseMode(ReleaseMode.loop);
-      await _audioPlayer.play(AssetSource('audio/siren.wav'), volume: 1.0);
+      await player.setReleaseMode(ReleaseMode.loop);
+      await player.play(AssetSource('audio/siren.wav'), volume: 1.0);
+    } catch (_) {
+      // Playback never actually started: don't leave the flag stuck as
+      // "playing", or a real silence request later would be a no-op.
+      if (state.isPlayingAlarm) {
+        state = state.copyWith(isPlayingAlarm: false);
+      }
     }
   }
 
-  void _stopAlarm() async {
+  /// Unconditionally stops and tears down the alarm player, regardless of
+  /// [state.isPlayingAlarm]. `play()` on Android can still be preparing the
+  /// asset when this is called (the siren file is ~2.6MB), so a stop that
+  /// only fires while the flag says "playing" can race the async start and
+  /// silently no-op — leaving the siren looping with no way to silence it
+  /// short of killing the app. Recreating the player guarantees a clean
+  /// native session for the next alarm.
+  Future<void> _forceStopAlarm() async {
+    final player = _audioPlayer;
+    _audioPlayer = AudioPlayer();
+    try {
+      await player.stop();
+    } finally {
+      await player.dispose();
+    }
     if (state.isPlayingAlarm) {
-      await _audioPlayer.stop();
       state = state.copyWith(isPlayingAlarm: false);
     }
   }
