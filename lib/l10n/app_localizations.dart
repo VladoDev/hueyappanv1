@@ -665,7 +665,7 @@ abstract class AppLocalizations {
   /// No description provided for @verifyPhoneRequiredBody.
   ///
   /// In en, this message translates to:
-  /// **'In order to send Critical Alerts, you must verify your phone number.'**
+  /// **'Before you can use the Critical Alarm you need a one-time verification with an administrator. This is not an automatic SMS: once you request it, an administrator will get your request and give you a 6-digit code in person or by phone.'**
   String get verifyPhoneRequiredBody;
 
   /// No description provided for @requestVerification.
@@ -677,8 +677,14 @@ abstract class AppLocalizations {
   /// No description provided for @enterOtp.
   ///
   /// In en, this message translates to:
-  /// **'Enter OTP code'**
+  /// **'Code the administrator gave you'**
   String get enterOtp;
+
+  /// No description provided for @otpHelperText.
+  ///
+  /// In en, this message translates to:
+  /// **'This code will not arrive on its own. Ask a community administrator for it directly.'**
+  String get otpHelperText;
 
   /// No description provided for @verifyOtp.
   ///
@@ -689,13 +695,13 @@ abstract class AppLocalizations {
   /// No description provided for @otpRequestedSuccess.
   ///
   /// In en, this message translates to:
-  /// **'Request sent to administrators.'**
+  /// **'Request sent. Find an administrator so they can give you the code; no SMS will arrive.'**
   String get otpRequestedSuccess;
 
   /// No description provided for @otpVerifiedSuccess.
   ///
   /// In en, this message translates to:
-  /// **'Phone successfully verified!'**
+  /// **'Phone successfully verified! You won\'t need to repeat this step.'**
   String get otpVerifiedSuccess;
 
   /// No description provided for @otpVerificationFailed.
